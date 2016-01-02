@@ -56,8 +56,20 @@ module COS
       http.post(resource_path, {}, sign, payload)
     end
 
-    def upload_slice
+    # 创建文件(分片上传)
+    def upload_slice(path, file_name, file_src, options = {})
+      bucket        = config.get_bucket(options[:bucket])
+      sign          = signature.multiple(bucket)
+      resource_path = get_resource_path(bucket, path, file_name)
 
+      payload = {
+          op: 'upload_slice',
+          sha: Util.file_sha1(file_src),
+          filecontent: File.new(file_src, 'rb'),
+          biz_attr: options[:biz_attr]
+      }
+
+      http.post(resource_path, {}, sign, payload)
     end
 
     def list
