@@ -1,4 +1,5 @@
 require 'rest-client'
+require 'uri'
 
 module COS
 
@@ -40,7 +41,7 @@ module COS
 
       response = RestClient::Request.execute(
           :method       => method,
-          :url          => url,
+          :url          => URI.encode(url),
           :headers      => headers,
           :payload      => payload,
           :open_timeout => @config.open_timeout || OPEN_TIMEOUT,

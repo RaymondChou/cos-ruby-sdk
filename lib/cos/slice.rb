@@ -2,12 +2,16 @@ require 'tempfile'
 
 module COS
 
-  # 分片大文件上传, 支持断点续传
+  # 分片大文件上传, 支持断点续传, 支持多线程
   class Slice < Checkpoint
 
     include Logging
 
-    NUM_THREAD = 10
+    # 默认分片大小 3M
+    DEFAULT_SLICE_SIZE = 3 * 1024 * 1024
+
+    # 默认线程数 10
+    DEFAULT_THREADS = 10
 
     required_attrs :config, :http, :path, :file_name, :file_src
     optional_attrs :options, :progress
@@ -17,9 +21,14 @@ module COS
     def initialize(opts = {})
       super(opts)
 
+      # 分片大小必须>0
+      if options[:slice_size] and options[:slice_size] <= 0
+        raise ClientError, 'slice_size must > 0'
+      end
+
       @cpt_file    = options[:cpt_file] || "#{File.expand_path(file_src)}.cpt"
       @file_meta   = {}
-      @num_threads = options[:threads] || NUM_THREAD
+      @num_threads = options[:threads] || DEFAULT_THREADS
       @all_mutex   = Mutex.new
       @parts       = []
       @todo_mutex  = Mutex.new
@@ -31,7 +40,8 @@ module COS
 
       # 重建断点续传或重新从服务器初始化分片上传
       # 有可能sha命中直接完成
-      return data if rebuild
+      data = rebuild
+      return data if data
 
       # 文件分片
       divide_parts if @parts.empty?
@@ -98,7 +108,8 @@ module COS
 
       # 上传进度回调
       if progress
-        progress.call((offset + done*slice_size).to_f / states[:file_meta][:size])
+        percent = (offset + done*slice_size).to_f / states[:file_meta][:size]
+        progress.call(percent > 1 ? 1.to_f : percent)
       end
 
       write_checkpoint(states, cpt_file) unless options[:disable_cpt]
@@ -115,7 +126,8 @@ module COS
       # 是否启用断点续传并且记录文件存在
       if options[:disable_cpt] || !File.exists?(cpt_file)
         # 从服务器初始化
-        return data if initiate
+        data = initiate
+        return data if data
       else
         # 加载断点续传
         states = load_checkpoint(cpt_file)
@@ -146,9 +158,11 @@ module COS
       resource_path = Util.get_resource_path(config.app_id, bucket, path, file_name)
       file_size     = File.size(file_src)
       file_sha1     = Util.file_sha1(file_src)
+      _slice_size   = options[:slice_size] || DEFAULT_SLICE_SIZE
 
       payload = {
           op:          'upload_slice',
+          slice_size:  _slice_size,
           sha:         file_sha1,
           filesize:    file_size,
           biz_attr:    options[:biz_attr],
@@ -201,7 +215,7 @@ module COS
             multipart:   true
         }
 
-        result = http.post(resource_path, {}, sign, payload)
+        @result = http.post(resource_path, {}, sign, payload)
       ensure
         # 确保清除临时文件
         temp_file.close
@@ -224,7 +238,7 @@ module COS
       @parts = (1..num_parts).map do |i|
         {
             :number => i,
-            :range  => [(i-1) * slice_size, [i * slice_size, file_size].min],
+            :range  => [offset + (i-1) * slice_size, [offset + i * slice_size, file_size].min],
             :done   => false
         }
       end

@@ -65,7 +65,10 @@ module COS
     # @option options [String] :biz_attr 目录属性, 业务端维护
     # @option options [String] :bucket bucket名称
     # @option options [Boolean] :disable_cpt
-    # @option options [Int] :threads
+    # @option options [Integer] :threads
+    # @option options [Integer] :slice_size 设置分片上传时每个分片的大小
+    #  默认为5 MB。断点上传最多允许10000个分片，如果文件大于10000个
+    #  分片的大小，则每个分片的大小会大于5MB。
     # @option options [String] :cpt_file
     # @yield [Float] 上传进度百分比回调, 进度值是一个0-1之间的小数
     # @return Hash
