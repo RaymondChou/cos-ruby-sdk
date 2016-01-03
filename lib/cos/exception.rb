@@ -34,4 +34,10 @@ module COS
   # 客户端错误
   class ClientError < Exception; end
 
+  # 文件不一致
+  class FileInconsistentError < Exception; end
+
+  # 上传进度记录损坏
+  class CheckpointBrokenError < Exception; end
+
 end
