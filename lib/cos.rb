@@ -7,8 +7,5 @@ require_relative 'cos/config'
 require_relative 'cos/signature'
 require_relative 'cos/client'
 require_relative 'cos/http'
+require_relative 'cos/upload'
 require_relative 'cos/api'
-
-module COS
-  # Your code goes here...
-end

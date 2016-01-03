@@ -10,10 +10,11 @@ module COS
 
     include Logging
 
-    attr_reader :config
+    attr_reader :config, :signature
 
     def initialize(config)
-      @config = config
+      @config    = config
+      @signature = Signature.new(config)
     end
 
     def get(path, headers, signature)
