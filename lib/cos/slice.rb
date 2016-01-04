@@ -49,18 +49,32 @@ module COS
       # 未完成的片段
       @todo_parts = @parts.reject { |p| p[:done] }
 
-      # 多线程上传
-      (1..@num_threads).map do
-        Thread.new do
-          loop do
-            # 获取下一个未上传的片段
-            p = sync_get_todo_part
-            break unless p
-            # 上传片段
-            upload_part(p)
+      begin
+        # 多线程上传
+        (1..@num_threads).map do
+          Thread.new do
+            loop do
+              # 获取下一个未上传的片段
+              p = sync_get_todo_part
+              break unless p
+
+              # 上传片段
+              upload_part(p)
+            end
           end
+        end.map(&:join)
+      rescue => error
+        unless finish?
+          # 部分服务端异常需要重新初始化, 可能上传已经完成了
+          if error.is_a?(ServerError) and error.error_code == -288
+            File.delete(cpt_file) unless options[:disable_cpt]
+          end
+          raise error
         end
-      end.map(&:join)
+      end
+
+      # 返回100%的进度
+      progress.call(1.to_f) if progress
 
       # 上传完成, 删除checkpoint文件
       File.delete(cpt_file) unless options[:disable_cpt]
@@ -118,6 +132,11 @@ module COS
     end
 
     private
+
+    # 是否完成上传
+    def finish?
+      result != nil and result[:access_url] != nil
+    end
 
     # 断点续传文件重建
     def rebuild
@@ -215,7 +234,8 @@ module COS
             multipart:   true
         }
 
-        @result = http.post(resource_path, {}, sign, payload)
+        re = http.post(resource_path, {}, sign, payload)
+        @result = re if re[:access_url]
       ensure
         # 确保清除临时文件
         temp_file.close

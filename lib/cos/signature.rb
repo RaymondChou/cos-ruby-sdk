@@ -13,6 +13,7 @@ module COS
       @config = config
     end
 
+    # 单次签名
     def once(bucket, path)
       # 单次签名,需要指定资源存储的唯一标识
       unless path.start_with?('/')
@@ -24,6 +25,7 @@ module COS
 
       sign(:once, bucket)
     end
+
 
     def multiple(bucket, expire_seconds = config.multiple_sign_expire)
       # 多次签名时，过期时间应大于当前时间

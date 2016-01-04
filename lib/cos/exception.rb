@@ -5,6 +5,7 @@ module COS
   # 异常基类
   class Exception < RuntimeError; end
 
+  # 服务端返回异常
   class ServerError < Exception
 
     attr_reader :response, :http_code, :error_code, :message

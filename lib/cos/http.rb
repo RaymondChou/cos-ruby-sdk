@@ -28,6 +28,7 @@ module COS
 
     private
 
+    # 发送请求
     def do_request(method, path, headers, signature = nil, payload = nil)
 
       headers['content-type']  ||= DEFAULT_CONTENT_TYPE
@@ -64,11 +65,13 @@ module COS
       parse_data(response)
     end
 
+    # 解析结果json 取出data部分
     def parse_data(response)
       j = JSON.parse(response.body, symbolize_names: true)
       j[:data]
     end
 
+    # 获取user agent
     def get_user_agent
       "cos-ruby-sdk/#{VERSION} ruby-#{RUBY_VERSION}/#{RUBY_PLATFORM}"
     end

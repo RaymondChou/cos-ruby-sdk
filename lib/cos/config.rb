@@ -21,6 +21,7 @@ module COS
       @multiple_sign_expire ||= DEFAULT_MULTIPLE_SIGN_EXPIRE
     end
 
+    # 自定义bucket或从config中获取
     def get_bucket(custom_bucket)
       b = custom_bucket || bucket
       if b == nil
