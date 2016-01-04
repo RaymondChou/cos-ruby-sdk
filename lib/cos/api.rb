@@ -100,10 +100,39 @@ module COS
     end
 
     # 目录列表/前缀搜索
-    def list(path, prefix = nil, options = {})
+    # @param path [String] 目录路径,
+    #  如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
+    #  如果填写prefix, 则列出含此前缀的所有文件及目录
+    # @param options [Hash]
+    # @option options [String] :bucket bucket名称
+    # @option options [String] :prefix 搜索前缀
+    # @option options [Integer] :num 每页拉取的数量, 默认20条
+    # @option options [Symbol] :pattern 获取方式
+    #  :dir_only 只获取目录, :file_only 只获取文件, 默认为 :both 全部获取
+    # @option options [Symbol] :order 排序方式
+    #  :asc 正序, :desc 倒序 默认为 :asc
+    # @option options [String] :context 页码
+    #  若需要翻页，需要将前一页返回值中的context透传到参数中
+    #  若order为:asc，则从当前页正序/往下翻页；若order为:desc，则从当前页倒序/往上翻
+    # @return Hash
+    #  * :context [String] 透传字段,用于翻页,需要往前/往后翻页则透传回来
+    #  * :has_more [Boolean] 是否有内容可以继续往前/往后翻页
+    #  * :dircount [Integer] 子目录数量(总)
+    #  * :filecount [Integer] 子文件数量(总)
+    #  * :filecount [Integer] 子文件数量(总)
+    #  * :infos [Array<Hash>] 列表结果(可能为空)
+    #  *  * :name [String] 目录名/文件名
+    #  *  * :biz_attr [String] 目录/文件属性，业务端维护
+    #  *  * :filesize [Integer] 文件大小(当类型为文件时返回)
+    #  *  * :filelen [Integer] 文件已传输大小(通过与filesize对比可知文件传输进度,当类型为文件时返回)
+    #  *  * :sha [String] 文件sha1(当类型为文件时返回)
+    #  *  * :ctime [String] 创建时间(Unix时间戳)
+    #  *  * :mtime [String] 修改时间(Unix时间戳)
+    #  *  * :access_url [String] 生成的资源可访问的url(当类型为文件时返回)
+    def list(path, options = {})
       bucket  = config.get_bucket(options[:bucket])
       sign    = http.signature.multiple(bucket)
-      resource_path = Util.get_resource_path(config.app_id, bucket, path, prefix)
+      resource_path = Util.get_resource_path(config.app_id, bucket, path, options[:prefix])
 
       pattern = case options[:pattern]
                   when :dir_only
@@ -126,6 +155,11 @@ module COS
     end
 
     # 更新目录/文件信息(biz_attr)
+    # @param path [String] 资源路径,
+    #  如: 目录'path1/', 文件'path1/file'
+    # @param biz_attr [String] 目录/文件属性，业务端维护
+    # @param options [Hash]
+    # @option options [String] :bucket bucket名称
     def update(path, biz_attr, options = {})
       bucket        = config.get_bucket(options[:bucket])
       resource_path = Util.get_resource_path_or_file(config.app_id, bucket, path)
@@ -136,6 +170,19 @@ module COS
     end
 
     # 目录/文件信息查询
+    # @param path [String] 资源路径,
+    #  如: 目录'path1/', 文件'path1/file'
+    # @param options [Hash]
+    # @option options [String] :bucket bucket名称
+    # @return Hash
+    #  * :name [String] 目录名/文件名
+    #  * :biz_attr [String] 目录/文件属性，业务端维护
+    #  * :filesize [Integer] 文件大小(当类型为文件时返回)
+    #  * :filelen [Integer] 文件已传输大小(通过与filesize对比可知文件传输进度,当类型为文件时返回)
+    #  * :sha [String] 文件sha1(当类型为文件时返回)
+    #  * :ctime [String] 创建时间(Unix时间戳)
+    #  * :mtime [String] 修改时间(Unix时间戳)
+    #  * :access_url [String] 生成的资源可访问的url(当类型为文件时返回)
     def stat(path, options = {})
       bucket        = config.get_bucket(options[:bucket])
       sign          = http.signature.multiple(bucket)
@@ -145,6 +192,10 @@ module COS
     end
 
     # 删除文件及目录
+    # @param path [String] 资源路径,
+    #  如: 目录'path1/', 文件'path1/file'
+    # @param options [Hash]
+    # @option options [String] :bucket bucket名称
     def delete(path, options = {})
       bucket        = config.get_bucket(options[:bucket])
       resource_path = Util.get_resource_path_or_file(config.app_id, bucket, path)

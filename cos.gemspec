@@ -16,11 +16,12 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features|example)/}) }
   spec.test_files    = Dir.glob('spec/**/*_spec.rb') + Dir.glob('test/**/*.rb')
   spec.bindir        = 'bin'
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.executables   << 'cos'
   spec.require_paths = ['lib']
   spec.license       = 'Apache 2.0'
 
   spec.add_dependency 'rest-client', '~> 1.8'
+  spec.add_dependency 'thor'
 
   spec.add_development_dependency 'bundler', '~> 1.10'
   spec.add_development_dependency 'rake', '~> 10.4'

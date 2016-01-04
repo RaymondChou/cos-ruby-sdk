@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
+$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
+
+require 'thor'
+require 'cos'
+
+class COS_CLI < Thor
+
+  package_name 'COS Ruby SDK CLI'
+
+
+
+end
+
+COS_CLI.start

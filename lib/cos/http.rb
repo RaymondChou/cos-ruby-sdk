@@ -68,7 +68,7 @@ module COS
     # 解析结果json 取出data部分
     def parse_data(response)
       j = JSON.parse(response.body, symbolize_names: true)
-      j[:data]
+      data = j[:data]
     end
 
     # 获取user agent
