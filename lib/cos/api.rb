@@ -102,10 +102,10 @@ module COS
     # 目录列表/前缀搜索
     # @param path [String] 目录路径,
     #  如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
-    #  如果填写prefix, 则列出含此前缀的所有文件及目录
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
     # @option options [String] :prefix 搜索前缀
+    #  如果填写prefix, 则列出含此前缀的所有文件及目录
     # @option options [Integer] :num 每页拉取的数量, 默认20条
     # @option options [Symbol] :pattern 获取方式
     #  :dir_only 只获取目录, :file_only 只获取文件, 默认为 :both 全部获取

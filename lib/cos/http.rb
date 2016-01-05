@@ -6,7 +6,7 @@ module COS
   class HTTP
 
     DEFAULT_CONTENT_TYPE = 'application/json'
-    OPEN_TIMEOUT = 10
+    OPEN_TIMEOUT = 15
     READ_TIMEOUT = 120
 
     include Logging

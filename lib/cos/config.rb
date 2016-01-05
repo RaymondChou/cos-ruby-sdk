@@ -5,7 +5,7 @@ module COS
     DEFAULT_HOST = 'web.file.myqcloud.com'
     DEFAULT_MULTIPLE_SIGN_EXPIRE = 600
 
-    required_attrs :app_id, :secret_id, :secret_id, :secret_key
+    required_attrs :app_id, :secret_id, :secret_key
     optional_attrs :host, :protocol, :open_timeout, :read_timeout, :logger, :multiple_sign_expire, :bucket
 
     attr_reader :api_base
@@ -25,7 +25,7 @@ module COS
     def get_bucket(custom_bucket)
       b = custom_bucket || bucket
       if b == nil
-        raise ClientError, 'Bucket must defined in Config or api options'
+        raise ClientError, 'Bucket must be set'
       end
       b
     end

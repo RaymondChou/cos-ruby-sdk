@@ -15,6 +15,25 @@ module COS
         Digest::SHA1.hexdigest(string)
       end
 
+      # 解析list时的path
+      def get_list_path(path, name, is_file = false)
+        if is_file
+          # 文件
+          if path.end_with?('/')
+            "#{path}#{name}"
+          else
+            "#{path}/#{name}"
+          end
+        else
+          # 目录
+          if path.end_with?('/')
+            "#{path}#{name}/"
+          else
+            "#{path}/#{name}/"
+          end
+        end
+      end
+
       # 获取resource_path
       def get_resource_path(app_id, bucket, path, file = nil)
         # file_name检测
