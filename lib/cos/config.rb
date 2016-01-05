@@ -6,14 +6,20 @@ module COS
     DEFAULT_MULTIPLE_SIGN_EXPIRE = 600
 
     required_attrs :app_id, :secret_id, :secret_key
-    optional_attrs :host, :protocol, :open_timeout, :read_timeout, :logger, :multiple_sign_expire, :bucket
+    optional_attrs :host, :protocol, :open_timeout, :read_timeout,
+                   :log_src, :log_level, :multiple_sign_expire, :bucket
 
     attr_reader :api_base
 
     def initialize(options = {})
       super(options)
 
-      Logging.set_logger(STDOUT, Logger::DEBUG)
+      # log_src: STDOUT | STDERR | 'path/filename.log'
+      # log_level: Logger::DEBUG | Logger::INFO | Logger::ERROR | Logger::FATAL
+      Logging.set_logger(
+          options[:log_src]   || STDOUT,
+          options[:log_level] || Logger::INFO
+      )
 
       @protocol ||= 'http'
       @host     ||= DEFAULT_HOST

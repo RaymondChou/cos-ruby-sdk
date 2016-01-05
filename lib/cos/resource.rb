@@ -2,10 +2,9 @@ module COS
 
   class Resource
 
-    attr_reader :options, :bucket, :path, :dir_count, :file_count
+    attr_reader :bucket, :path, :dir_count, :file_count
 
     def initialize(bucket, bucket_name, path, options = {})
-      @options     = options
       @bucket      = bucket
       @path        = path
       @more        = options
@@ -75,26 +74,28 @@ module COS
 
   class ResourceOperator < Struct::Base
 
-    required_attrs :bucket, :path, :name,  :ctime, :mtime
+    required_attrs :bucket, :path, :name, :ctime, :mtime
     optional_attrs :biz_attr, :filesize, :filelen, :sha, :access_url
 
-    attr_reader :type, :api
+    attr_reader :type
 
     def initialize(attrs)
       super(attrs)
-      @api = bucket.client.api
     end
 
     def state
-      api.stat(path, bucket: bucket.bucket_name)
+      bucket.state(path)
     end
 
     def update(biz_attr)
-      api.update(path, biz_attr, bucket: bucket.bucket_name)
+      bucket.update(path, biz_attr)
+      @mtime    = Time.now.to_i.to_s
+      @biz_attr = biz_attr
+      self
     end
 
     def delete
-      api.delete(path, bucket: bucket.bucket_name)
+      bucket.delete(path)
     end
 
   end
@@ -117,8 +118,8 @@ module COS
       @type = 'dir'
     end
 
-    def upload
-
+    def upload(file_name, file_src, options = {}, &block)
+      bucket.upload(path, file_name, file_src, options, block)
     end
 
     def list(options = {})
@@ -126,6 +127,12 @@ module COS
     end
 
     alias :ls :list
+
+    def create_folder(dir_name, options = {})
+      bucket.create("#{path}#{dir_name}", options)
+    end
+
+    alias :mkdir :create_folder
 
   end
 

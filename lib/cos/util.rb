@@ -16,7 +16,10 @@ module COS
       end
 
       # 解析list时的path
-      def get_list_path(path, name, is_file = false)
+      def get_list_path(path, name = '', is_file = false)
+        # 目录必须带"/"
+        path = "/#{path}" unless path.start_with?('/')
+
         if is_file
           # 文件
           if path.end_with?('/')
