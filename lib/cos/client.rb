@@ -13,7 +13,7 @@ module COS
       api.http.signature
     end
 
-    def bucket(bucket_name)
+    def bucket(bucket_name = nil)
       Bucket.new(self, bucket_name)
     end
 
@@ -28,9 +28,9 @@ module COS
     MIN_SLICE_SIZE = 10 * 1024 * 1024
     DEFAULT_UPLOAD_RETRY = 10
 
-    def initialize(client, bucket_name)
+    def initialize(client, bucket_name = nil)
       @client      = client
-      @bucket_name = bucket_name
+      @bucket_name = client.config.get_bucket(bucket_name)
     end
 
     def create_folder(path, options = {})

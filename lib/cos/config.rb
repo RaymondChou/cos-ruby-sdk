@@ -31,7 +31,7 @@ module COS
     def get_bucket(custom_bucket)
       b = custom_bucket || default_bucket
       if b == nil
-        raise ClientError, 'Bucket must be set'
+        raise ClientError, 'Bucket name must be set'
       end
       b
     end

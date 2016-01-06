@@ -26,6 +26,10 @@ module COS
           expect(
               s.string_to_sign(:once, 'bucket')
           ).to eq('a=100000&b=bucket&k=secret_id&e=0&t=0&r=8888&f=/file/id')
+
+          expect do
+              s.string_to_sign(:aaa, 'bucket')
+          end.to raise_error(Exception)
         end
       end
     end
@@ -41,6 +45,10 @@ module COS
         s.stub(:rand, 9999) do
           expect(
             s.once('bucket_name', '/path/file1')
+          ).to eq(value)
+
+          expect(
+              s.once('bucket_name', 'path/file1')
           ).to eq(value)
         end
       end
@@ -59,6 +67,10 @@ module COS
           expect(
               s.multiple('bucket_name', 600)
           ).to eq(value)
+
+          expect do
+            s.multiple('bucket_name', 0)
+          end.to raise_error(AttrError)
         end
       end
 

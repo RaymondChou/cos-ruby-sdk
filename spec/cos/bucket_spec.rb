@@ -16,7 +16,7 @@ module COS
     end
 
     it 'should list folder' do
-      stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListBoth').
+      stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListDirOnly').
           to_return(:status => 200, :body => {
               code: 0,
               message: 'ok',
@@ -31,11 +31,11 @@ module COS
           }.to_json, :headers => {})
 
       size = 0
-      @bucket.list('/path/', {}).each do |f|
+      @bucket.list('/path/', {pattern: :dir_only}).each do |f|
         size += 1
       end
 
-      expect(WebMock).to have_requested(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListBoth')
+      expect(WebMock).to have_requested(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListDirOnly')
 
       expect(size).to eq(2)
     end
@@ -77,7 +77,7 @@ module COS
 
       stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/f1?op=stat").to_return(:status => 400, :body => { code: -166, message: '索引不存在'}.to_json)
 
-      @bucket.list('/path/', {}).each do |f|
+      @bucket.list('/path/').each do |f|
 
         if f.is_a?(COS::COSDir) and f.type == 'dir'
           expect(f.created_at).to eq(Time.at(@time.to_i))
@@ -161,7 +161,7 @@ module COS
     it 'upload file slice to a path' do
       @time = Time.now.to_i.to_s
 
-      stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListBoth').
+      stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListFileOnly').
           to_return(:status => 200, :body => {
               code: 0,
               message: 'ok',
@@ -196,7 +196,7 @@ module COS
         end
       end
 
-      @bucket.list('/path/', {}).each do |f|
+      @bucket.list('/path/', {pattern: :file_only}).each do |f|
         if f.is_a?(COS::COSDir) and f.type == 'dir'
           slice = 0
           f.upload(@file_name, @file, min_slice_size: 1) do
