@@ -7,7 +7,7 @@ module COS
 
     required_attrs :app_id, :secret_id, :secret_key
     optional_attrs :host, :protocol, :open_timeout, :read_timeout,
-                   :log_src, :log_level, :multiple_sign_expire, :bucket
+                   :log_src, :log_level, :multiple_sign_expire, :default_bucket
 
     attr_reader :api_base
 
@@ -29,7 +29,7 @@ module COS
 
     # 自定义bucket或从config中获取
     def get_bucket(custom_bucket)
-      b = custom_bucket || bucket
+      b = custom_bucket || default_bucket
       if b == nil
         raise ClientError, 'Bucket must be set'
       end

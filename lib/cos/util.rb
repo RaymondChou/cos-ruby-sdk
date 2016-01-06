@@ -40,8 +40,8 @@ module COS
       # 获取resource_path
       def get_resource_path(app_id, bucket, path, file = nil)
         # file_name检测
-        if file and file.end_with?('/')
-          raise ClientError, "File name can't end with '/'"
+        if file and (file.end_with?('/') or file.start_with?('/'))
+          raise ClientError, "File name can't start or end with '/'"
         end
 
         # 目录必须带"/"

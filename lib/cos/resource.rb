@@ -4,7 +4,7 @@ module COS
 
     attr_reader :bucket, :path, :dir_count, :file_count
 
-    def initialize(bucket, bucket_name, path, options = {})
+    def initialize(bucket, path, options = {})
       @bucket      = bucket
       @path        = path
       @more        = options
@@ -32,7 +32,7 @@ module COS
 
     def fetch
       client = bucket.client
-      resp = client.api.list(path, options.merge({bucket: bucket.bucket_name}))
+      resp = client.api.list(path, @more.merge({bucket: bucket.bucket_name}))
 
       @results = resp[:infos].map do |r|
         if r[:filesize].nil?
@@ -83,8 +83,14 @@ module COS
       super(attrs)
     end
 
-    def state
-      bucket.state(path)
+    def exist?
+      bucket.exist?(path)
+    end
+
+    alias :exists? :exist?
+
+    def stat
+      bucket.stat(path)
     end
 
     def update(biz_attr)

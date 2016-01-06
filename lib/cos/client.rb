@@ -9,6 +9,10 @@ module COS
       @api    = API.new(@config)
     end
 
+    def signature
+      api.http.signature
+    end
+
     def bucket(bucket_name)
       Bucket.new(self, bucket_name)
     end
@@ -45,7 +49,7 @@ module COS
     alias :mkdir :create_folder
 
     def list(path = '', options = {})
-      Resource.new(self, bucket_name, path, options).to_enum
+      Resource.new(self, path, options).to_enum
     end
 
     alias :ls :list
@@ -77,10 +81,10 @@ module COS
       end
 
       # 获取上传完成文件的状态, 只会返回<COSDir>
-      state(Util.get_list_path(path, file_name, true))
+      stat(Util.get_list_path(path, file_name, true))
     end
 
-    def state(path)
+    def stat(path)
       data = client.api.stat(path, bucket: bucket_name)
 
       if data[:filesize].nil?
@@ -99,6 +103,19 @@ module COS
     def delete(path)
       client.api.delete(path, bucket: bucket_name)
     end
+
+    def exist?(path)
+      begin
+        stat(path)
+      rescue ServerError => e
+        return false if e.code == -166
+        raise e
+      end
+
+      true
+    end
+
+    alias :exists? :exist?
 
   end
 

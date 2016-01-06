@@ -34,6 +34,7 @@ module COS
       headers['content-type']  ||= DEFAULT_CONTENT_TYPE
       headers['user-agent']    = get_user_agent
       headers['authorization'] = signature
+      headers['accept'] = 'application/json'
 
       url = "#{config.api_base}#{path}"
 

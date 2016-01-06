@@ -13,8 +13,8 @@ module COS
     # 默认线程数 10
     DEFAULT_THREADS = 10
 
-    required_attrs :config, :http, :path, :file_name, :file_src
-    optional_attrs :options, :progress
+    required_attrs :config, :http, :path, :file_name, :file_src, :options
+    optional_attrs :progress
 
     attr_accessor :cpt_file, :result, :offset, :slice_size, :session
 
@@ -294,6 +294,7 @@ module COS
       return if File.mtime(file_src) == @file_meta[:mtime]
 
       if @file_meta[:sha1] != Util.file_sha1(file_src)
+        # p Util.file_sha1(file_src)
         raise FileInconsistentError, 'The file to upload is changed'
       end
     end
