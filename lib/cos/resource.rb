@@ -57,12 +57,6 @@ module COS
       @more[:has_more] = resp[:has_more]
     end
 
-    def count
-      @dir_count + @file_count
-    end
-
-    alias :size :count
-
     private
 
     def fetch_more
@@ -79,8 +73,34 @@ module COS
 
     attr_reader :type
 
+    alias :file_size :filesize
+    alias :file_len :filelen
+
     def initialize(attrs)
       super(attrs)
+    end
+
+    def created_at
+      Time.at(ctime.to_i)
+    end
+
+    def updated_at
+      Time.at(mtime.to_i)
+    end
+
+    def to_hash
+      {
+          bucket:     bucket,
+          path:       path,
+          name:       name,
+          ctime:      ctime,
+          mtime:      mtime,
+          biz_attr:   respond_to?(:biz_attr) ? biz_attr : nil,
+          filesize:   respond_to?(:filesize) ? filesize : nil,
+          filelen:    respond_to?(:filelen) ? filelen : nil,
+          sha:        respond_to?(:sha) ? sha : nil,
+          access_url: respond_to?(:access_url) ? access_url : nil
+      }
     end
 
     def exist?
@@ -114,6 +134,10 @@ module COS
       @type = 'file'
     end
 
+    def complete?
+      filelen == filesize
+    end
+
   end
 
   # COS目录资源
@@ -135,10 +159,20 @@ module COS
     alias :ls :list
 
     def create_folder(dir_name, options = {})
-      bucket.create("#{path}#{dir_name}", options)
+      bucket.create_folder("#{path}#{dir_name}", options)
     end
 
     alias :mkdir :create_folder
+
+    def list_count(options = {})
+      bucket.list_count(path, options)
+    end
+
+    def count(options = {})
+      bucket.count(path, options)
+    end
+
+    alias :size :count
 
   end
 

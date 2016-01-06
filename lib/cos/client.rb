@@ -48,6 +48,21 @@ module COS
 
     alias :mkdir :create_folder
 
+    def list_count(path = '', options = {})
+      options = {}
+      result  = client.api.list(path, options.merge({num: 1, bucket: bucket_name}))
+      total   = result[:filecount] + result[:dircount]
+
+      {total: total, files: result[:filecount], dirs: result[:dircount]}
+    end
+
+    def count(path = '', options = {})
+      lc = list_count(path, options)
+      lc[:total]
+    end
+
+    alias :size :count
+
     def list(path = '', options = {})
       Resource.new(self, path, options).to_enum
     end

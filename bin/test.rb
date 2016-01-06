@@ -28,9 +28,12 @@ client = COS::Client.new(app_id:'10016219',secret_id:'AKIDMWHN7IrmIr6OgVomLFhdXg
 # client.api.delete('test3/')
 
 bucket = client.bucket('costest')
-p bucket.stat('test1/').name
-# res = bucket.list
-#
+# p bucket.stat('test1/').name
+# res = bucket.list('/test4/', num: 2)
+res = bucket.count
+
 # res.each do |r|
 #   p r.name
 # end
+
+p res

@@ -119,7 +119,6 @@ module COS
     #  * :has_more [Boolean] 是否有内容可以继续往前/往后翻页
     #  * :dircount [Integer] 子目录数量(总)
     #  * :filecount [Integer] 子文件数量(总)
-    #  * :filecount [Integer] 子文件数量(总)
     #  * :infos [Array<Hash>] 列表结果(可能为空)
     #  *  * :name [String] 目录名/文件名
     #  *  * :biz_attr [String] 目录/文件属性，业务端维护
