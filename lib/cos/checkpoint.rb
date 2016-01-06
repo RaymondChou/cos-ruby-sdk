@@ -34,7 +34,6 @@ module COS
 
       raise CheckpointBrokenError, 'Missing SHA1 in checkpoint.' unless sha1
 
-      p Util.string_sha1(states.to_json)
       unless sha1 == Util.string_sha1(states.to_json)
         raise CheckpointBrokenError, 'Unmatched checkpoint SHA1'
       end

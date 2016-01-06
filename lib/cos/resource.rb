@@ -149,7 +149,7 @@ module COS
     end
 
     def upload(file_name, file_src, options = {}, &block)
-      bucket.upload(path, file_name, file_src, options, block)
+      bucket.upload(path, file_name, file_src, options, &block)
     end
 
     def list(options = {})

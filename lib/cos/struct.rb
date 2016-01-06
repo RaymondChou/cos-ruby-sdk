@@ -1,20 +1,5 @@
 module COS
-    # Common structs used. It provides a 'attrs' helper method for
-    # subclass to define its attributes. 'attrs' is based on
-    # attr_reader and provide additional functionalities for classes
-    # that inherits Struct::Base :
-    # * the constuctor is provided to accept options and set the
-    #   corresponding attibute automatically
-    # * the #to_s method is rewrite to concatenate the defined
-    #   attributes keys and values
-    # @example
-    #   class X < Struct::Base
-    #     attrs :foo, :bar
-    #   end
-    #
-    #   x.new(:foo => 'hello', :bar => 'world')
-    #   x.foo # == "hello"
-    #   x.bar # == "world"
+
     module Struct
       class Base
         module AttrHelper

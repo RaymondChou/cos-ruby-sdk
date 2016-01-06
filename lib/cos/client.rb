@@ -21,6 +21,8 @@ module COS
 
   class Bucket
 
+    include Logging
+
     attr_reader :client, :bucket_name
 
     MIN_SLICE_SIZE = 10 * 1024 * 1024
@@ -80,7 +82,7 @@ module COS
       begin
         if file_size > min
           # 分块上传
-          client.api.upload_slice(path, file_name, file_src, options, block)
+          client.api.upload_slice(path, file_name, file_src, options, &block)
         else
           # 完整上传
           client.api.upload(path, file_name, file_src, options)
@@ -123,7 +125,7 @@ module COS
       begin
         stat(path)
       rescue ServerError => e
-        return false if e.code == -166
+        return false if e.error_code == -166
         raise e
       end
 
