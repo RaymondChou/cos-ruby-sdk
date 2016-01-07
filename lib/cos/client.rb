@@ -1,3 +1,5 @@
+require 'uri/http'
+
 module COS
 
   class Client
@@ -13,6 +15,7 @@ module COS
       api.http.signature
     end
 
+    # 指定bucket 初始化Bucket类
     def bucket(bucket_name = nil)
       Bucket.new(self, bucket_name)
     end
@@ -25,8 +28,9 @@ module COS
 
     attr_reader :client, :bucket_name
 
-    MIN_SLICE_SIZE = 10 * 1024 * 1024
-    DEFAULT_UPLOAD_RETRY = 10
+    MIN_SLICE_SIZE         = 10 * 1024 * 1024
+    DEFAULT_UPLOAD_RETRY   = 10
+    DEFAULT_DOWNLOAD_RETRY = 10
 
     def initialize(client, bucket_name = nil)
       @client      = client
@@ -73,14 +77,14 @@ module COS
 
     # @return [COS::COSFile]
     def upload(path, file_name, file_src, options = {}, &block)
-      min = options[:min_slice_size] || MIN_SLICE_SIZE
+      min_size    = options[:min_slice_size] || MIN_SLICE_SIZE
       retry_times = options[:upload_retry] || DEFAULT_UPLOAD_RETRY
 
       options.merge!({bucket: bucket_name})
 
       file_size = File.size(file_src)
       begin
-        if file_size > min
+        if file_size > min_size
           # 分块上传
           client.api.upload_slice(path, file_name, file_src, options, &block)
         else
@@ -133,6 +137,81 @@ module COS
     end
 
     alias :exists? :exist?
+
+    # 获取文件可访问的URL
+    def url(path_or_file, options = {})
+
+      file = get_file(path_or_file)
+
+      url = file.access_url
+
+      # 使用cname
+      if options[:cname]
+        host = URI.parse(url).host.downcase
+        url.gsub!(host, options[:cname])
+      end
+
+      # 使用https
+      if options[:https]
+        url.gsub!('http://', 'https://')
+      end
+
+      url
+    end
+
+    # 下载文件, 支持断点续传, 支持多线程
+    def download(path_or_file, file_store, options = {}, &block)
+      min_size    = options[:min_slice_size] || MIN_SLICE_SIZE
+      retry_times = options[:download_retry] || DEFAULT_DOWNLOAD_RETRY
+
+      # 如果传入的是一个路径需要先获取文件信息
+      file = get_file(path_or_file)
+
+      # 检查文件是否上传完整才能下载
+      unless file.access_url or file.complete?
+        raise FileUploadNotComplete, 'file upload not complete'
+      end
+
+      begin
+        if file.filesize > min_size
+          # 分块下载
+        else
+          # 直接下载
+        end
+      rescue => error
+        if retry_times > 0
+          logger.warn(error)
+          retry_times -= 1
+          retry
+        else
+          raise error
+        end
+      end
+
+      # 返回本地文件路径
+      file_store
+    end
+
+    private
+
+    # 获取文件对象, 可接受path string或COSFile
+    def get_file(path_or_file)
+      if path_or_file.is_a?(COS::COSFile)
+        # 传入的是COSFile
+        path_or_file
+
+      elsif path_or_file.is_a?(String)
+        # 传入的是path string
+        file = stat(path_or_file)
+        get_file(file)
+
+      else
+        raise ClientError,
+              "can't get file from#{path_or_file.class}, " \
+              'must be a file path string or COS::COSFile'
+
+      end
+    end
 
   end
 

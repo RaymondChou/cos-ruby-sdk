@@ -38,7 +38,13 @@ module COS
   # 文件不一致
   class FileInconsistentError < Exception; end
 
-  # 上传进度记录损坏
+  # 断点续传记录损坏
   class CheckpointBrokenError < Exception; end
+
+  # 下载错误
+  class DownloadError < Exception; end
+
+  # 文件上传未完成
+  class FileUploadNotComplete < Exception; end
 
 end

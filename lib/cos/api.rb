@@ -1,4 +1,5 @@
 require 'json'
+require 'rest-client'
 
 module COS
 
@@ -202,6 +203,32 @@ module COS
       payload       = {op: 'delete'}
 
       http.post(resource_path, {}, sign, payload.to_json)
+    end
+
+    # 下载文件
+    # SDK会自动对私有读的Bucket进行签名
+    # @param access_url [String] 资源的下载URL地址可以从list,stat接口中获取
+    # @param file_store [String] 本地文件存储路径
+    # @param options [Hash]
+    # @option options [String] :bucket bucket名称
+    # @option options [Hash] :headers 设置下载请求头,如:range
+    def download(access_url, file_store, options = {})
+      bucket = config.get_bucket(options[:bucket])
+      sign   = http.signature.multiple(bucket)
+
+      response = RestClient::Request.execute(
+          :method       => 'GET',
+          :url          => "#{access_url}?sign=#{sign}",
+          :headers      => options[:headers]
+      )
+
+      if response.code < 300
+        File.open(file_store, 'wb') do |w|
+          w.write(response.body)
+        end
+      else
+        raise DownloadError, "server response http code: #{response.code}"
+      end
     end
 
   end

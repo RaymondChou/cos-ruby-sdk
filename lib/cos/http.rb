@@ -18,7 +18,7 @@ module COS
       @signature = Signature.new(config)
     end
 
-    def get(path, headers, signature)
+    def get(path, headers, signature = nil)
       do_request('GET', path, headers, signature)
     end
 

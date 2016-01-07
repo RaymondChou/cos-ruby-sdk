@@ -66,7 +66,7 @@ client = COS::Client.new({
   app_id:         'your_app_id',
   secret_id:      'your_secret_id',
   secret_key:     'your_secret_key',
-  defualt_bucket: 'your_default_bucket'
+  defualt_bucket: 'your_default_bucket',
 })
 # 取得默认Bucket
 bucket = client.bucket
@@ -80,16 +80,10 @@ bucket.list do |res|
   if res.is_a?(COS::COSDir) # 或 res.type == 'dir'
   	puts "Dir：#{res.name}"
   else
-    # 文件 COS::COSFile 或 res.type == 'dir'
+    # 文件 COS::COSFile 或 res.type == 'file'
     puts "File：#{res.name}"
   end
 end
-# 输出：
-目录：path1
-目录：path2
-目录：path3
-文件：file1
-文件：file1
 
 # 可以按路径列出资源
 bucket.list('/path/path2/') { |r| puts r.name }
@@ -101,13 +95,23 @@ bucket.list('/path/path2/', :pattern => :only_dir) { |r| puts r.name }
 
 ### 文件操作
 
+``` ruby
+
+```
 
 
-## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+## API详细说明
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+
+
+
+## 底层API（JSON）
+
+
+
+
 
 ## Contributing
 
