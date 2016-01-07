@@ -195,11 +195,21 @@ module COS
     end
 
     # 获取文件及目录总数
-    def count(options = {})
-      bucket.count(path, options)
+    def count
+      bucket.count(path)
     end
 
     alias :size :count
+
+    # 获取文件数
+    def count_files
+      bucket.count_files(path)
+    end
+
+    # 获取目录数
+    def count_dirs
+      bucket.count_dirs(path)
+    end
 
   end
 

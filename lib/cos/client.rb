@@ -11,6 +11,7 @@ module COS
       @api    = API.new(@config)
     end
 
+    # 获取鉴权签名方法
     def signature
       api.http.signature
     end
@@ -45,6 +46,7 @@ module COS
       @bucket_name = client.config.get_bucket(bucket_name)
     end
 
+    # 创建目录
     def create_folder(path, options = {})
       data = client.api.create_folder(path, options.merge({bucket: bucket_name}))
       path = Util.get_list_path(path)
@@ -62,6 +64,7 @@ module COS
 
     alias :mkdir :create_folder
 
+    # 获取list中的文件及目录个数
     def list_count(path = '', options = {})
       options = {}
       result  = client.api.list(path, options.merge({num: 1, bucket: bucket_name}))
@@ -70,19 +73,34 @@ module COS
       {total: total, files: result[:filecount], dirs: result[:dircount]}
     end
 
-    def count(path = '', options = {})
-      lc = list_count(path, options)
+    # 获取文件及目录总数
+    def count(path = '')
+      lc = list_count(path)
       lc[:total]
     end
 
     alias :size :count
 
+    # 获取文件数
+    def count_files(path = '')
+      lc = list_count(path)
+      lc[:files]
+    end
+
+    # 获取目录数
+    def count_dirs(path = '')
+      lc = list_count(path)
+      lc[:dirs]
+    end
+
+    # 列出目录
     def list(path = '', options = {})
       Resource.new(self, path, options).to_enum
     end
 
     alias :ls :list
 
+    # 上传文件, 大文件自动断点续传, 多线程上传
     # @return [COS::COSFile]
     def upload(path, file_name, file_src, options = {}, &block)
       min_size    = options[:min_slice_size] || MIN_UPLOAD_SLICE_SIZE
@@ -113,6 +131,7 @@ module COS
       stat(Util.get_list_path(path, file_name, true))
     end
 
+    # 获取文件信息
     def stat(path)
       data = client.api.stat(path, bucket: bucket_name)
 
@@ -125,14 +144,17 @@ module COS
       end
     end
 
+    # 更新文件及目录业务属性
     def update(path, biz_attr)
       client.api.update(path, biz_attr, bucket: bucket_name)
     end
 
+    # 删除文件或目录
     def delete(path)
       client.api.delete(path, bucket: bucket_name)
     end
 
+    # 文件或目录是否存在
     def exist?(path)
       begin
         stat(path)

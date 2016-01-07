@@ -5,8 +5,13 @@ module COS
 
   class HTTP
 
+    # 默认content-type
     DEFAULT_CONTENT_TYPE = 'application/json'
+
+    # 请求创建超时
     OPEN_TIMEOUT = 15
+
+    # 响应读取超时
     READ_TIMEOUT = 120
 
     include Logging
@@ -18,10 +23,12 @@ module COS
       @signature = Signature.new(config)
     end
 
+    # GET请求
     def get(path, headers, signature = nil)
       do_request('GET', path, headers, signature)
     end
 
+    # POST请求
     def post(path, headers, signature, payload)
       do_request('POST', path, headers, signature, payload)
     end
@@ -31,11 +38,13 @@ module COS
     # 发送请求
     def do_request(method, path, headers, signature = nil, payload = nil)
 
+      # 整理头部信息
       headers['content-type']  ||= DEFAULT_CONTENT_TYPE
       headers['user-agent']    = get_user_agent
       headers['authorization'] = signature
       headers['accept'] = 'application/json'
 
+      # 请求地址
       url = "#{config.api_base}#{path}"
 
       logger.debug("Send HTTP request, method: #{method}, url: " \
@@ -50,6 +59,7 @@ module COS
           :timeout      => @config.read_timeout || READ_TIMEOUT
       ) do |response, request, result, &blk|
 
+        # 捕获异常
         if response.code >= 300
           e = ServerError.new(response)
           logger.error(e.to_s)
@@ -63,6 +73,7 @@ module COS
       logger.debug("Received HTTP response, code: #{response.code}, headers: " \
                       "#{response.headers}, body: #{response.body}")
 
+      # 解析JSON结果
       parse_data(response)
     end
 
