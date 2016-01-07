@@ -28,9 +28,17 @@ module COS
 
     attr_reader :client, :bucket_name
 
-    MIN_SLICE_SIZE         = 10 * 1024 * 1024
-    DEFAULT_UPLOAD_RETRY   = 10
-    DEFAULT_DOWNLOAD_RETRY = 10
+    # 最小上传分块大小
+    MIN_UPLOAD_SLICE_SIZE   = 10 * 1024 * 1024
+
+    # 最小下载分块大小
+    MIN_DOWNLOAD_SLICE_SIZE = 5 * 1024 * 1024
+
+    # 默认上传重试次数
+    DEFAULT_UPLOAD_RETRY    = 10
+
+    # 默认下载重试次数
+    DEFAULT_DOWNLOAD_RETRY  = 10
 
     def initialize(client, bucket_name = nil)
       @client      = client
@@ -77,7 +85,7 @@ module COS
 
     # @return [COS::COSFile]
     def upload(path, file_name, file_src, options = {}, &block)
-      min_size    = options[:min_slice_size] || MIN_SLICE_SIZE
+      min_size    = options[:min_slice_size] || MIN_UPLOAD_SLICE_SIZE
       retry_times = options[:upload_retry] || DEFAULT_UPLOAD_RETRY
 
       options.merge!({bucket: bucket_name})
@@ -161,7 +169,7 @@ module COS
 
     # 下载文件, 支持断点续传, 支持多线程
     def download(path_or_file, file_store, options = {}, &block)
-      min_size    = options[:min_slice_size] || MIN_SLICE_SIZE
+      min_size    = options[:min_slice_size] || MIN_DOWNLOAD_SLICE_SIZE
       retry_times = options[:download_retry] || DEFAULT_DOWNLOAD_RETRY
 
       # 如果传入的是一个路径需要先获取文件信息
