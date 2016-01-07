@@ -156,8 +156,8 @@ module COS
     end
 
     # 下载文件
-    def download(store_path, options = {})
-
+    def download(file_store, options = {}, &block)
+      bucket.download(self, file_store, options, &block)
     end
 
   end

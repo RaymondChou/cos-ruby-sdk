@@ -175,8 +175,18 @@ module COS
       begin
         if file.filesize > min_size
           # 分块下载
+          Download.new(
+              bucket:     self,
+              cos_file:   file,
+              file_store: file_store,
+              options:    options,
+              progress:   block
+          ).download
+
         else
           # 直接下载
+          client.api.download(file.access_url, file_store, bucket: bucket_name)
+
         end
       rescue => error
         if retry_times > 0

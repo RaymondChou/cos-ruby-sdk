@@ -217,9 +217,9 @@ module COS
       sign   = http.signature.multiple(bucket)
 
       response = RestClient::Request.execute(
-          :method       => 'GET',
-          :url          => "#{access_url}?sign=#{sign}",
-          :headers      => options[:headers]
+          :method  => 'GET',
+          :url     => "#{access_url}?sign=#{sign}",
+          :headers => options[:headers]
       )
 
       if response.code < 300

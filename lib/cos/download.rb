@@ -4,7 +4,7 @@ module COS
   # Range Headers support in HTTP1.1(rfc2616)
   class Download < Checkpoint
 
-    include Common::Logging
+    include Logging
 
     # 默认分块大小
     PART_SIZE = 5 * 1024 * 1024
@@ -28,7 +28,7 @@ module COS
         raise ClientError, 'slice_size must > 0'
       end
 
-      @cpt_file    = options[:cpt_file] || "#{File.expand_path(file_src)}.cpt"
+      @cpt_file    = options[:cpt_file] || "#{File.expand_path(file_store)}.cpt"
       @file_meta   = {}
       @num_threads = options[:threads] || DEFAULT_THREADS
       @all_mutex   = Mutex.new
@@ -38,7 +38,7 @@ module COS
     end
 
     def download
-      logger.info("Begin upload, file: #{file_store}, threads: #{@num_threads}")
+      logger.info("Begin download, file: #{file_store}, threads: #{@num_threads}")
 
       # 重建断点续传
       rebuild
@@ -53,17 +53,22 @@ module COS
       (1..@num_threads).map do
         Thread.new do
           loop do
-            # 获取下一个未上传的片段
+            # 获取下一个未下载的片段
             p = sync_get_todo_part
             break unless p
-            # 上传片段
-            upload_part(p)
+            # 下载片段
+            download_part(p)
           end
         end
       end.map(&:join)
 
       # 完成下载, 合并文件
       complete
+
+      unless finish?
+        File.delete(file_store) if File.exist?(file_store)
+        raise DownloadError, 'File downloaded sha1 not match, deleted!'
+      end
     end
 
     # 断点续传状态记录
@@ -160,7 +165,7 @@ module COS
     def initiate
       logger.info('Begin initiate session')
 
-      @session = "#{cos_file.bucket}-#{cos_file.path}-#{Time.now.to_i}"
+      @session = "#{cos_file.bucket.bucket_name}-#{cos_file.path}-#{Time.now.to_i}"
 
       @file_meta = {
           :sha1  => cos_file.sha,
@@ -182,10 +187,11 @@ module COS
       url = cos_file.url
 
       # 下载
+      # Range:bytes=0-11
       bucket.client.api.download(
           url,
           part_file,
-          headers: {range: p[:range]},
+          headers: {Range: "bytes=#{p[:range].at(0)}-#{p[:range].at(1) - 1}"},
           bucket: bucket.bucket_name
       )
 
@@ -198,7 +204,7 @@ module COS
 
     # 文件片段拆分
     def divide_parts
-      logger.info("Begin divide parts, file: #{file_src}")
+      logger.info("Begin divide parts, file: #{file_store}")
 
       object_size = @file_meta[:size]
       part_size   = @options[:part_size] || PART_SIZE

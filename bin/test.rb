@@ -2,7 +2,7 @@ require 'bundler/setup'
 require 'cos'
 
 client = COS::Client.new(app_id:'10016219',secret_id:'AKIDMWHN7IrmIr6OgVomLFhdXgitZEEIZrDl',secret_key:'e6k4QPIWnn9FUslwWQ1Inm0Jv7aU9Otw')
-bucket = client.bucket('costestprivate')
+bucket = client.bucket('costest')
 # options = {threads: 10}
 #
 # retry_times = 10
@@ -24,18 +24,18 @@ bucket = client.bucket('costestprivate')
 # client.api.create_folder('/123/321/')
 # client.api.list('test4', '33', pattern: :file_only, num: 2, context: '')
 # client.api.update('test4/333/', '我是业务')
-# file = bucket.stat('test4/AxureRP-Pro-Setup.1426488743.dmg')
 
 # p bucket.url(file)
 # client.api.delete('test3/')
 
 # bucket = client.bucket('costest')
 # p bucket.stat('test1/').name
-res = bucket.list
+res = bucket.list('test4', :pattern => :file_only)
 # res = bucket.count
 
 res.each do |r|
-  p r
+  p r.download('/Users/Raymond/Desktop/111/'+r.name)
+  # p File.size('/Users/Raymond/Desktop/111/'+r.name)
 end
 
 # p res
