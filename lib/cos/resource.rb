@@ -140,9 +140,36 @@ module COS
   # COS文件资源
   class COSFile < ResourceOperator
 
+    STORAGE_UNITS = %w[B KB MB GB]
+    STORAGE_BASE = 1024
+
     def initialize(attrs = {})
       super(attrs)
       @type = 'file'
+    end
+
+    # 文件大小
+    def size
+      filesize.to_i
+    end
+
+    # 格式化文件大小 1B 1KB 1.1MB 1.12GB...
+    def format_size
+      if filesize.to_i < STORAGE_BASE
+        size_str = filesize.to_s + STORAGE_UNITS[0]
+      else
+        c_size = human_rep(filesize.to_i)
+
+        if STORAGE_UNITS.index(c_size[:unit]) > 0
+          size_str = "%.2f" % c_size[:size]
+        elsif
+          size_str = "%.0f" % c_size[:size]
+        end
+
+        size_str = "#{size_str}#{c_size[:unit]}"
+      end
+
+      size_str
     end
 
     # 文件是否完整, 是否上传完了
@@ -158,6 +185,22 @@ module COS
     # 下载文件
     def download(file_store, options = {}, &block)
       bucket.download(self, file_store, options, &block)
+    end
+
+    private
+
+    # 计算文件大小格式化单位
+    def human_rep(bytes)
+      number   = Float(bytes)
+      max_exp  = STORAGE_UNITS.size - 1
+
+      exponent = (Math.log(bytes) / Math.log(STORAGE_BASE)).to_i
+      exponent = max_exp if exponent > max_exp
+
+      number   /= STORAGE_BASE ** exponent
+      unit     = STORAGE_UNITS[exponent]
+
+      { size: number, unit: unit }
     end
 
   end

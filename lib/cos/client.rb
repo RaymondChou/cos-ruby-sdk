@@ -232,6 +232,11 @@ module COS
       file_store
     end
 
+    # 列出目录树形结构
+    def tree
+
+    end
+
     private
 
     # 获取文件对象, 可接受path string或COSFile

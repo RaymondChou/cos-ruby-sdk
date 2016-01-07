@@ -29,13 +29,14 @@ bucket = client.bucket('costest')
 # client.api.delete('test3/')
 
 # bucket = client.bucket('costest')
-# p bucket.stat('test1/').name
-res = bucket.list('test4', :pattern => :file_only)
+p bucket.stat('test4/logo.png').format_size
+
+# res = bucket.list('test4', :pattern => :file_only)
 # res = bucket.count
 
-res.each do |r|
-  p r.download('/Users/Raymond/Desktop/111/'+r.name)
+# res.each do |r|
+#   p r.download('/Users/Raymond/Desktop/111/'+r.name)
   # p File.size('/Users/Raymond/Desktop/111/'+r.name)
-end
+# end
 
 # p res
