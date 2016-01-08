@@ -5,6 +5,9 @@ module COS
   describe Bucket do
 
     before :all do
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/?op=stat").
+          to_return(:status => 200, :body => { code: 0, message: 'ok', data: {}}.to_json)
+
       @config = {
           app_id: '100000',
           secret_id: 'secret_id',
@@ -43,7 +46,7 @@ module COS
     it 'should resource operators' do
 
       @time = Time.now.to_i.to_s
-      
+
       stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListBoth').
           to_return(:status => 200, :body => {
               code: 0,

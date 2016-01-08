@@ -21,6 +21,9 @@ module COS
     end
 
     it 'get the bucket access' do
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/?op=stat").
+          to_return(:status => 200, :body => { code: 0, message: 'ok', data: {}}.to_json)
+
       expect(
           Client.new(@config).bucket('bucket_name').bucket_name
       ).to eq('bucket_name')

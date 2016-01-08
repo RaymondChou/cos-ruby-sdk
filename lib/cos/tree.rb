@@ -25,6 +25,8 @@ module COS
       create_tree(path, [], :object)
     end
 
+    # 输出Hash格式, 可以直接.to_json转化为json string
+    # @example
     # {
     #   :resource => resource,
     #   :children => [
