@@ -6,6 +6,8 @@ module COS
   class Exception < RuntimeError; end
 
   # 服务端返回异常
+  # Code: -173, Message: 目录非空, HttpCode: 400
+  # Code: -180, Message: 非法路径, HttpCode: 400
   class ServerError < Exception
 
     attr_reader :response, :http_code, :error_code, :message

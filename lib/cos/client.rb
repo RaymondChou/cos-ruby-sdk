@@ -27,7 +27,8 @@ module COS
 
     include Logging
 
-    attr_reader :client, :bucket_name
+    attr_reader :client, :bucket_name, :authority, :bucket_type,
+                :migrate_source_domain, :need_preview, :refers
 
     # 最小上传分块大小
     MIN_UPLOAD_SLICE_SIZE   = 10 * 1024 * 1024
@@ -44,6 +45,14 @@ module COS
     def initialize(client, bucket_name = nil)
       @client      = client
       @bucket_name = client.config.get_bucket(bucket_name)
+
+      # 使用stat API 获取根目录信息可获取到bucket信息
+      data = client.api.stat('/', bucket: bucket_name)
+      @authority             = data[:authority]
+      @bucket_type           = data[:bucket_type]
+      @need_preview          = data[:need_preview]
+      @refers                = data[:refers]
+      @migrate_source_domain = data[:migrate_source_domain]
     end
 
     # 创建目录
@@ -131,9 +140,12 @@ module COS
       stat(Util.get_list_path(path, file_name, true))
     end
 
-    # 获取文件信息
-    def stat(path)
+    # 获取信息
+    def stat(path = '')
       data = client.api.stat(path, bucket: bucket_name)
+
+      # 查询'/'获取的是bucket信息, 无name参数, 需要补全
+      data[:name] = '' if data[:name].nil?
 
       if data[:filesize].nil?
         # 目录
@@ -232,9 +244,10 @@ module COS
       file_store
     end
 
-    # 列出目录树形结构
-    def tree
-
+    # 获取目录树形结构
+    def tree(path_or_dir = '', options = {})
+      dir = get_dir(path_or_dir)
+      Tree.new(options.merge({path: dir})).to_object
     end
 
     private
@@ -254,6 +267,26 @@ module COS
         raise ClientError,
               "can't get file from#{path_or_file.class}, " \
               'must be a file path string or COS::COSFile'
+
+      end
+    end
+
+    # 获取目录对象, 可接受path string或COSDir
+    def get_dir(path_or_dir)
+      if path_or_dir.is_a?(COS::COSDir)
+        # 传入的是COSDir
+        path_or_dir
+
+      elsif path_or_dir.is_a?(String)
+        # 传入的是path string
+        path_or_dir = "#{path_or_dir}/" unless path_or_dir.end_with?('/')
+        dir = stat(path_or_dir)
+        get_dir(dir)
+
+      else
+        raise ClientError,
+              "can't get dir from#{path_or_dir.class}, " \
+              'must be a file path string or COS::COSDir'
 
       end
     end

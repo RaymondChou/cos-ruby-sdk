@@ -73,7 +73,10 @@ module COS
   class ResourceOperator < Struct::Base
 
     required_attrs :bucket, :path, :name, :ctime, :mtime
-    optional_attrs :biz_attr, :filesize, :filelen, :sha, :access_url
+    optional_attrs :biz_attr, :filesize, :filelen, :sha, :access_url,
+                   # 根目录参数
+                   :authority, :bucket_type, :migrate_source_domain,
+                   :need_preview, :refers
 
     attr_reader :type
 
@@ -224,6 +227,11 @@ module COS
     end
 
     alias :ls :list
+
+    # 获取目录树形结构
+    def tree(options = {})
+      bucket.tree(path, options)
+    end
 
     # 创建目录
     def create_folder(dir_name, options = {})
