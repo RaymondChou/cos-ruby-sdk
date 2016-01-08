@@ -13,3 +13,20 @@ require_relative 'cos/api'
 require_relative 'cos/resource'
 require_relative 'cos/download'
 require_relative 'cos/tree'
+
+def self.client(options = {})
+  unless @client
+
+    # Rails配置
+    if defined? Rails
+      COS::Logging.set_logger(Rails.root.join('log/cos-sdk.log'), Logger::INFO)
+      configs = options.merge(config: Rails.root.join('config/cos.yml'))
+      @client = COS::Client.new(configs)
+    else
+      @client = COS::Client.new(options)
+    end
+
+  end
+
+  @client
+end

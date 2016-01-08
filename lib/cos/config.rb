@@ -1,3 +1,5 @@
+require 'yaml'
+
 module COS
 
   class Config < Struct::Base
@@ -6,12 +8,20 @@ module COS
     DEFAULT_MULTIPLE_SIGN_EXPIRE = 600
 
     required_attrs :app_id, :secret_id, :secret_key
-    optional_attrs :host, :protocol, :open_timeout, :read_timeout,
+    optional_attrs :host, :protocol, :open_timeout, :read_timeout, :config,
                    :log_src, :log_level, :multiple_sign_expire, :default_bucket
 
     attr_reader :api_base
 
     def initialize(options = {})
+      # 从配置文件加载配置
+      if options[:config]
+        config = load_config_file(options[:config])
+        config.symbolize_keys!
+
+        options.merge!(config)
+      end
+
       super(options)
 
       # log_src: STDOUT | STDERR | 'path/filename.log'
@@ -34,6 +44,12 @@ module COS
         raise ClientError, 'Bucket name must be set'
       end
       b
+    end
+
+    private
+
+    def load_config_file(config_file)
+      YAML.load(File.read(File.expand_path(config_file)))
     end
 
   end
