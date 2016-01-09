@@ -2,5 +2,6 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'coveralls', require: false
-gem 'simplecov', require: false
+gem "codeclimate-test-reporter", group: :test, require: nil
+# gem 'coveralls', group: :test, require: false
+gem 'simplecov', group: :test, require: false

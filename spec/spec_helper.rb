@@ -3,8 +3,10 @@
 require 'simplecov'
 SimpleCov.start
 
-require 'coveralls'
+# require 'coveralls'
 # Coveralls.wear!
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
 
 require 'webmock/rspec'
 require 'cos'
