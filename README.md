@@ -1,6 +1,6 @@
 # Tencent COS Ruby SDK
 
-[![Gem Version](https://badge.fury.io/rb/cos.svg)](https://badge.fury.io/rb/cos)[![Dependency Status](https://gemnasium.com/bfcd58e8c449a47dcf4bd15e35806dc8.svg)](https://gemnasium.com/RaymondChou/cos-ruby-sdk)[![Code Climate](https://codeclimate.com/repos/5690d89cb1a7430e970051c5/badges/e1ec353330a7f9bb90a1/gpa.svg)](https://codeclimate.com/repos/5690d89cb1a7430e970051c5/feed)
+[![Gem Version](https://badge.fury.io/rb/cos.svg)](https://badge.fury.io/rb/cos)[![Dependency Status](https://gemnasium.com/bfcd58e8c449a47dcf4bd15e35806dc8.svg)](https://gemnasium.com/RaymondChou/cos-ruby-sdk)[![Code Climate](https://codeclimate.com/repos/5690d89cb1a7430e970051c5/badges/e1ec353330a7f9bb90a1/gpa.svg)](https://codeclimate.com/repos/5690d89cb1a7430e970051c5/feed)[![Build Status](https://travis-ci.com/RaymondChou/cos-ruby-sdk.svg?token=J7GcZgoty9nseAGRShu5&branch=master)](https://travis-ci.com/RaymondChou/cos-ruby-sdk)
 
 -----
 
