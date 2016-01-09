@@ -120,21 +120,14 @@ module COS
       options.merge!({bucket: bucket_name})
 
       file_size = File.size(file_src)
-      begin
+
+      retry_loop(retry_times) do
         if file_size > min_size
           # 分块上传
           client.api.upload_slice(path, file_name, file_src, options, &block)
         else
           # 完整上传
           client.api.upload(path, file_name, file_src, options)
-        end
-      rescue => error
-        if retry_times > 0
-          logger.warn(error)
-          retry_times -= 1
-          retry
-        else
-          raise error
         end
       end
 
@@ -219,11 +212,11 @@ module COS
       file = get_file(path_or_file)
 
       # 检查文件是否上传完整才能下载
-      unless file.access_url or file.complete?
+      if file.access_url.nil? and !file.complete?
         raise FileUploadNotComplete, 'file upload not complete'
       end
 
-      begin
+      retry_loop(retry_times) do
         if file.filesize > min_size
           # 分块下载
           Download.new(
@@ -239,14 +232,6 @@ module COS
           client.api.download(file.access_url, file_store, bucket: bucket_name)
 
         end
-      rescue => error
-        if retry_times > 0
-          logger.warn(error)
-          retry_times -= 1
-          retry
-        else
-          raise error
-        end
       end
 
       # 返回本地文件路径
@@ -260,6 +245,21 @@ module COS
     end
 
     private
+
+    # 重试循环
+    def retry_loop(retry_times, &block)
+      begin
+        block.call
+      rescue => error
+        if retry_times > 0
+          logger.warn(error)
+          retry_times -= 1
+          retry
+        else
+          raise error
+        end
+      end
+    end
 
     # 获取文件对象, 可接受path string或COSFile
     def get_file(path_or_file)

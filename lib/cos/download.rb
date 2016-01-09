@@ -14,9 +14,6 @@ module COS
     # 默认文件读取大小
     READ_SIZE = 16 * 1024
 
-    # 默认线程数
-    DEFAULT_THREADS = 10
-
     required_attrs :bucket, :cos_file, :file_store, :options
     optional_attrs :progress
 
@@ -25,18 +22,7 @@ module COS
     def initialize(opts = {})
       super(opts)
 
-      # 分片大小必须>0
-      if options[:slice_size] and options[:slice_size] <= 0
-        raise ClientError, 'slice_size must > 0'
-      end
-
-      @cpt_file    = options[:cpt_file] || "#{File.expand_path(file_store)}.cpt"
-      @file_meta   = {}
-      @num_threads = options[:threads] || DEFAULT_THREADS
-      @all_mutex   = Mutex.new
-      @parts       = []
-      @todo_mutex  = Mutex.new
-      @todo_parts  = []
+      @cpt_file = options[:cpt_file] || "#{File.expand_path(file_store)}.cpt"
     end
 
     def download
@@ -53,11 +39,16 @@ module COS
 
       # 多线程下载
       (1..@num_threads).map do
+        logger.debug("#{@num_threads} Threads Downloads")
+
         Thread.new do
+          logger.debug("Create Thread #{Thread.current.object_id}")
+
           loop do
             # 获取下一个未下载的片段
             p = sync_get_todo_part
             break unless p
+
             # 下载片段
             download_part(p)
           end
@@ -149,7 +140,7 @@ module COS
       logger.info("Begin rebuild session, checkpoint: #{cpt_file}")
 
       # 是否启用断点续传并且记录文件存在
-      if options[:disable_cpt] || !File.exists?(cpt_file)
+      if options[:disable_cpt] || !File.exist?(cpt_file)
         # 初始化
         initiate
       else

@@ -66,7 +66,7 @@ module COS
 
     # 如果有更多页继续获取下一页
     def fetch_more
-      return if @more[:has_more] === false
+      return if @more[:has_more] == false
       fetch
     end
 
@@ -167,7 +167,7 @@ module COS
 
         if STORAGE_UNITS.index(c_size[:unit]) > 0
           size_str = "%.2f" % c_size[:size]
-        elsif
+        else
           size_str = "%.0f" % c_size[:size]
         end
 

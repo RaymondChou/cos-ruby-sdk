@@ -12,9 +12,6 @@ module COS
     # 默认分片大小 3M
     DEFAULT_SLICE_SIZE = 3 * 1024 * 1024
 
-    # 默认线程数 10
-    DEFAULT_THREADS = 10
-
     required_attrs :config, :http, :path, :file_name, :file_src, :options
     optional_attrs :progress
 
@@ -23,18 +20,7 @@ module COS
     def initialize(opts = {})
       super(opts)
 
-      # 分片大小必须>0
-      if options[:slice_size] and options[:slice_size] <= 0
-        raise ClientError, 'slice_size must > 0'
-      end
-
-      @cpt_file    = options[:cpt_file] || "#{File.expand_path(file_src)}.cpt"
-      @file_meta   = {}
-      @num_threads = options[:threads] || DEFAULT_THREADS
-      @all_mutex   = Mutex.new
-      @parts       = []
-      @todo_mutex  = Mutex.new
-      @todo_parts  = []
+      @cpt_file = options[:cpt_file] || "#{File.expand_path(file_src)}.cpt"
     end
 
     def upload
@@ -145,7 +131,7 @@ module COS
       logger.info("Begin rebuild session, checkpoint: #{cpt_file}")
 
       # 是否启用断点续传并且记录文件存在
-      if options[:disable_cpt] || !File.exists?(cpt_file)
+      if options[:disable_cpt] || !File.exist?(cpt_file)
         # 从服务器初始化
         data = initiate
         return data if data
@@ -179,11 +165,10 @@ module COS
       resource_path = Util.get_resource_path(config.app_id, bucket, path, file_name)
       file_size     = File.size(file_src)
       file_sha1     = Util.file_sha1(file_src)
-      _slice_size   = options[:slice_size] || DEFAULT_SLICE_SIZE
 
       payload = {
           op:          'upload_slice',
-          slice_size:  _slice_size,
+          slice_size:  options[:slice_size] || DEFAULT_SLICE_SIZE,
           sha:         file_sha1,
           filesize:    file_size,
           biz_attr:    options[:biz_attr],

@@ -6,10 +6,24 @@ module COS
 
   class Checkpoint < Struct::Base
 
+    # 默认线程数 10
+    DEFAULT_THREADS = 10
+
     def initialize(options = {})
       super(options)
 
+      # 分片大小必须>0
+      if options[:options] and options[:options][:slice_size] and options[:options][:slice_size] <= 0
+        raise ClientError, 'slice_size must > 0'
+      end
+
       @mutex = Mutex.new
+      @file_meta   = {}
+      @num_threads = options[:threads] || DEFAULT_THREADS
+      @all_mutex   = Mutex.new
+      @parts       = []
+      @todo_mutex  = Mutex.new
+      @todo_parts  = []
     end
 
     private

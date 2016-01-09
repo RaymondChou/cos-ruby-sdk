@@ -59,15 +59,15 @@ module COS
           :payload      => payload,
           :open_timeout => @config.open_timeout || OPEN_TIMEOUT,
           :timeout      => @config.read_timeout || READ_TIMEOUT
-      ) do |response, request, result, &blk|
+      ) do |resp, request, result, &blk|
 
         # 捕获异常
-        if response.code >= 300
-          e = ServerError.new(response)
+        if resp.code >= 300
+          e = ServerError.new(resp)
           logger.error(e.to_s)
           raise e
         else
-          response.return!(request, result, &blk)
+          resp.return!(request, result, &blk)
         end
 
       end
@@ -82,7 +82,7 @@ module COS
     # 解析结果json 取出data部分
     def parse_data(response)
       j = JSON.parse(response.body, symbolize_names: true)
-      data = j[:data]
+      j[:data]
     end
 
     # 获取user agent
