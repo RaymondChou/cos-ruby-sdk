@@ -181,6 +181,7 @@ module COS
     alias :exists? :exist?
 
     # 获取文件可访问的URL
+    # 私有读取的bucket会自动生成带签名的URL
     def url(path_or_file, options = {})
 
       file = get_file(path_or_file)
@@ -198,7 +199,13 @@ module COS
         url.gsub!('http://', 'https://')
       end
 
-      url
+      if authority == 'eWRPrivate'
+        # 私有读取的bucket自动生成带签名的URL
+        sign = client.signature.multiple(bucket_name, options[:expire_seconds])
+        "#{url}?sign=#{sign}"
+      else
+        url
+      end
     end
 
     # 下载文件, 支持断点续传, 支持多线程

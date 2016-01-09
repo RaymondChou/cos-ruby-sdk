@@ -2,7 +2,7 @@ require 'bundler/setup'
 require 'cos'
 
 client = COS::Client.new(app_id:'10016219',secret_id:'AKIDMWHN7IrmIr6OgVomLFhdXgitZEEIZrDl',secret_key:'e6k4QPIWnn9FUslwWQ1Inm0Jv7aU9Otw')
-bucket = client.bucket('costest')
+bucket = client.bucket('costestprivate')
 # options = {threads: 10}
 #
 # retry_times = 10
@@ -39,6 +39,7 @@ bucket = client.bucket('costest')
 # end
 
 # p res
-puts bucket.tree.to_json
+# puts bucket.tree.to_json
 
 # p bucket.delete('/')
+p bucket.authority

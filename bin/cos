@@ -2,13 +2,94 @@
 
 require 'bundler/setup'
 require 'thor'
+require 'yaml'
 require 'cos'
 
 class COS_CLI < Thor
 
+  DEFAULT_CONFIG = '~/.cos.yml'
+
   package_name 'COS Ruby SDK CLI'
 
+  class_option :config, aliases: '-c', default: DEFAULT_CONFIG, desc: '加载配置文件'
+  class_option :bucket, aliases: '-b', desc: '指定Bucket'
 
+  desc 'list', '获取目录列表'
+  def list
+    bucket.list
+  end
+
+  map ls: :list
+
+  desc 'stat', '获取目录或文件信息'
+  def stat
+
+  end
+
+  desc 'upload', '上传文件'
+  def upload
+
+  end
+
+  desc 'download', '下载文件'
+  def download
+
+  end
+
+  desc 'update', '更新业务属性'
+  def update
+
+  end
+
+  desc 'delete', '删除目录或文件'
+  def delete
+
+  end
+
+  desc 'count', '获取文件数'
+  def count
+
+  end
+
+  desc 'exist', '判断文件或目录是否存在'
+  def exist
+
+  end
+
+  desc 'config', '创建默认配置文件'
+  def config(file = DEFAULT_CONFIG)
+    if File.exist?(File.expand_path(file))
+      puts '文件已存在!'
+    else
+      yml = {
+          'app_id'         => 'your_app_id',
+          'secret_id'      => 'your_secret_id',
+          'secret_key'     => 'your_secret_key',
+          'default_bucket' => 'your_default_bucket'
+      }
+
+      File.open(File.expand_path(file), 'w') do |f|
+        f.write(yml.to_yaml)
+      end
+    end
+  end
+
+  desc 'help [COMMAND]', '获取指令的使用帮助'
+  def help(*args)
+    super(*args)
+  end
+
+  private
+
+  def bucket
+    # 判断配置文件是否存在
+    unless File.exist?(options[:config])
+      puts '未找到配置文件, 使用 cos config 指令创建默认配置文件'
+      exit
+    end
+
+    COS.client(config: options[:config]).options[:bucket]
+  end
 
 end
 
