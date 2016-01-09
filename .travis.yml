@@ -9,3 +9,7 @@ rvm:
 script:
   bundle exec rake spec
 before_install: gem install bundler
+
+addons:
+  code_climate:
+    repo_token: 1f460aa92bd5cff641f3ab71dad000c3c102689d97e2b4df90cb90789161284a
