@@ -1,3 +1,5 @@
+# coding: utf-8
+
 module COS
 
   # 大文件分片下载, 支持断点续传, 支持多线程

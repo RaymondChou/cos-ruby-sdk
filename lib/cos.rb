@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require_relative 'cos/version'
 require_relative 'cos/util'
 require_relative 'cos/struct'
