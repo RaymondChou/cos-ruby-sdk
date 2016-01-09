@@ -30,13 +30,4 @@ module COS
 
   end
 
-  describe Logging do
-
-    it 'use default logger' do
-      Logging.remove_instance_variable(:@logger)
-      Logging.logger.debug("test")
-    end
-
-  end
-
 end
