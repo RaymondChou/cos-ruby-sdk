@@ -11,6 +11,7 @@ module COS
     def initialize(options = {})
       @config = Config.new(options)
       @api    = API.new(@config)
+      @cache_buckets = {}
     end
 
     # 获取鉴权签名方法
@@ -20,7 +21,11 @@ module COS
 
     # 指定bucket 初始化Bucket类
     def bucket(bucket_name = nil)
-      Bucket.new(self, bucket_name)
+      unless @cache_buckets[bucket_name]
+        # 缓存bucket对象
+        @cache_buckets[bucket_name] = Bucket.new(self, bucket_name)
+      end
+      @cache_buckets[bucket_name]
     end
 
   end
@@ -135,6 +140,11 @@ module COS
       stat(Util.get_list_path(path, file_name, true))
     end
 
+    # 上传目录下的全部文件(不包含子目录)
+    def upload_all
+
+    end
+
     # 获取信息
     def stat(path = '')
       data = client.api.stat(path, bucket: bucket_name)
@@ -174,6 +184,11 @@ module COS
     end
 
     alias :exists? :exist?
+
+    # 判断文件是否上传完成
+    def complete?(path)
+      get_file(path).complete?
+    end
 
     # 获取文件可访问的URL
     # 私有读取的bucket会自动生成带签名的URL
@@ -238,6 +253,11 @@ module COS
       file_store
     end
 
+    # 下载目录下的全部文件(不包含子目录)
+    def download_all
+
+    end
+
     # 获取目录树形结构
     def tree(path_or_dir = '', options = {})
       dir = get_dir(path_or_dir)
@@ -252,8 +272,8 @@ module COS
         block.call
       rescue => error
         if retry_times > 0
-          logger.warn(error)
           retry_times -= 1
+          logger.info('Retrying...')
           retry
         else
           raise error
@@ -274,7 +294,7 @@ module COS
 
       else
         raise ClientError,
-              "can't get file from#{path_or_file.class}, " \
+              "can't get file from #{path_or_file.class}, " \
               'must be a file path string or COS::COSFile'
 
       end
@@ -294,7 +314,7 @@ module COS
 
       else
         raise ClientError,
-              "can't get dir from#{path_or_dir.class}, " \
+              "can't get dir from #{path_or_dir.class}, " \
               'must be a file path string or COS::COSDir'
 
       end

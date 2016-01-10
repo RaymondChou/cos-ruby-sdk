@@ -19,8 +19,6 @@ module COS
       # 从配置文件加载配置
       if options[:config]
         config = load_config_file(options[:config])
-        config.symbolize_keys!
-
         options.merge!(config)
       end
 
@@ -28,10 +26,12 @@ module COS
 
       # log_src: STDOUT | STDERR | 'path/filename.log'
       # log_level: Logger::DEBUG | Logger::INFO | Logger::ERROR | Logger::FATAL
-      Logging.set_logger(
-          options[:log_src]   || STDOUT,
-          options[:log_level] || Logger::INFO
-      )
+      if options[:log_src]
+        Logging.set_logger(
+            options[:log_src],
+            options[:log_level] || Logger::INFO
+        )
+      end
 
       @protocol ||= 'http'
       @host     ||= DEFAULT_HOST
@@ -51,7 +51,13 @@ module COS
     private
 
     def load_config_file(config_file)
-      YAML.load(File.read(File.expand_path(config_file)))
+      hash = YAML.load(File.read(File.expand_path(config_file)))
+
+      # Hash key字符串转为symbol
+      hash.keys.each do |key|
+        hash[(key.to_sym rescue key) || key] = hash.delete(key)
+      end
+      hash
     end
 
   end

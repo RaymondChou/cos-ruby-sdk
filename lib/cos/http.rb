@@ -64,7 +64,7 @@ module COS
         # 捕获异常
         if resp.code >= 300
           e = ServerError.new(resp)
-          logger.error(e.to_s)
+          logger.warn(e.to_s)
           raise e
         else
           resp.return!(request, result, &blk)

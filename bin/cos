@@ -6,6 +6,28 @@ require 'thor'
 require 'yaml'
 require 'cos'
 
+# 打印输出着色
+class Object
+  def puts(message, color = nil)
+    color_table = {
+        :red      => '31;1',
+        :green    => '32;1',
+        :yellow   => '33;1',
+        :blue     => '34;1',
+        :purple   => '35;1',
+        :sky      => '36;1',
+    }
+
+    if color and color_table.has_key?(color.to_sym)
+      print "\e[#{color_table[color]}m"
+      Kernel::puts message
+      print "\e[0m"
+    else
+      Kernel::puts message
+    end
+  end
+end
+
 class COS_CLI < Thor
 
   DEFAULT_CONFIG = '~/.cos.yml'
@@ -15,52 +37,135 @@ class COS_CLI < Thor
   class_option :config, aliases: '-c', default: DEFAULT_CONFIG, desc: '加载配置文件'
   class_option :bucket, aliases: '-b', desc: '指定Bucket'
 
-  desc 'list', '获取目录列表'
-  def list
-    bucket.list
+  desc 'list [PATH]', '获取目录列表'
+  def list(path = '')
+    rescue_errors do
+      bucket.list(path).each do |res|
+        puts(res.path, :blue)
+      end
+    end
   end
 
   map ls: :list
 
-  desc 'stat', '获取目录或文件信息'
-  def stat
-
+  desc 'stat [PATH]', '获取目录或文件信息'
+  def stat(path = '')
+    rescue_errors do
+      stat = bucket.stat(path)
+      format_puts_stat(stat.to_hash.to_s)
+    end
   end
 
-  desc 'upload', '上传文件'
-  def upload
-
+  desc 'tree [PATH]', '显示树形结构'
+  def tree(path = '')
+    rescue_errors do
+      path_obj = bucket.stat(path)
+      COS::Tree.new({path: path_obj}).print_tree
+    end
   end
 
-  desc 'download', '下载文件'
-  def download
-
+  desc 'upload [PATH] [FILE_NAME] [FILE_SRC]', '上传文件'
+  def upload(path, file_name, file_src)
+    rescue_errors do
+      file = bucket.upload(path, file_name, file_src) do |percent|
+        puts("上传进度: #{(percent*100).round(2)}%", :green)
+      end
+      format_puts_stat(file.to_hash.to_s)
+      puts("#{file_src} 上传完成!", :purple)
+    end
   end
 
-  desc 'update', '更新业务属性'
-  def update
-
+  desc 'download [PATH] [FILE_STORE]', '下载文件'
+  def download(path, file_store)
+    rescue_errors do
+      file = bucket.download(path, file_store) do |percent|
+        puts("下载进度: #{(percent*100).round(2)}%", :green)
+      end
+      puts(file, :blue)
+      puts("#{file_store} 下载完成!", :purple)
+    end
   end
 
-  desc 'delete', '删除目录或文件'
-  def delete
-
+  desc 'update [PATH] [BIZ_ATTR]', '更新业务属性'
+  def update(path, biz_attr)
+    rescue_errors do
+      bucket.update(path, biz_attr)
+      puts("#{path} 更新成功!", :purple)
+    end
   end
 
-  desc 'count', '获取文件数'
-  def count
-
+  desc 'delete [PATH]', '删除目录或文件'
+  def delete(path)
+    rescue_errors do
+      bucket.delete(path)
+      puts("#{path} 删除成功!", :purple)
+    end
   end
 
-  desc 'exist', '判断文件或目录是否存在'
-  def exist
-
+  desc 'url [PATH]', '获取文件的访问URL'
+  def url(path)
+    rescue_errors do
+      puts(bucket.url(path), :blue)
+    end
   end
 
-  desc 'config', '创建默认配置文件'
-  def config(file = DEFAULT_CONFIG)
-    if File.exist?(File.expand_path(file))
-      puts '文件已存在!'
+  desc 'count [PATH]', '获取文件及目录数'
+  def count(path)
+    rescue_errors do
+      puts(bucket.count(path), :blue)
+    end
+  end
+
+  map size: :count
+
+  desc 'count_files [PATH]', '获取文件数'
+  def count_files(path)
+    rescue_errors do
+      puts(bucket.count_files(path), :blue)
+    end
+  end
+
+  desc 'count_dirs [PATH]', '获取目录数'
+  def count_dirs(path)
+    rescue_errors do
+      puts(bucket.count_dirs(path), :blue)
+    end
+  end
+
+  desc 'exist [PATH]', '判断文件或目录是否存在'
+  def exist(path)
+    rescue_errors do
+      puts(bucket.exist?(path), :blue)
+    end
+  end
+
+  map exists: :exist
+
+  desc 'is_complete [PATH]', '判断文件是否上传完整'
+  def is_complete(path)
+    rescue_errors do
+      puts(bucket.complete?(path), :blue)
+    end
+  end
+
+  desc 'sign_once [PATH]', '生成单次可用签名'
+  def sign_once(path)
+    rescue_errors do
+      puts(bucket.client.signature.once(bucket.bucket_name, path), :blue)
+    end
+  end
+
+  desc 'sign_multi [EXPIRE]', '生成多次可用签名'
+  def sign_multi(expire)
+    puts(bucket.client.signature.once(bucket.bucket_name, expire), :blue)
+  end
+
+  desc 'init', '创建默认配置文件'
+  method_option :file, aliases: '-f', desc: '指定创建配置文件的路径', default: DEFAULT_CONFIG
+  def init
+    if File.exist?(File.expand_path(options[:file]))
+      puts('文件已存在!', :red)
+      exit!
     else
       yml = {
           'app_id'         => 'your_app_id',
@@ -69,9 +174,11 @@ class COS_CLI < Thor
           'default_bucket' => 'your_default_bucket'
       }
 
-      File.open(File.expand_path(file), 'w') do |f|
+      File.open(File.expand_path(options[:file]), 'w') do |f|
         f.write(yml.to_yaml)
       end
+
+      puts("默认配置文件已创建在 #{options[:file]}", :purple)
     end
   end
 
@@ -82,14 +189,31 @@ class COS_CLI < Thor
 
   private
 
+  def format_puts_stat(stat)
+    # 格式化hash字符串
+    stat.gsub!('{:', "{\n  :")
+    stat.gsub!('=>', ' => ')
+    stat.gsub!(', :', ",\n  :")
+    stat.gsub!('}', "\n}")
+    puts(stat, :blue)
+  end
+
+  def rescue_errors(&block)
+    block.call if block
+  rescue => error
+    puts("#{error}", :red)
+    exit!
+  end
+
   def bucket
     # 判断配置文件是否存在
-    unless File.exist?(options[:config])
-      puts '未找到配置文件, 使用 cos config 指令创建默认配置文件'
-      exit
+    unless File.exist?(File.expand_path(options[:config]))
+      puts('未找到配置文件, 使用 [cos init] 指令创建默认配置文件', :red)
+      exit!
     end
 
-    COS.client(config: options[:config]).options[:bucket]
+    COS::Logging::set_logger(STDOUT, Logger::INFO)
+    COS.client(config: options[:config]).bucket(options[:bucket])
   end
 
 end

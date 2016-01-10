@@ -8,8 +8,12 @@ module COS
   class Exception < RuntimeError; end
 
   # 服务端返回异常
+  # Code: -166, Message: 索引不存在, HttpCode: 400
   # Code: -173, Message: 目录非空, HttpCode: 400
   # Code: -180, Message: 非法路径, HttpCode: 400
+  # Code: -288, Message: process打包失败, HttpCode: 400
+  # Code: -4018, Message: 相同文件已上传过, HttpCode: 400
+  # Code: -5997, Message: 后端网络错误, HttpCode: 400
   class ServerError < Exception
 
     attr_reader :response, :http_code, :error_code, :message

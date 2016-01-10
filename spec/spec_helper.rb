@@ -26,4 +26,4 @@ RSpec.configure do |config|
 
 end
 
-COS::Logging::set_logger(nil, Logger::DEBUG)
+COS::Logging::set_logger(STDOUT, Logger::DEBUG)

@@ -101,18 +101,20 @@ module COS
 
     # 参数转化为Hash类型
     def to_hash
-      {
-          bucket:     bucket.bucket_name,
-          path:       path,
-          name:       name,
-          ctime:      ctime,
-          mtime:      mtime,
-          biz_attr:   respond_to?(:biz_attr) ? biz_attr : nil,
-          filesize:   respond_to?(:filesize) ? filesize.to_i : nil,
-          filelen:    respond_to?(:filelen) ? filelen.to_i : nil,
-          sha:        respond_to?(:sha) ? sha : nil,
-          access_url: respond_to?(:access_url) ? access_url : nil
+      hash = {
+          type:   type,
+          bucket: bucket.bucket_name,
+          path:   path,
+          name:   name,
+          ctime:  ctime,
+          mtime:  mtime,
       }
+
+      optional_attrs.each do |key|
+        hash[key] = send(key.to_s) if respond_to?(key) and send(key.to_s) != nil
+      end
+
+      hash
     end
 
     # 文件或目录是否存在
@@ -166,7 +168,7 @@ module COS
         c_size = human_rep(filesize.to_i)
 
         if STORAGE_UNITS.index(c_size[:unit]) > 0
-          size_str = "%.2f" % c_size[:size]
+          size_str = "%.2f" % c_size[:size].round(2)
         else
           size_str = "%.0f" % c_size[:size]
         end
