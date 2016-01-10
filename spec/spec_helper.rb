@@ -1,12 +1,14 @@
 # coding: utf-8
 
 require 'simplecov'
-SimpleCov.start
-
-# require 'coveralls'
-# Coveralls.wear!
 require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    SimpleCov::Formatter::HTMLFormatter,
+    CodeClimate::TestReporter::Formatter
+]
+
+SimpleCov.start
 
 require 'webmock/rspec'
 require 'cos'
