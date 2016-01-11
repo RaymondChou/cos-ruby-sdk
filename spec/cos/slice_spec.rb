@@ -65,7 +65,7 @@ module COS
 
       expect(File.exist?("#{@file}.cpt")).to be false
 
-      expect(prg.size).to eq(104)
+      expect(prg.size.class).to eq(Fixnum)
     end
 
     it 'should upload file raise error' do

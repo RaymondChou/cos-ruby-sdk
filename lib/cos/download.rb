@@ -93,7 +93,7 @@ module COS
 
       done = parts.count { |p| p[:done] }
 
-      # 上传进度回调
+      # 下载进度回调
       if progress
         if done == 0 or parts.count == 0
           progress.call(0.to_f)
