@@ -59,7 +59,7 @@ module COS
                   infos: [
                                 {name: 'd1', ctime: @time, mtime: @time, biz_attr: ''},
                                 {name: 'd2', ctime: @time, mtime: @time, biz_attr: ''},
-                                {name: 'f1', ctime: @time, mtime: @time, biz_attr: '', filesize: 100, filelen:100},
+                                {name: 'f1', ctime: @time, mtime: @time, biz_attr: '', filesize: 100, filelen:100, access_url: 'url'},
                             ]
               }
           }.to_json, :headers => {})
@@ -78,7 +78,7 @@ module COS
 
       stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/d2/?op=stat").to_return(:status => 200, :body => { code: 0, message: 'ok', data: {name: 'd2', ctime: @time, mtime: @time, biz_attr: ''}}.to_json)
 
-      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/f1?op=stat").to_return(:status => 200, :body => { code: 0, message: 'ok', data: {name: 'f1', filesize: 100, ctime: @time, mtime: @time, biz_attr: ''}}.to_json)
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/f1?op=stat").to_return(:status => 200, :body => { code: 0, message: 'ok', data: {name: 'f1', filesize: 100, ctime: @time, mtime: @time, biz_attr: '', access_url: 'url'}}.to_json)
 
       stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/f1?op=stat").to_return(:status => 400, :body => { code: -166, message: '索引不存在'}.to_json)
 
