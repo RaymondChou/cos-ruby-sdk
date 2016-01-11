@@ -157,7 +157,7 @@ module COS
 
     # 文件sha1是否一致
     def sha1_match?(file)
-      sha.upcase == Util.file_sha1(file).upcase
+      File.exist?(file) and sha.upcase == Util.file_sha1(file).upcase
     end
 
     # 文件大小
@@ -186,7 +186,7 @@ module COS
 
     # 文件是否完整, 是否上传完了
     def complete?
-      filelen == filesize
+      access_url != nil and filelen == filesize
     end
 
     # 文件URL, 支持cname,https

@@ -249,12 +249,12 @@ module COS
       file = get_file(path_or_file)
 
       # 检查文件是否上传完整才能下载
-      if file.access_url.nil? and !file.complete?
+      unless file.complete?
         raise FileUploadNotComplete, 'file upload not complete'
       end
 
       # 检查本地文件sha1是否一致, 如一致就已下载完成了
-      if File.exist?(file_store) and file.sha1_match?(file_store)
+      if file.sha1_match?(file_store)
         logger.info("File #{file_store} exist and sha1 match, skip download.")
         return file_store
       end
@@ -347,22 +347,7 @@ module COS
         # 传入的是path string
         path_or_dir = "#{path_or_dir}/" unless path_or_dir.end_with?('/')
 
-        begin
-          dir = stat(path_or_dir)
-        rescue => error
-          unless auto_create_folder
-            raise error
-          end
-
-          # 自动创建目录
-          if error.is_a?(COS::ServerError) and error.error_code == -166
-            logger.info('path not exist, auto create folder...')
-            return create_folder(path_or_dir)
-          end
-
-          raise error
-        end
-
+        dir = handle_folder(path_or_dir, auto_create_folder)
         get_dir(dir)
 
       else
@@ -371,6 +356,22 @@ module COS
               'must be a file path string or COS::COSDir'
 
       end
+    end
+
+    def handle_folder(path_or_dir, auto_create_folder = false)
+      return stat(path_or_dir)
+    rescue => error
+      unless auto_create_folder
+        raise error
+      end
+
+      # 自动创建目录
+      if error.is_a?(COS::ServerError) and error.error_code == -166
+        logger.info('path not exist, auto create folder...')
+        return create_folder(path_or_dir)
+      end
+
+      raise error
     end
 
   end
