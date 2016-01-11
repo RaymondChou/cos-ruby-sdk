@@ -23,6 +23,7 @@ module COS
     # @return Hash
     #  * :ctime [String] 创建时间Unix时间戳
     #  * :resource_path [String] 创建的资源路径
+    # @raise [ServerError] 服务端异常返回
     def create_folder(path, options = {})
       bucket  = config.get_bucket(options[:bucket])
       sign    = http.signature.multiple(bucket)
@@ -44,6 +45,7 @@ module COS
     #  * :access_url [String] 生成的文件下载url
     #  * :url [String] 操作文件的url
     #  * :resource_path [String] 资源路径
+    # @raise [ServerError] 服务端异常返回
     def upload(path, file_name, file_src, options = {})
       bucket        = config.get_bucket(options[:bucket])
       sign          = http.signature.multiple(bucket)
@@ -84,6 +86,7 @@ module COS
     #  * :access_url [String] 生成的文件下载url
     #  * :url [String] 操作文件的url
     #  * :resource_path [String] 资源路径
+    # @raise [ServerError] 服务端异常返回
     def upload_slice(path, file_name, file_src, options = {}, &block)
       slice = Slice.new(
           config:    config,
@@ -131,6 +134,7 @@ module COS
     #  *  * :ctime [String] 创建时间(Unix时间戳)
     #  *  * :mtime [String] 修改时间(Unix时间戳)
     #  *  * :access_url [String] 生成的资源可访问的url(当类型为文件时返回)
+    # @raise [ServerError] 服务端异常返回
     def list(path, options = {})
       bucket  = config.get_bucket(options[:bucket])
       sign    = http.signature.multiple(bucket)
@@ -162,6 +166,7 @@ module COS
     # @param biz_attr [String] 目录/文件属性，业务端维护
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
+    # @raise [ServerError] 服务端异常返回
     def update(path, biz_attr, options = {})
       bucket        = config.get_bucket(options[:bucket])
       resource_path = Util.get_resource_path_or_file(config.app_id, bucket, path)
@@ -185,6 +190,7 @@ module COS
     #  * :ctime [String] 创建时间(Unix时间戳)
     #  * :mtime [String] 修改时间(Unix时间戳)
     #  * :access_url [String] 生成的资源可访问的url(当类型为文件时返回)
+    # @raise [ServerError] 服务端异常返回
     def stat(path, options = {})
       bucket        = config.get_bucket(options[:bucket])
       sign          = http.signature.multiple(bucket)
@@ -198,6 +204,7 @@ module COS
     #  如: 目录'path1/', 文件'path1/file'
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
+    # @raise [ServerError] 服务端异常返回
     def delete(path, options = {})
       bucket        = config.get_bucket(options[:bucket])
       resource_path = Util.get_resource_path_or_file(config.app_id, bucket, path)
@@ -214,6 +221,7 @@ module COS
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
     # @option options [Hash] :headers 设置下载请求头,如:range
+    # @raise [DownloadError] 下载失败,服务器返回状态异常
     def download(access_url, file_store, options = {})
       bucket = config.get_bucket(options[:bucket])
       sign   = http.signature.multiple(bucket)

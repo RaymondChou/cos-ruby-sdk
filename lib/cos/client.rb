@@ -144,7 +144,7 @@ module COS
 
     # 上传目录下的全部文件(不包含子目录)
     def upload_all(path_or_dir, file_src_path, options = {}, &block)
-      local_path = Util.get_local_path(file_src_path)
+      local_path = Util.get_local_path(file_src_path, options[:disable_mkdir])
       uploaded = []
 
       Dir.foreach(local_path) do |file|
@@ -283,7 +283,7 @@ module COS
 
     # 下载目录下的全部文件(不包含子目录)
     def download_all(path_or_dir, file_store_path, options = {}, &block)
-      local_path = Util.get_local_path(file_store_path)
+      local_path = Util.get_local_path(file_store_path, options[:disable_mkdir])
       dir = get_dir(path_or_dir)
       downloaded = []
       # 遍历目录下的所有文件
@@ -299,6 +299,12 @@ module COS
     def tree(path_or_dir = '', options = {})
       dir = get_dir(path_or_dir)
       Tree.new(options.merge({path: dir})).to_object
+    end
+
+    # 获取Hash格式的目录树形结构
+    def hash_tree(path_or_dir = '', options = {})
+      dir = get_dir(path_or_dir)
+      Tree.new(options.merge({path: dir})).to_hash
     end
 
     private

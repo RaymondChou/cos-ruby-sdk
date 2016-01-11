@@ -19,14 +19,14 @@ module COS
       end
 
       # 获取本地目录路径, 不存在会创建
-      def get_local_path(path, create = true)
+      def get_local_path(path, disable_mkdir = false)
         local = File.expand_path(path)
         unless File.exist?(local) and File.directory?(local)
           # 创建目录
-          if create
-            FileUtils::mkdir_p(local)
-          else
+          if disable_mkdir
             raise LocalPathNotExist, "Local path #{local} not exist!"
+          else
+            FileUtils::mkdir_p(local)
           end
         end
 

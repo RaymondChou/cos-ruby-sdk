@@ -6,28 +6,6 @@ require 'thor'
 require 'yaml'
 require 'cos'
 
-# 打印输出着色
-class Object
-  def puts(message, color = nil)
-    color_table = {
-        :red      => '31;1',
-        :green    => '32;1',
-        :yellow   => '33;1',
-        :blue     => '34;1',
-        :purple   => '35;1',
-        :sky      => '36;1',
-    }
-
-    if color and color_table.has_key?(color.to_sym)
-      print "\e[#{color_table[color]}m"
-      Kernel::puts message
-      print "\e[0m"
-    else
-      Kernel::puts message
-    end
-  end
-end
-
 class COS_CLI < Thor
 
   DEFAULT_CONFIG = '~/.cos.yml'
@@ -244,6 +222,28 @@ class COS_CLI < Thor
     COS.client(config: options[:config]).bucket(options[:bucket])
   end
 
+end
+
+# 打印输出着色
+class Object
+  def puts(message, color = nil)
+    color_table = {
+        :red      => '31;1',
+        :green    => '32;1',
+        :yellow   => '33;1',
+        :blue     => '34;1',
+        :purple   => '35;1',
+        :sky      => '36;1',
+    }
+
+    if color and color_table.has_key?(color.to_sym)
+      print "\e[#{color_table[color]}m"
+      Kernel::puts message
+      print "\e[0m"
+    else
+      Kernel::puts message
+    end
+  end
 end
 
 COS_CLI.start

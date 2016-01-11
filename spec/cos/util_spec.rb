@@ -90,6 +90,17 @@ module COS
 
     end
 
+    it 'should get local path' do
+      expect(Util.get_local_path('/etc/')).to eq('/etc')
+
+      rand_path = rand(0..999)
+      expect(Util.get_local_path("/tmp/#{rand_path}/")).to eq("/tmp/#{rand_path}")
+
+      expect do
+        Util.get_local_path('/tmp/gewg414thgr42y2h33333', true)
+      end.to raise_error(LocalPathNotExist)
+    end
+
   end
 
 end

@@ -264,12 +264,7 @@ module COS
 
       @bucket.list('/path/', {}).each do |f|
         if f.is_a?(COS::COSDir) and f.type == 'dir'
-          slice = 0
-          f.upload(@file_name, @file, min_slice_size: 1000000) do
-            slice += 1
-          end
-
-          expect(slice).to eq(0)
+          f.upload(@file_name, @file, min_slice_size: 1000000)
         end
       end
 

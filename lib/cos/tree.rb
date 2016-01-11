@@ -32,7 +32,7 @@ module COS
     # 输出Hash格式, 可以直接.to_json转化为json string
     # @example
     # {
-    #   :resource => resource,
+    #   :resource => {name: '', mtime: ''...},
     #   :children => [
     #     {:resource => resource, :children => [...]},
     #     {:resource => resource, :children => [...]},
@@ -53,7 +53,7 @@ module COS
 
     # 递归创建树
     def create_tree(dir, level, type = nil)
-      @tree_str << row_string_for_dir(dir, level)
+      @tree_str << row_string_for_dir(dir, level) if type.nil?
       children = []
 
       if level.count < depth and dir.is_a?(COS::COSDir)

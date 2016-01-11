@@ -1,6 +1,8 @@
 # coding: utf-8
 
 require 'spec_helper'
+require 'fileutils'
+require 'yaml'
 
 module COS
 
@@ -40,6 +42,34 @@ module COS
                    })
         client.bucket
       end.to raise_error(ClientError)
+    end
+
+    it 'Rails init client' do
+      Object.const_set('Rails', Class.new do
+        def self.root
+          ['/tmp/', '']
+        end
+      end)
+
+      FileUtils::mkdir_p('/tmp/log')
+      FileUtils::mkdir_p('/tmp/config')
+
+      yml = {
+          'app_id'         => '100000',
+          'secret_id'      => 'secret_id',
+          'secret_key'     => 'secret_key',
+          'default_bucket' => 'bucket_name'
+      }
+
+      File.open('/tmp/config/cos.yml', 'w') do |f|
+        f.write(yml.to_yaml)
+      end
+
+      client = COS.client
+
+      expect(client.config.app_id).to eq('100000')
+
+      Object.const_set('Rails', nil)
     end
 
   end
