@@ -254,7 +254,7 @@ module COS
       end
 
       # 检查本地文件sha1是否一致, 如一致就已下载完成了
-      if File.exist?(file_store) and file.sha.upcase == Util.file_sha1(file_store).upcase
+      if File.exist?(file_store) and file.sha1_match?(file_store)
         logger.info("File #{file_store} exist and sha1 match, skip download.")
         return file_store
       end
@@ -350,12 +350,14 @@ module COS
         begin
           dir = stat(path_or_dir)
         rescue => error
-          if auto_create_folder
-            # 自动创建目录
-            if error.is_a?(COS::ServerError) and error.error_code == -166
-              logger.info('path not exist, auto create folder...')
-              return create_folder(path_or_dir)
-            end
+          unless auto_create_folder
+            raise error
+          end
+
+          # 自动创建目录
+          if error.is_a?(COS::ServerError) and error.error_code == -166
+            logger.info('path not exist, auto create folder...')
+            return create_folder(path_or_dir)
           end
 
           raise error

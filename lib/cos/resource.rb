@@ -155,6 +155,11 @@ module COS
       @type = 'file'
     end
 
+    # 文件sha1是否一致
+    def sha1_match?(file)
+      sha.upcase == Util.file_sha1(file).upcase
+    end
+
     # 文件大小
     def size
       filesize.to_i
