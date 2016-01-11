@@ -166,6 +166,9 @@ module COS
     it 'upload file slice to a path' do
       @time = Time.now.to_i.to_s
 
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/d1/?op=stat").
+          to_return(:status => 200, :body => {data:{name: 'd1', ctime: @time, mtime: @time, biz_attr: ''}}.to_json)
+
       stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListFileOnly').
           to_return(:status => 200, :body => {
               code: 0,
@@ -218,6 +221,9 @@ module COS
 
     it 'upload file entire to a path, and errors' do
       @time = Time.now.to_i.to_s
+
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/d1/?op=stat").
+          to_return(:status => 200, :body => {data:{name: 'd1', ctime: @time, mtime: @time, biz_attr: ''}}.to_json)
 
       stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListBoth').
           to_return(:status => 200, :body => {
@@ -273,6 +279,9 @@ module COS
 
     it 'upload file entire to a path, raise error' do
       @time = Time.now.to_i.to_s
+
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/d1/?op=stat").
+          to_return(:status => 200, :body => {data:{name: 'd1', ctime: @time, mtime: @time, biz_attr: ''}}.to_json)
 
       stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListBoth').
           to_return(:status => 200, :body => {

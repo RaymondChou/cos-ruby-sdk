@@ -55,4 +55,7 @@ module COS
   # 文件上传未完成
   class FileUploadNotComplete < Exception; end
 
+  # 本地目录不存在
+  class LocalPathNotExist < Exception; end
+
 end

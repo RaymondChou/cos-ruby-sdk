@@ -23,6 +23,7 @@ module COS
       @cpt_file = options[:cpt_file] || "#{File.expand_path(file_src)}.cpt"
     end
 
+    # 开始上传
     def upload
       logger.info("Begin upload, file: #{file_src}, threads: #{@num_threads}")
 

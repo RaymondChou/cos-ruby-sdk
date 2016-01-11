@@ -50,6 +50,7 @@ module COS
 
     private
 
+    # 加载yaml配置文件
     def load_config_file(config_file)
       hash = YAML.load(File.read(File.expand_path(config_file)))
 

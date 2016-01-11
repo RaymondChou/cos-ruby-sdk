@@ -118,7 +118,9 @@ module COS
 
     # 上传文件, 大文件自动断点续传, 多线程上传
     # @return [COS::COSFile]
-    def upload(path, file_name, file_src, options = {}, &block)
+    def upload(path_or_dir, file_name, file_src, options = {}, &block)
+      dir = get_dir(path_or_dir, options[:auto_create_folder])
+
       min_size    = options[:min_slice_size] || MIN_UPLOAD_SLICE_SIZE
       retry_times = options[:upload_retry] || DEFAULT_UPLOAD_RETRY
 
@@ -129,20 +131,40 @@ module COS
       retry_loop(retry_times) do
         if file_size > min_size
           # 分块上传
-          client.api.upload_slice(path, file_name, file_src, options, &block)
+          client.api.upload_slice(dir.path, file_name, file_src, options, &block)
         else
           # 完整上传
-          client.api.upload(path, file_name, file_src, options)
+          client.api.upload(dir.path, file_name, file_src, options)
         end
       end
 
-      # 获取上传完成文件的状态, 只会返回<COSDir>
-      stat(Util.get_list_path(path, file_name, true))
+      # 获取上传完成文件的状态, 只会返回<COSFile>
+      stat(Util.get_list_path(dir.path, file_name, true))
     end
 
     # 上传目录下的全部文件(不包含子目录)
-    def upload_all
+    def upload_all(path_or_dir, file_src_path, options = {}, &block)
+      local_path = Util.get_local_path(file_src_path)
+      uploaded = []
 
+      Dir.foreach(local_path) do |file|
+        if !file.start_with?('.') and !File.directory?(file)
+          logger.info("Begin to upload file >> #{file}")
+          begin
+            uploaded << upload(path_or_dir, file, "#{local_path}/#{file}", options, &block)
+          rescue => error
+            if options[:skip_error]
+              logger.info("#{file} error skipped")
+              next
+            else
+              raise error
+            end
+          end
+          logger.info("#{file} upload finished")
+        end
+      end
+
+      uploaded
     end
 
     # 获取信息
@@ -231,6 +253,12 @@ module COS
         raise FileUploadNotComplete, 'file upload not complete'
       end
 
+      # 检查本地文件sha1是否一致, 如一致就已下载完成了
+      if File.exist?(file_store) and file.sha.upcase == Util.file_sha1(file_store).upcase
+        logger.info("File #{file_store} exist and sha1 match, skip download.")
+        return file_store
+      end
+
       retry_loop(retry_times) do
         if file.filesize > min_size
           # 分块下载
@@ -254,8 +282,17 @@ module COS
     end
 
     # 下载目录下的全部文件(不包含子目录)
-    def download_all
-
+    def download_all(path_or_dir, file_store_path, options = {}, &block)
+      local_path = Util.get_local_path(file_store_path)
+      dir = get_dir(path_or_dir)
+      downloaded = []
+      # 遍历目录下的所有文件
+      dir.list(pattern: :file_only).each do |file|
+        logger.info("Begin to download file >> #{file.name}")
+        downloaded << file.download("#{local_path}/#{file.name}", options, &block)
+        logger.info("#{file.name} download finished")
+      end
+      downloaded
     end
 
     # 获取目录树形结构
@@ -301,7 +338,7 @@ module COS
     end
 
     # 获取目录对象, 可接受path string或COSDir
-    def get_dir(path_or_dir)
+    def get_dir(path_or_dir, auto_create_folder = false)
       if path_or_dir.is_a?(COS::COSDir)
         # 传入的是COSDir
         path_or_dir
@@ -309,7 +346,21 @@ module COS
       elsif path_or_dir.is_a?(String)
         # 传入的是path string
         path_or_dir = "#{path_or_dir}/" unless path_or_dir.end_with?('/')
-        dir = stat(path_or_dir)
+
+        begin
+          dir = stat(path_or_dir)
+        rescue => error
+          if auto_create_folder
+            # 自动创建目录
+            if error.is_a?(COS::ServerError) and error.error_code == -166
+              logger.info('path not exist, auto create folder...')
+              return create_folder(path_or_dir)
+            end
+          end
+
+          raise error
+        end
+
         get_dir(dir)
 
       else

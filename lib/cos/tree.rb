@@ -15,6 +15,8 @@ module COS
       @depth    = depth || MAX_DEPTH
     end
 
+    # 输出Object格式, 可以直接用于链式调用
+    # @example
     # {
     #   :resource => resource,
     #   :children => [
@@ -41,6 +43,7 @@ module COS
       create_tree(path, [], :hash)
     end
 
+    # 命令行打印树结构
     def print_tree
       create_tree(path, [])
       puts @tree_str
@@ -48,6 +51,7 @@ module COS
 
     private
 
+    # 递归创建树
     def create_tree(dir, level, type = nil)
       @tree_str << row_string_for_dir(dir, level)
       children = []
@@ -77,6 +81,7 @@ module COS
       end
     end
 
+    # 获取子目录结构
     def child_directories(dir)
       dirs = []
 
@@ -93,6 +98,7 @@ module COS
       dirs
     end
 
+    # 打印输出目录行
     def row_string_for_dir(dir, level)
       if dir.name == ''
         # 根目录显示Bucket
@@ -121,6 +127,7 @@ module COS
       row_str << "\n"
     end
 
+    # 打印输出层级关系
     def level_header_for_row(level)
       header_str = "\033[33m"
       lc = level.count

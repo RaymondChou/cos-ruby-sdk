@@ -25,6 +25,7 @@ module COS
       @cpt_file = options[:cpt_file] || "#{File.expand_path(file_store)}.cpt"
     end
 
+    # 开始下载
     def download
       logger.info("Begin download, file: #{file_store}, threads: #{@num_threads}")
 
@@ -94,8 +95,12 @@ module COS
 
       # 上传进度回调
       if progress
-        percent = done.to_f / parts.size
-        progress.call(percent > 1 ? 1.to_f : percent)
+        if done == 0 or parts.count == 0
+          progress.call(0.to_f)
+        else
+          percent = done.to_f / parts.size
+          progress.call(percent > 1 ? 1.to_f : percent)
+        end
       end
 
       write_checkpoint(states, cpt_file) unless options[:disable_cpt]

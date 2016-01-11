@@ -30,6 +30,7 @@ module COS
 
     private
 
+    # 实例方法使用logger
     def self.logger
       unless @logger
         @logger = Logger.new(

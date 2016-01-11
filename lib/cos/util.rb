@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'digest'
+require 'fileutils'
 
 module COS
   module Util
@@ -15,6 +16,21 @@ module COS
       # 字符串sha1
       def string_sha1(string)
         Digest::SHA1.hexdigest(string)
+      end
+
+      # 获取本地目录路径, 不存在会创建
+      def get_local_path(path, create = true)
+        local = File.expand_path(path)
+        unless File.exist?(local) and File.directory?(local)
+          # 创建目录
+          if create
+            FileUtils::mkdir_p(local)
+          else
+            raise LocalPathNotExist, "Local path #{local} not exist!"
+          end
+        end
+
+        local
       end
 
       # 解析list时的path
