@@ -148,7 +148,7 @@ module COS
       uploaded = []
 
       Dir.foreach(local_path) do |file|
-        if !file.start_with?('.') and !File.directory?(file)
+        if !file.start_with?('.') and !file.end_with?('.cpt') and !File.directory?(file)
           logger.info("Begin to upload file >> #{file}")
           begin
             uploaded << upload(path_or_dir, file, "#{local_path}/#{file}", options, &block)
