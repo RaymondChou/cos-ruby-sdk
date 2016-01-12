@@ -147,6 +147,13 @@ class COS_CLI < Thor
 
   map exists: :exist
 
+  desc 'exist [PATH]', '判断目录是否为空'
+  def is_empty(path)
+    rescue_errors do
+      puts(bucket.empty?(path), :blue)
+    end
+  end
+
   desc 'is_complete [PATH]', '判断文件是否上传完整'
   def is_complete(path)
     rescue_errors do

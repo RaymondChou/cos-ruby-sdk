@@ -21,6 +21,17 @@ module COS
       @bucket = Client.new(@config).bucket('bucket_name')
     end
 
+    it 'should delete empty path success' do
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/empty_path/?op=stat")
+          .to_return(:status => 200, :body => { code: 0, message: 'ok', data: {ctime: @time, mtime: @time}}.to_json)
+
+      stub_request(:post, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/empty_path/")
+          .to_return(:status => 200, :body => { code: 0, message: 'ok', data: {}}.to_json)
+
+      path = @bucket.stat('empty_path/')
+      expect(path.delete!).to eq(true)
+    end
+
     it 'should list folder' do
       stub_request(:get, 'http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/?context=&num=20&op=list&order=0&pattern=eListDirOnly').
           to_return(:status => 200, :body => {
@@ -181,6 +192,9 @@ module COS
 
       stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/d1/?op=stat").to_return(:status => 400, :body => { code: -111, message: '未知错误'}.to_json)
 
+      stub_request(:post, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/path/f1")
+          .to_return(:status => 400, :body => { code: -111, message: '未知错误'}.to_json)
+
       expect(@bucket.count).to eq(2)
 
       @bucket.list('/path/', {}).each do |f|
@@ -188,6 +202,7 @@ module COS
           expect(f.exist?).to eq(true)
           expect(f.stat.size).to eq(33333333333)
           expect(f.format_size).to eq('31.04GB')
+          expect(f.delete!).to eq(false)
         else
           expect do
             f.exist?
@@ -502,8 +517,8 @@ module COS
     it 'upload all auto_create_folder' do
       @time = Time.now.to_i.to_s
 
-      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/upload_path2/?op=stat").
-          to_return(:status => 400, :body => {code:-166, message: '索引不存在'}.to_json)
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/upload_path2/?op=stat")
+          .to_return(:status => 400, :body => {code:-166, message: '索引不存在'}.to_json).then.to_return(:status => 200, :body => {data:{name: 'upload_path2', ctime: @time, mtime: @time, biz_attr: ''}}.to_json)
 
       stub_request(:post, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/upload_path2/").
           to_return(:status => 200, :body => {data:{name: 'upload_path2', ctime: @time, mtime: @time, biz_attr: ''}}.to_json)
@@ -513,6 +528,21 @@ module COS
 
       stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/upload_path2/file1.txt?op=stat").
           to_return(:status => 200, :body => {data:{name: 'file1.txt', ctime: @time, mtime: @time, biz_attr: '', filesize: 100, filelen: 100, access_url: 'http://www.qq.com/url'}}.to_json)
+
+      stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/upload_path2/?context=&num=1&op=list&order=0&pattern=eListBoth").
+          to_return(:status => 200, :body => {
+              code: 0,
+              message: 'ok',
+              data: {
+                  has_more: false,
+                  dircount: 0,
+                  filecount: 1,
+                  context: '',
+                  infos: [
+                                {name: 'file1.txt', ctime: @time, mtime: @time, biz_attr: '', filesize: 100, filelen:100, access_url: 'url'},
+                            ]
+              }
+          }.to_json, :headers => {})
 
       local_path = "/tmp/cos_test/5_#{Time.now.to_i}"
       FileUtils::mkdir_p(local_path)
@@ -527,6 +557,9 @@ module COS
       expect(uploads.count).to eq(1)
 
       expect(uploads[0].url(:cname => 'www.domain.com', :https => true).start_with?('https://www.domain.com/url?sign=')).to eq(true)
+
+      expect(@bucket.stat('upload_path2/').empty?).to eq(false)
+
     end
 
   end

@@ -141,6 +141,12 @@ module COS
     # 删除文件或目录
     def delete
       bucket.delete(path)
+      self
+    end
+
+    # 删除文件或目录, 不会抛出异常而是返回布尔值
+    def delete!
+      bucket.delete!(path)
     end
 
   end

@@ -56,6 +56,11 @@ module COS
       bucket.count_dirs(path)
     end
 
+    # 目录是否是空的
+    def empty?
+      bucket.empty?(path) == 0
+    end
+
   end
 
 end

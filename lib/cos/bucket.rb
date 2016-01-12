@@ -98,7 +98,7 @@ module COS
       retry_times = options[:upload_retry] || DEFAULT_UPLOAD_RETRY
 
       options.merge!({bucket: bucket_name})
-
+      file_src  = File.expand_path(file_src)
       file_size = File.size(file_src)
 
       retry_loop(retry_times) do
@@ -171,6 +171,19 @@ module COS
     # 删除文件或目录
     def delete(path)
       client.api.delete(path, bucket: bucket_name)
+    end
+
+    # 删除文件或目录, 不会抛出异常而是返回布尔值
+    def delete!(path)
+      delete(path)
+      true
+    rescue
+      false
+    end
+
+    # 目录是否是空的
+    def empty?(path = '')
+      count(path) == 0
     end
 
     # 文件或目录是否存在

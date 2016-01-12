@@ -44,7 +44,7 @@ module COS
       headers['content-type']  ||= DEFAULT_CONTENT_TYPE
       headers['user-agent']    = get_user_agent
       headers['authorization'] = signature
-      headers['accept'] = 'application/json'
+      headers['accept']        = 'application/json'
 
       # 请求地址
       url = "#{config.api_base}#{path}"
