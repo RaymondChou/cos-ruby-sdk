@@ -30,7 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'webmock', '~> 1.22'
   spec.add_development_dependency 'simplecov', '~> 0.10'
   spec.add_development_dependency 'minitest', '~> 5.8'
-  spec.add_development_dependency 'memory_profiler', '~> 0.9'
 
   spec.required_ruby_version = '>= 1.9.3'
 end

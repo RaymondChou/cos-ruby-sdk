@@ -16,10 +16,18 @@ class COS_CLI < Thor
   class_option :bucket, aliases: '-b', desc: '指定Bucket'
 
   desc 'list [PATH]', '获取目录列表'
+  method_option :prefix, aliases: '-p', desc: '前缀搜索'
+  method_option :num, aliases: '-n', desc: '每页拉取的数量'
+  method_option :pattern, aliases: '-t', desc: '获取方式', banner: 'file, dir, both'
+  method_option :order, aliases: '-o', desc: '排序方式', banner: 'asc, desc'
   def list(path = '')
     rescue_errors do
-      bucket.list(path).each do |res|
-        puts(res.path, :blue)
+      bucket.list(path, enabled_options([:prefix, :num, :pattern, :order])).each do |res|
+        if res.type == 'file'
+          puts(res.path, :blue)
+        else
+          puts(res.path)
+        end
       end
     end
   end
@@ -35,17 +43,31 @@ class COS_CLI < Thor
   end
 
   desc 'tree [PATH]', '显示树形结构'
+  method_option :depth, aliases: '-d', desc: '目录深度', type: :numeric, default: 5
+  method_option :files_count, aliases: '-f', desc: '显示文件个数', type: :boolean, default: false
+  method_option :files, aliases: '-a', desc: '列出文件', type: :boolean, default: false
   def tree(path = '')
     rescue_errors do
       path_obj = bucket.stat(path)
-      COS::Tree.new({path: path_obj}).print_tree
+      COS::Tree.new(
+          enabled_options([:depth, :files_count, :files]).merge({path: path_obj})
+      ).print_tree
     end
   end
 
-  desc 'upload [PATH] [FILE_NAME] [FILE_SRC]', '上传文件'
+  desc 'upload [PATH] [FILE_NAME] [FILE_SRC]', '上传文件(大文件自动分片上传,支持多线程上传,断点续传)'
+  method_option :biz_attr, aliases: '-r', desc: '业务属性'
+  method_option :min_slice_size, aliases: '-m', desc: '最小完整上传大小', type: :numeric, banner: 'bytes'
+  method_option :auto_create_folder, aliases: '-f', desc: '自动创建目录', type: :boolean, default: false
+  method_option :disable_cpt, aliases: '-d', desc: '禁用断点续传(分片上传时有效)', type: :boolean, default: false
+  method_option :threads, aliases: '-t', desc: '线程数(分片上传时有效)', type: :numeric
+  method_option :upload_retry, aliases: '-n', desc: '重试次数(分片上传时有效)', type: :numeric
+  method_option :slice_size, aliases: '-s', desc: '分片上传时每个分片的大小(分片上传时有效)', type: :numeric
+  method_option :cpt_file, aliases: '-e', desc: '指定断点续传记录(分片上传时有效)'
   def upload(path, file_name, file_src)
     rescue_errors do
-      file = bucket.upload(path, file_name, file_src) do |percent|
+      file = bucket.upload(path, file_name, file_src,
+                           enabled_options([:biz_attr, :min_slice_size, :auto_create_folder, :disable_cpt, :threads, :upload_retry, :slice_size, :cpt_file])) do |percent|
         puts("上传进度: #{(percent*100).round(2)}%", :green)
       end
       format_puts_stat(file.to_hash.to_s)
@@ -54,9 +76,19 @@ class COS_CLI < Thor
   end
 
   desc 'upload_all [PATH] [FILE_SRC_PATH]', '上传目录下的所有文件(不含子目录)'
+  method_option :biz_attr, aliases: '-r', desc: '业务属性'
+  method_option :skip_error, aliases: '-k', desc: '跳过错误', type: :boolean, default: false
+  method_option :min_slice_size, aliases: '-m', desc: '最小完整上传大小', type: :numeric, banner: 'bytes'
+  method_option :auto_create_folder, aliases: '-f', desc: '自动创建目录', type: :boolean, default: false
+  method_option :disable_cpt, aliases: '-d', desc: '禁用断点续传(分片上传时有效)', type: :boolean, default: false
+  method_option :threads, aliases: '-t', desc: '线程数(分片上传时有效)', type: :numeric
+  method_option :upload_retry, aliases: '-n', desc: '重试次数(分片上传时有效)', type: :numeric
+  method_option :slice_size, aliases: '-s', desc: '分片上传时每个分片的大小(分片上传时有效)', type: :numeric
+  method_option :cpt_file, aliases: '-e', desc: '指定断点续传记录(分片上传时有效)'
   def upload_all(path, file_src_path)
     rescue_errors do
-      files = bucket.upload_all(path, file_src_path) do |percent|
+      files = bucket.upload_all(path, file_src_path,
+                                enabled_options([:biz_attr, :skip_error, :min_slice_size, :auto_create_folder, :disable_cpt, :threads, :upload_retry, :slice_size, :cpt_file])) do |percent|
         puts("上传进度: #{(percent*100).round(2)}%", :green)
       end
 
@@ -67,10 +99,17 @@ class COS_CLI < Thor
     end
   end
 
-  desc 'download [PATH] [FILE_STORE]', '下载文件'
+  desc 'download [PATH] [FILE_STORE]', '下载文件(大文件自动分片下载,支持多线程下载,断点续传)'
+  method_option :min_slice_size, aliases: '-m', desc: '最小完整下载大小', type: :numeric, banner: 'bytes'
+  method_option :disable_cpt, aliases: '-d', desc: '禁用断点续传(分片下载时有效)', type: :boolean, default: false
+  method_option :threads, aliases: '-t', desc: '线程数(分片下载时有效)', type: :numeric
+  method_option :download_retry, aliases: '-n', desc: '重试次数(分片下载时有效)', type: :numeric
+  method_option :slice_size, aliases: '-s', desc: '分片下载时每个分片的大小(分片下载时有效)', type: :numeric
+  method_option :cpt_file, aliases: '-e', desc: '指定断点续传记录(分片下载时有效)'
   def download(path, file_store)
     rescue_errors do
-      file = bucket.download(path, file_store) do |percent|
+      file = bucket.download(path, file_store,
+                             enabled_options([:min_slice_size, :disable_cpt, :threads, :download_retry, :slice_size, :cpt_file])) do |percent|
         puts("下载进度: #{(percent*100).round(2)}%", :green)
       end
       puts(file, :blue)
@@ -79,9 +118,17 @@ class COS_CLI < Thor
   end
 
   desc 'download_all [PATH] [FILE_STORE_PATH]', '下载目录下的所有文件(不含子目录)'
+  method_option :min_slice_size, aliases: '-m', desc: '最小完整下载大小', type: :numeric, banner: 'bytes'
+  method_option :disable_mkdir, aliases: '-k', desc: '禁止自动创建本地目录', type: :boolean, default: false
+  method_option :disable_cpt, aliases: '-d', desc: '禁用断点续传(分片下载时有效)', type: :boolean, default: false
+  method_option :threads, aliases: '-t', desc: '线程数(分片下载时有效)', type: :numeric
+  method_option :download_retry, aliases: '-n', desc: '重试次数(分片下载时有效)', type: :numeric
+  method_option :slice_size, aliases: '-s', desc: '分片下载时每个分片的大小(分片下载时有效)', type: :numeric
+  method_option :cpt_file, aliases: '-e', desc: '指定断点续传记录(分片下载时有效)'
   def download_all(path, file_store_path)
     rescue_errors do
-      files = bucket.download_all(path, file_store_path) do |percent|
+      files = bucket.download_all(path, file_store_path,
+                                  enabled_options([:min_slice_size, :disable_mkdir, :disable_cpt, :threads, :download_retry, :slice_size, :cpt_file])) do |percent|
         puts("下载进度: #{(percent*100).round(2)}%", :green)
       end
 
@@ -201,6 +248,14 @@ class COS_CLI < Thor
   end
 
   private
+
+  def enabled_options(hash_array)
+    ep = Hash.new
+    hash_array.each do |key|
+      ep[key] = options[key]
+    end
+    ep
+  end
 
   def format_puts_stat(stat)
     # 格式化hash字符串

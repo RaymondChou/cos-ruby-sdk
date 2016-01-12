@@ -141,7 +141,7 @@ module COS
       sign    = http.signature.multiple(bucket)
       resource_path = Util.get_resource_path(config.app_id, bucket, path, options[:prefix])
 
-      pattern = case options[:pattern]
+      pattern = case options[:pattern].to_s.to_sym
                   when :dir_only
                     'eListDirOnly'
                   when :file_only
@@ -154,7 +154,7 @@ module COS
           op:       'list',
           num:      options[:num] || 20,
           pattern:  pattern,
-          order:    options[:order] == :desc ? 1 : 0,
+          order:    options[:order].to_s.to_sym == :desc ? 1 : 0,
           context:  options[:context]
       }
 

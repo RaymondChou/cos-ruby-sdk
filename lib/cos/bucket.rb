@@ -11,7 +11,7 @@ module COS
     attr_reader :client, :bucket_name, :authority, :bucket_type,
                 :migrate_source_domain, :need_preview, :refers
 
-    # 最小上传分块大小
+    # 最小完整上传大小
     MIN_UPLOAD_SLICE_SIZE   = 10 * 1024 * 1024
 
     # 最小下载分块大小
@@ -117,7 +117,7 @@ module COS
 
     # 上传目录下的全部文件(不包含子目录)
     def upload_all(path_or_dir, file_src_path, options = {}, &block)
-      local_path = Util.get_local_path(file_src_path, options[:disable_mkdir])
+      local_path = Util.get_local_path(file_src_path, false)
       uploaded   = []
 
       Dir.foreach(local_path) do |file|
