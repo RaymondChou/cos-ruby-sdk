@@ -65,11 +65,10 @@ module COS
     # 创建目录
     def create_folder(path, options = {})
       data = client.api.create_folder(path, options.merge({bucket: bucket_name}))
-      path = Util.get_list_path(path)
       dir  = {
           mtime:    data[:mtime],
           ctime:    data[:ctime],
-          name:     path.split('/').last(1),
+          name:     data[:name],
           biz_attr: options[:biz_attr],
           bucket:   self,
           path:     path
@@ -233,7 +232,8 @@ module COS
 
       if authority == 'eWRPrivate'
         # 私有读取的bucket自动生成带签名的URL
-        sign = client.signature.multiple(bucket_name, options[:expire_seconds])
+        sign = client.signature.multiple(bucket_name,
+                                         options[:expire_seconds] || client.config.multiple_sign_expire)
         "#{url}?sign=#{sign}"
       else
         url

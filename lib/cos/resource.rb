@@ -179,13 +179,7 @@ module COS
         size_str = filesize.to_s + STORAGE_UNITS[0]
       else
         c_size = human_rep(filesize.to_i)
-
-        if STORAGE_UNITS.index(c_size[:unit]) > 0
-          size_str = "%.2f" % c_size[:size].round(2)
-        else
-          size_str = "%.0f" % c_size[:size]
-        end
-
+        size_str = "%.2f" % c_size[:size].round(2)
         size_str = "#{size_str}#{c_size[:unit]}"
       end
 

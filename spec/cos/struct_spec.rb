@@ -28,6 +28,11 @@ module COS
       end.to raise_error(AttrError)
     end
 
+    it 'should use default logger' do
+      Logging.instance_variable_set(:@logger, nil)
+      expect(Logging.logger.level).to eq(Logger::INFO)
+    end
+
   end
 
 end
