@@ -4,7 +4,7 @@ require 'bundler'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 
-# rspec
+# Rspec 单元测试
 RSpec::Core::RakeTask.new(:spec) do
   Bundler.setup(:default, :test)
 end
@@ -20,7 +20,7 @@ require 'rake/testtask'
 
 # 集成测试
 Rake::TestTask.new do |t|
-  t.pattern = 'test/**/test_*.rb'
+  t.pattern = 'test/**/*_test.rb'
 end
 
 task :default => :spec
