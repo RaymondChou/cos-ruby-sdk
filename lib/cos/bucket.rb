@@ -198,7 +198,7 @@ module COS
     # @return [COS::COSFile]
     #
     # @example
-    #   file = bucket.uploadl('path', 'file1', '~/test/file1') do |p|
+    #   file = bucket.upload('path', 'file1', '~/test/file1') do |p|
     #     puts "上传进度: #{(p*100).round(2)}%")
     #   end
     #   puts file.url

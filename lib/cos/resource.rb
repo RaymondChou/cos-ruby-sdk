@@ -94,16 +94,22 @@ module COS
     end
 
     # 创建时间Time类型
+    #
+    # @return [Time]
     def created_at
       Time.at(ctime.to_i)
     end
 
     # 更新时间Time类型
+    #
+    # @return [Time]
     def updated_at
       Time.at(mtime.to_i)
     end
 
     # 参数转化为Hash类型
+    #
+    # @return [Hash]
     def to_hash
       hash = {
           type:   type,
@@ -121,19 +127,44 @@ module COS
       hash
     end
 
-    # 文件或目录是否存在
+    # 判断当前资源是否存在
+    #
+    # @raise [ServerError] 服务端异常返回
+    #
+    # @return [Boolean] 是否存在
+    #
+    # @example
+    #   puts resource.exist?
     def exist?
       bucket.exist?(path)
     end
 
     alias :exists? :exist?
 
-    # 文件或目录的状态
+    # 获取(刷新)当前资源的状态
+    #
+    # @note 如查询根目录('/', '')可以获取到bucket信息, 返回COSDir
+    #
+    # @raise [ServerError] 服务端异常返回
+    #
+    # @return [COSFile|COSDir] 如果是目录则返回COSDir资源对象,是文件则返回COSFile资源对象
+    #
+    # @example
+    #   puts resource.stat.name
     def stat
       bucket.stat(path)
     end
 
-    # 更新文件或目录的属性
+    # 更新当前资源的属性
+    #
+    # @note 根目录('/') 不可更新, 否则会抛出异常
+    #
+    # @param biz_attr [String] 目录/文件属性，业务端维护
+    #
+    # @raise [ServerError] 服务端异常返回
+    #
+    # @example
+    #   resource.update('i am the attr')
     def update(biz_attr)
       bucket.update(path, biz_attr)
       @mtime    = Time.now.to_i.to_s
@@ -141,13 +172,25 @@ module COS
       self
     end
 
-    # 删除文件或目录
+    # 删除当前资源
+    #
+    # @note 非空目录及根目录不可删除,会抛出异常
+    #
+    # @raise [ServerError] 服务端异常返回
+    #
+    # @example
+    #   resource.delete
     def delete
       bucket.delete(path)
       self
     end
 
-    # 删除文件或目录, 不会抛出异常而是返回布尔值
+    # 删除当前资源, 不会抛出异常而是返回布尔值
+    #
+    # @note 非空目录及根目录不可删除, 返回false
+    #
+    # @example
+    #   puts resource.delete!
     def delete!
       bucket.delete!(path)
     end
