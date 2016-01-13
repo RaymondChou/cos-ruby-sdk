@@ -206,7 +206,7 @@ module COS
       dir = get_dir(path_or_dir, options[:auto_create_folder])
 
       min_size    = options[:min_slice_size] || MIN_UPLOAD_SLICE_SIZE
-      retry_times = options[:upload_retry] ||
+      retry_times = options[:upload_retry] || DEFAULT_UPLOAD_RETRY
 
       options.merge!({bucket: bucket_name})
       file_src  = File.expand_path(file_src)

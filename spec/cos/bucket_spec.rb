@@ -135,14 +135,12 @@ module COS
 
           f.create_folder('path2')
 
-        elsif f.is_a?(COS::COSFile) and f.type == 'file'
+        else
           expect(f.to_hash[:filesize]).to eq(100)
           expect(f.format_size).to eq('100B')
           expect(f.complete?).to eq(true)
           f.delete
           expect(f.exist?).to eq(false)
-        else
-          nil
         end
 
       end
@@ -254,12 +252,9 @@ module COS
 
       @bucket.list('/path/', {pattern: :file_only}).each do |f|
         if f.is_a?(COS::COSDir) and f.type == 'dir'
-          slice = 0
-          f.upload(@file_name, @file, min_slice_size: 1) do
-            slice += 1
-          end
+          file = f.upload(@file_name, @file, min_slice_size: 1)
 
-          expect(slice).to eq(0)
+          expect(file.name).to eq('f1')
         end
       end
 
