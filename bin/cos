@@ -156,9 +156,12 @@ class COS_CLI < Thor
   end
 
   desc 'url [PATH]', '获取文件的访问URL'
+  method_option :cname, aliases: '-e', desc: '使用CNAME', banner: 'cname.domain.com'
+  method_option :https, aliases: '-s', desc: '使用HTTPS', type: :boolean
+  method_option :expire_seconds, aliases: '-p', desc: '签名有效秒数(对私有空间有效)', type: :numeric
   def url(path)
     rescue_errors do
-      puts(bucket.url(path), :blue)
+      puts(bucket.url(path, enabled_options([:cname, :https, :expire_seconds])), :blue)
     end
   end
 

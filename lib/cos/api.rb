@@ -9,20 +9,32 @@ module COS
 
     attr_reader :config, :http
 
+    # 初始化
+    #
+    # @example
+    #   COS::API.new(config)
+    #
+    # @param config [COS::Config] 客户端设置
+    #
+    # @see COS::Config
     def initialize(config)
       @config = config
       @http   = COS::HTTP.new(config)
     end
 
     # 创建目录
-    # @param path [String] 目录路径,
-    #  如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'
+    #
+    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95:
+    #
+    # @param path [String] 目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param options [Hash] 高级参数
     # @option options [String] :biz_attr 目录属性, 业务端维护
     # @option options [String] :bucket bucket名称
+    #
     # @return Hash
     #  * :ctime [String] 创建时间Unix时间戳
     #  * :resource_path [String] 创建的资源路径
+    #
     # @raise [ServerError] 服务端异常返回
     def create_folder(path, options = {})
       bucket  = config.get_bucket(options[:bucket])
@@ -35,17 +47,21 @@ module COS
     end
 
     # 上传文件(完整上传)
-    # @param path [String] 目录路径,
-    #  如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
+    #
+    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6:_(%E5%AE%8C%E6%95%B4%E4%B8%8A%E4%BC%A0)
+    #
+    # @param path [String] 目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param file_name [String] 文件名
     # @param file_src [String] 本地文件路径
     # @param options [Hash] 高级参数
     # @option options [String] :biz_attr 目录属性, 业务端维护
     # @option options [String] :bucket bucket名称
+    #
     # @return Hash
     #  * :access_url [String] 生成的文件下载url
     #  * :url [String] 操作文件的url
     #  * :resource_path [String] 资源路径
+    #
     # @raise [ServerError] 服务端异常返回
     def upload(path, file_name, file_src, options = {})
       bucket        = config.get_bucket(options[:bucket])
@@ -63,8 +79,11 @@ module COS
     end
 
     # 上传文件(分片上传)
-    # @param path [String] 目录路径,
-    #  如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
+    #
+    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6(%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0,_%E7%AC%AC%E4%B8%80%E7%89%87):
+    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6(%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0,_%E5%90%8E%E7%BB%AD%E5%88%86%E7%89%87)
+    #
+    # @param path [String] 目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param file_name [String] 文件名
     # @param file_src [String] 本地文件路径
     # @param options [Hash] 高级参数
@@ -82,11 +101,14 @@ module COS
     #  命名方式为：file.cpt，其中file是用户要下载的文件名。在下载的过
     #  程中会不断更新此文件，成功完成下载后会删除此文件；如果指定的
     #  cpt文件已存在，则从cpt文件中记录的点继续下载。
+    #
     # @yield [Float] 上传进度百分比回调, 进度值是一个0-1之间的小数
+    #
     # @return Hash
     #  * :access_url [String] 生成的文件下载url
     #  * :url [String] 操作文件的url
     #  * :resource_path [String] 资源路径
+    #
     # @raise [ServerError] 服务端异常返回
     def upload_slice(path, file_name, file_src, options = {}, &block)
       slice = Slice.new(
@@ -107,8 +129,10 @@ module COS
     end
 
     # 目录列表/前缀搜索
-    # @param path [String] 目录路径,
-    #  如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
+    #
+    # @see http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95%E5%88%97%E8%A1%A8,%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2:
+    #
+    # @param path [String] 目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
     # @option options [String] :prefix 搜索前缀
@@ -121,6 +145,7 @@ module COS
     # @option options [String] :context 页码
     #  若需要翻页，需要将前一页返回值中的context透传到参数中
     #  若order为:asc，则从当前页正序/往下翻页；若order为:desc，则从当前页倒序/往上翻
+    #
     # @return Hash
     #  * :context [String] 透传字段,用于翻页,需要往前/往后翻页则透传回来
     #  * :has_more [Boolean] 是否有内容可以继续往前/往后翻页
@@ -135,6 +160,7 @@ module COS
     #  *  * :ctime [String] 创建时间(Unix时间戳)
     #  *  * :mtime [String] 修改时间(Unix时间戳)
     #  *  * :access_url [String] 生成的资源可访问的url(当类型为文件时返回)
+    #
     # @raise [ServerError] 服务端异常返回
     def list(path, options = {})
       bucket  = config.get_bucket(options[:bucket])
@@ -162,11 +188,15 @@ module COS
     end
 
     # 更新目录/文件信息(biz_attr)
+    #
+    # @see http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95/%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF_update
+    #
     # @param path [String] 资源路径,
     #  如: 目录'path1/', 文件'path1/file'
     # @param biz_attr [String] 目录/文件属性，业务端维护
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
+    #
     # @raise [ServerError] 服务端异常返回
     def update(path, biz_attr, options = {})
       bucket        = config.get_bucket(options[:bucket])
@@ -178,10 +208,13 @@ module COS
     end
 
     # 目录/文件信息查询
-    # @param path [String] 资源路径,
-    #  如: 目录'path1/', 文件'path1/file'
+    #
+    # @see http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95/%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF_%E6%9F%A5%E8%AF%A2
+    #
+    # @param path [String] 资源路径, 如: 目录'path1/', 文件'path1/file'
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
+    #
     # @return Hash
     #  * :name [String] 目录名/文件名
     #  * :biz_attr [String] 目录/文件属性，业务端维护
@@ -191,6 +224,7 @@ module COS
     #  * :ctime [String] 创建时间(Unix时间戳)
     #  * :mtime [String] 修改时间(Unix时间戳)
     #  * :access_url [String] 生成的资源可访问的url(当类型为文件时返回)
+    #
     # @raise [ServerError] 服务端异常返回
     def stat(path, options = {})
       bucket        = config.get_bucket(options[:bucket])
@@ -201,10 +235,13 @@ module COS
     end
 
     # 删除文件及目录
-    # @param path [String] 资源路径,
-    #  如: 目录'path1/', 文件'path1/file'
+    #
+    # @see http://www.qcloud.com/wiki/%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E5%8F%8A%E7%9B%AE%E5%BD%95
+    #
+    # @param path [String] 资源路径, 如: 目录'path1/', 文件'path1/file'
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
+    #
     # @raise [ServerError] 服务端异常返回
     def delete(path, options = {})
       bucket        = config.get_bucket(options[:bucket])
@@ -216,12 +253,15 @@ module COS
     end
 
     # 下载文件
-    # SDK会自动对私有读的Bucket进行签名
+    #
+    # @note SDK会自动对私有读的Bucket进行签名
+    #
     # @param access_url [String] 资源的下载URL地址可以从list,stat接口中获取
     # @param file_store [String] 本地文件存储路径
     # @param options [Hash]
     # @option options [String] :bucket bucket名称
     # @option options [Hash] :headers 设置下载请求头,如:range
+    #
     # @raise [DownloadError] 下载失败,服务器返回状态异常
     def download(access_url, file_store, options = {})
       bucket = config.get_bucket(options[:bucket])
