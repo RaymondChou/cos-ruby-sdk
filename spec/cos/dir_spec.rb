@@ -27,7 +27,7 @@ module COS
     it 'test upload all files to dir' do
       @time = Time.now.to_i.to_s
 
-      local_path = "/tmp/cos_test/#{Time.now.to_i}"
+      local_path = "/tmp/cos_test/dir_#{Time.now.to_i}"
       FileUtils::mkdir_p(local_path)
 
       File.open("#{local_path}/test.txt", 'w') do |f|
@@ -55,7 +55,7 @@ module COS
     it 'test download all files to local path' do
       @time = Time.now.to_i.to_s
 
-      local_path = "/tmp/cos_test/d_#{Time.now.to_i}"
+      local_path = "/tmp/cos_test/dir2_#{Time.now.to_i}"
       FileUtils::mkdir_p(local_path)
 
       stub_request(:get, "http://web.file.myqcloud.com/files/v1/100000/bucket_name/test/?context=&num=20&op=list&order=0&pattern=eListFileOnly").
