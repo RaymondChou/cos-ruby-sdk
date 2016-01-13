@@ -38,12 +38,13 @@ module COS
     # @note SDK会自动获取bucket的信息,包括读取权限等并进行缓存
     #  如需在后台修改了bucket信息请重新初始化Client
     #
-    # @params bucket_name [String] bucket名称
+    # @param bucket_name [String] bucket名称
     #  如果在初始化时的配置中设置了default_bucket则该字段可以为空,会获取默认的bucket
     #
     # @return [COS::Bucket]
     #
-    # @raise [ServerError]
+    # @raise [ClientError] 未指定bucket
+    # @raise [ServerError] bucket不存在
     def bucket(bucket_name = nil)
       unless @cache_buckets[bucket_name]
         # 缓存bucket对象

@@ -5,6 +5,8 @@ require 'rest-client'
 
 module COS
 
+  # 腾讯云对象存储服务RestfulAPI
+  # @see {http://www.qcloud.com/wiki/RESTful_API%E6%96%87%E6%A1%A3}
   class API
 
     attr_reader :config, :http
@@ -24,7 +26,7 @@ module COS
 
     # 创建目录
     #
-    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95:
+    # @see {http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95:}
     #
     # @param path [String] 目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param options [Hash] 高级参数
@@ -48,7 +50,7 @@ module COS
 
     # 上传文件(完整上传)
     #
-    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6:_(%E5%AE%8C%E6%95%B4%E4%B8%8A%E4%BC%A0)
+    # @see {http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6:_(%E5%AE%8C%E6%95%B4%E4%B8%8A%E4%BC%A0)}
     #
     # @param path [String] 目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param file_name [String] 文件名
@@ -80,8 +82,8 @@ module COS
 
     # 上传文件(分片上传)
     #
-    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6(%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0,_%E7%AC%AC%E4%B8%80%E7%89%87):
-    # @see http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6(%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0,_%E5%90%8E%E7%BB%AD%E5%88%86%E7%89%87)
+    # @see {http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6(%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0,_%E7%AC%AC%E4%B8%80%E7%89%87):}
+    # @see {http://www.qcloud.com/wiki/%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6(%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0,_%E5%90%8E%E7%BB%AD%E5%88%86%E7%89%87)}
     #
     # @param path [String] 目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param file_name [String] 文件名
@@ -130,7 +132,7 @@ module COS
 
     # 目录列表/前缀搜索
     #
-    # @see http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95%E5%88%97%E8%A1%A8,%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2:
+    # @see {http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95%E5%88%97%E8%A1%A8,%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2:}
     #
     # @param path [String] 目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'
     # @param options [Hash]
@@ -189,7 +191,7 @@ module COS
 
     # 更新目录/文件信息(biz_attr)
     #
-    # @see http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95/%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF_update
+    # @see {http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95/%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF_update}
     #
     # @param path [String] 资源路径,
     #  如: 目录'path1/', 文件'path1/file'
@@ -209,7 +211,7 @@ module COS
 
     # 目录/文件信息查询
     #
-    # @see http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95/%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF_%E6%9F%A5%E8%AF%A2
+    # @see {http://www.qcloud.com/wiki/%E7%9B%AE%E5%BD%95/%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF_%E6%9F%A5%E8%AF%A2}
     #
     # @param path [String] 资源路径, 如: 目录'path1/', 文件'path1/file'
     # @param options [Hash]
@@ -236,7 +238,7 @@ module COS
 
     # 删除文件及目录
     #
-    # @see http://www.qcloud.com/wiki/%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E5%8F%8A%E7%9B%AE%E5%BD%95
+    # @see {http://www.qcloud.com/wiki/%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E5%8F%8A%E7%9B%AE%E5%BD%95}
     #
     # @param path [String] 资源路径, 如: 目录'path1/', 文件'path1/file'
     # @param options [Hash]

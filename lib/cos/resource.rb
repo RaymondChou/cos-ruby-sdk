@@ -6,6 +6,7 @@ module COS
 
     attr_reader :bucket, :path, :dir_count, :file_count
 
+    # 实例化COS资源迭代器
     def initialize(bucket, path, options = {})
       @bucket      = bucket
       @path        = path
@@ -73,14 +74,16 @@ module COS
 
   end
 
+  # COS资源,文件与目录的共有操作
   class ResourceOperator < Struct::Base
 
     required_attrs :bucket, :path, :name, :ctime, :mtime
     optional_attrs :biz_attr, :filesize, :filelen, :sha, :access_url,
-                   # 根目录参数
+                   # 根目录(bucket)参数
                    :authority, :bucket_type, :migrate_source_domain,
                    :need_preview, :refers
 
+    # 资源类型
     attr_reader :type
 
     alias :file_size :filesize

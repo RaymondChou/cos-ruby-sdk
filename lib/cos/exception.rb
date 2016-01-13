@@ -14,6 +14,7 @@ module COS
   # Code: -288, Message: process打包失败, HttpCode: 400
   # Code: -4018, Message: 相同文件已上传过, HttpCode: 400
   # Code: -5997, Message: 后端网络错误, HttpCode: 400
+  # Code: -5999, Message: 参数错误, HttpCode: 400
   class ServerError < Exception
 
     attr_reader :response, :http_code, :error_code, :message
