@@ -9,12 +9,13 @@ RSpec::Core::RakeTask.new(:spec) do
   Bundler.setup(:default, :test)
 end
 
-# task :example do
-#   FileList['examples/**/*.rb'].each do |f|
-#     puts "==== Run example: #{f} ===="
-#     ruby f
-#   end
-# end
+# 运行示例
+task :example do
+  FileList['example/**/*.rb'].each do |f|
+    puts "==== Run example: #{f} ===="
+    ruby f
+  end
+end
 
 require 'rake/testtask'
 

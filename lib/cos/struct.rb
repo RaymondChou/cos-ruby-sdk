@@ -23,9 +23,11 @@ module COS
 
         def initialize(options = {})
           # 意外参数检测
-          extra_keys = options.keys - required_attrs - optional_attrs
-          unless extra_keys.empty?
-            raise AttrError, "Unexpected extra keys: #{extra_keys.join(', ')}"
+          unless optional_attrs.include?(:SKIP_EXTRA)
+            extra_keys = options.keys - required_attrs - optional_attrs
+            unless extra_keys.empty?
+              raise AttrError, "Unexpected extra keys: #{extra_keys.join(', ')}"
+            end
           end
 
           # 必选参数检测

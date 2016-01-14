@@ -81,7 +81,8 @@ module COS
     optional_attrs :biz_attr, :filesize, :filelen, :sha, :access_url,
                    # 根目录(bucket)参数
                    :authority, :bucket_type, :migrate_source_domain,
-                   :need_preview, :refers
+                   :need_preview, :refers, :blackrefers, :brower_exec,
+                   :cnames, :nugc_flag, :SKIP_EXTRA
 
     # 资源类型
     attr_reader :type

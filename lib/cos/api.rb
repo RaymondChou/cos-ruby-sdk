@@ -45,7 +45,7 @@ module COS
       resource_path = Util.get_resource_path(config.app_id, bucket, path)
 
       http.post(resource_path, {}, sign, payload.to_json)
-          .merge({name: resource_path.split('/').last(1)})
+          .merge({name: resource_path.split('/').at(-1)})
     end
 
     # 上传文件(完整上传)
