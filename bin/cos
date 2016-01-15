@@ -34,6 +34,15 @@ class COS_CLI < Thor
 
   map ls: :list
 
+  desc 'create_folder [PATH]', '创建目录'
+  method_option :biz_attr, aliases: '-r', desc: '业务属性'
+  def create_folder(path)
+    rescue_errors do
+      dir = bucket.create_folder(path, enabled_options([:biz_attr]))
+      puts("#{dir.path} 目录创建成功!", :purple)
+    end
+  end
+
   desc 'stat [PATH]', '获取目录或文件信息'
   def stat(path = '')
     rescue_errors do
@@ -197,7 +206,7 @@ class COS_CLI < Thor
 
   map exists: :exist
 
-  desc 'exist [PATH]', '判断目录是否为空'
+  desc 'is_empty [PATH]', '判断目录是否为空'
   def is_empty(path)
     rescue_errors do
       puts(bucket.empty?(path), :blue)
