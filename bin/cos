@@ -43,6 +43,8 @@ class COS_CLI < Thor
     end
   end
 
+  map mkdir: :create_folder
+
   desc 'stat [PATH]', '获取目录或文件信息'
   def stat(path = '')
     rescue_errors do
