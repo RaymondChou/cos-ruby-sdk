@@ -29,6 +29,12 @@ end
 puts file.name
 puts file.format_size
 
+# 批量上传目录中的文件
+files = @bucket.upload_all('/test', '~/file_path') do |pr|
+  puts "上传进度 #{(pr*100).round(2)}%"
+end
+puts files
+
 # 使用RAW API完整上传
 puts @client.api.upload('/test', 'file1.txt', '~/test.txt')
 
