@@ -9,7 +9,8 @@ module COS
     include Logging
 
     attr_reader :client, :bucket_name, :authority, :bucket_type,
-                :migrate_source_domain, :need_preview, :refers
+                :migrate_source_domain, :need_preview, :refers,
+                :blackrefers, :brower_exec, :cnames, :nugc_flag
 
     # 最小完整上传大小
     MIN_UPLOAD_SLICE_SIZE   = 10 * 1024 * 1024
@@ -47,6 +48,10 @@ module COS
       @need_preview          = data[:need_preview]
       @refers                = data[:refers]
       @migrate_source_domain = data[:migrate_source_domain]
+      @blackrefers           = data[:blackrefers]
+      @brower_exec           = data[:brower_exec]
+      @cnames                = data[:cnames]
+      @nugc_flag             = data[:nugc_flag]
     end
 
     # 创建目录
