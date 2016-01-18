@@ -48,6 +48,7 @@ module COS
     #
     # @return [Boolean] 是否一致
     def sha1_match?(file)
+      file = File.expand_path(file)
       File.exist?(file) and sha.upcase == Util.file_sha1(file).upcase
     end
 

@@ -373,7 +373,7 @@ module COS
 
     # 目录是否是空的
     #
-    # @param path [String] 资源路径, 如: 目录'path1/', 文件'path1/file'
+    # @param path [String] 资源路径, 如: 目录'path1/'
     #
     # @raise [ServerError] 服务端异常返回
     #
@@ -426,7 +426,7 @@ module COS
     #
     # @note 私有读取的bucket会自动生成带签名的URL
     #
-    # @param path_or_file [String] 文件资源COSFile或路径, 如: 'path1/file'
+    # @param path_or_file [String|COS::COSFile] 文件资源COSFile或路径, 如: 'path1/file'
     # @param options [Hash] 高级参数
     # @option options [String] :cname 在cos控制台设置的cname域名
     # @option options [Boolean] :https 是否生成https的URL

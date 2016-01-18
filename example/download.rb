@@ -13,7 +13,7 @@ COS::Logging::set_logger(STDOUT, Logger::DEBUG)
 # 下载文件
 puts @bucket.download('/test/file', '~/save_file')
 
-# 分块上传设置大小
+# 分块下载设置大小
 file = @bucket.download('/test/file', '~/test.txt', slice_size: 5*1024*1024) do |pr|
   puts "下载进度 #{(pr*100).round(2)}%"
 end
