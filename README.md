@@ -11,13 +11,20 @@
 Tencent🐧 COS(Cloud Object Service) SDK for Ruby  [腾讯云对象存储服务](http://wiki.qcloud.com/wiki/COS%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D)
 
 - 100%实现COS官方Restful API
+  
 - 符合Ruby使用习惯的链式操作
+  
 - 支持HTTPS
+  
 - 支持大文件自动多线程分片断点续传上传、下载
+  
 - 支持Rails
+  
 - 提供便捷的CLI工具:
-
-
+  
+  ![CLI示例](http://mytest-10016219.file.myqcloud.com/out2.gif)
+  
+  ​
 
 [TOC]
 
@@ -1878,7 +1885,7 @@ COS Ruby SDK CLI commands:
   cos delete [PATH]                          # 删除目录或文件
   cos download [PATH] [FILE_STORE]           # 下载文件(大文件自动分片下载,支持多线程断点续传)
   cos download_all [PATH] [FILE_STORE_PATH]  # 下载目录下的所有文件(不含子目录)
-  cos exist [PATH]                           # 判断文件或目录是否存在
+  cos is_exist [PATH]                        # 判断文件或目录是否存在
   cos help [COMMAND]                         # 获取指令的使用帮助
   cos init                                   # 创建默认配置文件
   cos is_complete [PATH]                     # 判断文件是否上传完整

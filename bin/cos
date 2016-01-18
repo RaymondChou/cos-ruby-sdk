@@ -199,8 +199,8 @@ class COS_CLI < Thor
     end
   end
 
-  desc 'exist [PATH]', '判断文件或目录是否存在'
-  def exist(path)
+  desc 'is_exist [PATH]', '判断文件或目录是否存在'
+  def is_exist(path)
     rescue_errors do
       puts(bucket.exist?(path), :blue)
     end
