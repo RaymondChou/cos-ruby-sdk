@@ -1,6 +1,7 @@
 # Tencent COS Ruby SDK
 
 [![Gem Version](https://badge.fury.io/rb/cos.svg)](https://badge.fury.io/rb/cos) [![Dependency Status](https://gemnasium.com/RaymondChou/cos-ruby-sdk.svg)](https://gemnasium.com/RaymondChou/cos-ruby-sdk)
+
  [![Code Climate](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/badges/gpa.svg)](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk) [![Build Status](https://travis-ci.org/RaymondChou/cos-ruby-sdk.svg?branch=master)](https://travis-ci.org/RaymondChou/cos-ruby-sdk) [![Test Coverage](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/badges/coverage.svg)](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/coverage)
 
 [![Gitter](https://badges.gitter.im/RaymondChou/cos-ruby-sdk.svg)](https://gitter.im/RaymondChou/cos-ruby-sdk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Gem Downloads](http://ruby-gem-downloads-badge.herokuapp.com/cos?type=total)](https://rubygems.org/gems/cos) [![Github Code](http://img.shields.io/badge/github-code-blue.svg)](https://github.com/RaymondChou/cos-ruby-sdk) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/RaymondChou/cos-ruby-sdk)
@@ -21,7 +22,7 @@ Tencent🐧 COS(Cloud Object Service) SDK for Ruby  [腾讯云对象存储服务
   
 - 支持Rails
   
-- 提供便捷的CLI工具:
+- 提供便捷的[CLI工具:](#6-cli%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7)
   
   ![CLI示例](http://mytest-10016219.file.myqcloud.com/out2.gif)
 
@@ -153,7 +154,7 @@ client = COS::Client.new({
 })
 ```
 
-更多初始化参数及加载方式请见：4.1 初始化与配置
+更多初始化参数及加载方式请见： [4.1 初始化与配置](#41-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E9%85%8D%E7%BD%AE)
 
 ### 3.3 指定Bucket
 
@@ -441,21 +442,21 @@ end
 
 参数：
 
-| 参数名                          |   类型    |     必须      |       默认值        | 参数描述                                    |
-| :--------------------------- | :-----: | :---------: | :--------------: | --------------------------------------- |
-| path_or_dir                  | String\ | COS::COSDir |        是         | 无                                       |
-| file_name                    | String  |      是      |        无         | 存储文件名                                   |
-| file_src                     | String  |      是      |        无         | 本地文件路径                                  |
-| options                      |  Hash   |      否      |        无         |                                         |
-| options[:auto_create_folder] | Boolean |      否      |      false       | 自动创建远端目录                                |
-| options[:min_slice_size]     | Integer |      否      | 10 * 1024 * 1024 | 完整上传最小文件大小,超过此大小将会使用分片多线程断点续传           |
-| options[:upload_retry]       | Integer |      否      |        10        | 上传重试次数                                  |
-| options[:biz_attr]           | String  |      否      |        无         | 业务属性                                    |
-| options[:disable_cpt]        | Boolean |      否      |      false       | 是否禁用checkpoint，如禁用仍可通过服务端进行断点续传         |
-| options[:threads]            | Integer |      否      |        10        | 多线程上传线程数                                |
-| options[:slice_size]         | Integer |      否      | 3 * 1024 * 1024  | 设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。 |
-| options[:cpt_file]           | String  |      否      |        无         | 断点续传的checkpoint文件                       |
-| yield                        |  Float  |      否      |        无         | 上传进度百分比回调, 进度值是一个0-1之间的小数               |
+| 参数名                          |         类型         |  必须  |       默认值        | 参数描述                                     |
+| :--------------------------- | :----------------: | :--: | :--------------: | ---------------------------------------- |
+| path_or_dir                  | String/COS::COSDir |  否   |        空         | 目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/' |
+| file_name                    |       String       |  是   |        无         | 存储文件名                                    |
+| file_src                     |       String       |  是   |        无         | 本地文件路径                                   |
+| options                      |        Hash        |  否   |        无         |                                          |
+| options[:auto_create_folder] |      Boolean       |  否   |      false       | 自动创建远端目录                                 |
+| options[:min_slice_size]     |      Integer       |  否   | 10 * 1024 * 1024 | 完整上传最小文件大小,超过此大小将会使用分片多线程断点续传            |
+| options[:upload_retry]       |      Integer       |  否   |        10        | 上传重试次数                                   |
+| options[:biz_attr]           |       String       |  否   |        无         | 业务属性                                     |
+| options[:disable_cpt]        |      Boolean       |  否   |      false       | 是否禁用checkpoint，如禁用仍可通过服务端进行断点续传          |
+| options[:threads]            |      Integer       |  否   |        10        | 多线程上传线程数                                 |
+| options[:slice_size]         |      Integer       |  否   | 3 * 1024 * 1024  | 设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。  |
+| options[:cpt_file]           |       String       |  否   |        无         | 断点续传的checkpoint文件                        |
+| yield                        |       Float        |  否   |        无         | 上传进度百分比回调, 进度值是一个0-1之间的小数                |
 
 注：SDK会自动使用分片断点续传上传大文件。
 
@@ -659,13 +660,13 @@ puts @bucket.complete?('path/file1')
 
 参数：
 
-| 参数名                      |   类型    |      必须      |  默认值  | 参数描述                            |
-| :----------------------- | :-----: | :----------: | :---: | ------------------------------- |
-| path_or_file             | String\ | COS::COSFile |   否   | 空                               |
-| options                  |  Hash   |              |       |                                 |
-| options[:cname]          | String  |      否       |   无   | 获取使用cname的url。在cos控制台设置的cname域名 |
-| options[:https]          | Boolean |      否       | false | 是否获取https的url                   |
-| options[:expire_seconds] | Integer |      否       |  600  | 签名有效时间(秒,私有读取bucket时需要)         |
+| 参数名                      |         类型          |  必须  |  默认值  | 参数描述                            |
+| :----------------------- | :-----------------: | :--: | :---: | ------------------------------- |
+| path_or_file             | String/COS::COSFile |  否   |   空   | 文件资源COSFile或路径, 如: 'path1/file' |
+| options                  |        Hash         |      |       |                                 |
+| options[:cname]          |       String        |  否   |   无   | 获取使用cname的url。在cos控制台设置的cname域名 |
+| options[:https]          |       Boolean       |  否   | false | 是否获取https的url                   |
+| options[:expire_seconds] |       Integer       |  否   |  600  | 签名有效时间(秒,私有读取bucket时需要)         |
 
 返回：
 
@@ -687,16 +688,16 @@ puts bucket.url('path1/file1', https: true, cname: 'static.domain.com')
 
 参数：
 
-| 参数名                      |   类型    |      必须      |      默认值      | 参数描述                          |
-| :----------------------- | :-----: | :----------: | :-----------: | ----------------------------- |
-| path_or_file             | String\ | COS::COSFile |       是       | 无                             |
-| file_store               | String  |      是       |       无       | 本地文件存储路径                      |
-| options                  |  Hash   |      否       |       无       |                               |
-| options[:disable_mkdir]  | Boolean |      否       |     true      | 禁止自动创建本地文件夹, 默认会创建            |
-| options[:min_slice_size] | Integer |      否       | 5 * 10 * 1024 | 完整下载最小文件大小,超过此大小将会使用分片多线程断点续传 |
-| options[:download_retry] | Integer |      否       |      10       | 下载重试次数                        |
-| options[:disable_cpt]    | Boolean |      否       |     false     | 是否禁用checkpoint，如果禁用则不使用断点续传   |
-| yield                    |  Float  |      否       |       无       | 下载进度百分比回调, 进度值是一个0-1之间的小数     |
+| 参数名                      |         类型          |  必须  |      默认值      | 参数描述                            |
+| :----------------------- | :-----------------: | :--: | :-----------: | ------------------------------- |
+| path_or_file             | String/COS::COSFile |  是   |       无       | 文件资源COSFile或路径, 如: 'path1/file' |
+| file_store               |       String        |  是   |       无       | 本地文件存储路径                        |
+| options                  |        Hash         |  否   |       无       |                                 |
+| options[:disable_mkdir]  |       Boolean       |  否   |     true      | 禁止自动创建本地文件夹, 默认会创建              |
+| options[:min_slice_size] |       Integer       |  否   | 5 * 10 * 1024 | 完整下载最小文件大小,超过此大小将会使用分片多线程断点续传   |
+| options[:download_retry] |       Integer       |  否   |      10       | 下载重试次数                          |
+| options[:disable_cpt]    |       Boolean       |  否   |     false     | 是否禁用checkpoint，如果禁用则不使用断点续传     |
+| yield                    |        Float        |  否   |       无       | 下载进度百分比回调, 进度值是一个0-1之间的小数       |
 
 注：支持私有访问资源下载，SDK会自动携带鉴权签名。SDK会自动使用分片断点续传下载大文件。
 
@@ -725,11 +726,11 @@ puts file
 
 参数：
 
-| 参数名             |   类型    |     必须      | 默认值  | 参数描述       |
-| :-------------- | :-----: | :---------: | :--: | ---------- |
-| path_or_dir     | String\ | COS::COSDir |  否   | 空          |
-| options         |  Hash   |             |      |            |
-| options[:depth] | Integer |      否      |  5   | 子目录深度,默认为5 |
+| 参数名             |         类型         |  必须  | 默认值  | 参数描述                                     |
+| :-------------- | :----------------: | :--: | :--: | ---------------------------------------- |
+| path_or_dir     | String/COS::COSDir |  否   |  空   | 目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/' |
+| options         |        Hash        |      |      |                                          |
+| options[:depth] |      Integer       |  否   |  5   | 子目录深度,默认为5                               |
 
 返回：
 
@@ -762,11 +763,11 @@ end
 
 参数：
 
-| 参数名             |   类型    |     必须      | 默认值  | 参数描述       |
-| :-------------- | :-----: | :---------: | :--: | ---------- |
-| path_or_dir     | String\ | COS::COSDir |  否   | 空          |
-| options         |  Hash   |             |      |            |
-| options[:depth] | Integer |      否      |  5   | 子目录深度,默认为5 |
+| 参数名             |         类型         |  必须  | 默认值  | 参数描述                                     |
+| :-------------- | :----------------: | :--: | :--: | ---------------------------------------- |
+| path_or_dir     | String/COS::COSDir |  否   |  空   | 目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/' |
+| options         |        Hash        |      |      |                                          |
+| options[:depth] |      Integer       |  否   |  5   | 子目录深度,默认为5                               |
 
 返回：
 
@@ -800,16 +801,16 @@ puts tree.to_json # 可直接转为json
 
 参数：
 
-| 参数名                      |   类型    |     必须      |      默认值      | 参数描述                          |
-| :----------------------- | :-----: | :---------: | :-----------: | ----------------------------- |
-| path_or_dir              | String\ | COS::COSDir |       是       | 无                             |
-| file_store_path          | String  |      是      |       无       | 本地文件存储目录                      |
-| options                  |  Hash   |      否      |       无       |                               |
-| options[:disable_mkdir]  | Boolean |      否      |     true      | 禁止自动创建本地文件夹, 默认会创建            |
-| options[:min_slice_size] | Integer |      否      | 5 * 10 * 1024 | 完整下载最小文件大小,超过此大小将会使用分片多线程断点续传 |
-| options[:download_retry] | Integer |      否      |      10       | 下载重试次数                        |
-| options[:disable_cpt]    | Boolean |      否      |     false     | 是否禁用checkpoint，如果禁用则不使用断点续传   |
-| yield                    |  Float  |      否      |       无       | 下载进度百分比回调, 进度值是一个0-1之间的小数     |
+| 参数名                      |         类型         |  必须  |      默认值      | 参数描述                                     |
+| :----------------------- | :----------------: | :--: | :-----------: | ---------------------------------------- |
+| path_or_dir              | String/COS::COSDir |  否   |       空       | 目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/' |
+| file_store_path          |       String       |  是   |       无       | 本地文件存储目录                                 |
+| options                  |        Hash        |  否   |       无       |                                          |
+| options[:disable_mkdir]  |      Boolean       |  否   |     true      | 禁止自动创建本地文件夹, 默认会创建                       |
+| options[:min_slice_size] |      Integer       |  否   | 5 * 10 * 1024 | 完整下载最小文件大小,超过此大小将会使用分片多线程断点续传            |
+| options[:download_retry] |      Integer       |  否   |      10       | 下载重试次数                                   |
+| options[:disable_cpt]    |      Boolean       |  否   |     false     | 是否禁用checkpoint，如果禁用则不使用断点续传              |
+| yield                    |       Float        |  否   |       无       | 下载进度百分比回调, 进度值是一个0-1之间的小数                |
 
 注：不包含子目录。支持私有访问资源下载，SDK会自动携带鉴权签名。SDK会自动使用分片断点续传下载大文件。
 
@@ -836,21 +837,21 @@ puts files
 
 参数：
 
-| 参数名                          |   类型    |     必须      |       默认值        | 参数描述                                    |
-| :--------------------------- | :-----: | :---------: | :--------------: | --------------------------------------- |
-| path_or_dir                  | String\ | COS::COSDir |        是         | 无                                       |
-| file_src_path                | String  |      是      |        无         | 本地文件夹路径                                 |
-| options                      |  Hash   |      否      |        无         |                                         |
-| options[:skip_error]         | Boolean |      否      |      false       | 是否跳过错误仍继续上传下一个文件                        |
-| options[:auto_create_folder] | Boolean |      否      |      false       | 自动创建远端目录                                |
-| options[:min_slice_size]     | Integer |      否      | 10 * 1024 * 1024 | 完整上传最小文件大小,超过此大小将会使用分片多线程断点续传           |
-| options[:upload_retry]       | Integer |      否      |        10        | 上传重试次数                                  |
-| options[:biz_attr]           | String  |      否      |        无         | 业务属性                                    |
-| options[:disable_cpt]        | Boolean |      否      |      false       | 是否禁用checkpoint，如禁用仍可通过服务端进行断点续传         |
-| options[:threads]            | Integer |      否      |        10        | 多线程上传线程数                                |
-| options[:slice_size]         | Integer |      否      | 3 * 1024 * 1024  | 设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。 |
-| options[:cpt_file]           | String  |      否      |        无         | 断点续传的checkpoint文件                       |
-| yield                        |  Float  |      否      |        无         | 上传进度百分比回调, 进度值是一个0-1之间的小数               |
+| 参数名                          |         类型         |  必须  |       默认值        | 参数描述                                     |
+| :--------------------------- | :----------------: | :--: | :--------------: | ---------------------------------------- |
+| path_or_dir                  | String/COS::COSDir |  否   |        空         | 目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/' |
+| file_src_path                |       String       |  是   |        无         | 本地文件夹路径                                  |
+| options                      |        Hash        |  否   |        无         |                                          |
+| options[:skip_error]         |      Boolean       |  否   |      false       | 是否跳过错误仍继续上传下一个文件                         |
+| options[:auto_create_folder] |      Boolean       |  否   |      false       | 自动创建远端目录                                 |
+| options[:min_slice_size]     |      Integer       |  否   | 10 * 1024 * 1024 | 完整上传最小文件大小,超过此大小将会使用分片多线程断点续传            |
+| options[:upload_retry]       |      Integer       |  否   |        10        | 上传重试次数                                   |
+| options[:biz_attr]           |       String       |  否   |        无         | 业务属性                                     |
+| options[:disable_cpt]        |      Boolean       |  否   |      false       | 是否禁用checkpoint，如禁用仍可通过服务端进行断点续传          |
+| options[:threads]            |      Integer       |  否   |        10        | 多线程上传线程数                                 |
+| options[:slice_size]         |      Integer       |  否   | 3 * 1024 * 1024  | 设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。  |
+| options[:cpt_file]           |       String       |  否   |        无         | 断点续传的checkpoint文件                        |
+| yield                        |       Float        |  否   |        无         | 上传进度百分比回调, 进度值是一个0-1之间的小数                |
 
 注：不包含子目录。SDK会自动使用分片断点续传上传大文件。
 
