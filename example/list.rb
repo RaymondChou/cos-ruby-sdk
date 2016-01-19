@@ -31,10 +31,10 @@ end
 
 # 前缀搜索
 @bucket.list('/', prefix: 'test_') do |res|
-  if res.is_a?(COS::COSDir)
-    puts "Dir: #{res.name} #{res.path}"
+  if res.is_a?(COS::COSFile)
+    puts "File: #{res.name} #{res.size}"
   else
-    puts "File: #{res.name} #{res.format_size}"
+    puts "Dir: #{res.path} #{res.created_at}"
   end
 end
 
