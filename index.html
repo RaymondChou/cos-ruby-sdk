@@ -1,0 +1,3709 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Cos-ruby-sdk by RaymondChou</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Cos-ruby-sdk</h1>
+      <h2 class="project-tagline">Tencent COS(Cloud Object Service) Ruby SDK</h2>
+      <a href="https://github.com/RaymondChou/cos-ruby-sdk" class="btn">View on GitHub</a>
+      <a href="https://github.com/RaymondChou/cos-ruby-sdk/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/RaymondChou/cos-ruby-sdk/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="tencent-cos-ruby-sdk" class="anchor" href="#tencent-cos-ruby-sdk" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tencent COS Ruby SDK</h1>
+
+<p><a href="https://badge.fury.io/rb/cos"><img src="https://badge.fury.io/rb/cos.svg" alt="Gem Version"></a> <a href="https://gemnasium.com/RaymondChou/cos-ruby-sdk"><img src="https://gemnasium.com/RaymondChou/cos-ruby-sdk.svg" alt="Dependency Status"></a>
+ <a href="https://codeclimate.com/github/RaymondChou/cos-ruby-sdk"><img src="https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/badges/gpa.svg" alt="Code Climate"></a> <a href="https://travis-ci.org/RaymondChou/cos-ruby-sdk"><img src="https://travis-ci.org/RaymondChou/cos-ruby-sdk.svg?branch=master" alt="Build Status"></a> <a href="https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/coverage"><img src="https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/badges/coverage.svg" alt="Test Coverage"></a></p>
+
+<p><a href="https://gitter.im/RaymondChou/cos-ruby-sdk?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge"><img src="https://badges.gitter.im/RaymondChou/cos-ruby-sdk.svg" alt="Gitter"></a> <a href="https://rubygems.org/gems/cos"><img src="http://ruby-gem-downloads-badge.herokuapp.com/cos?type=total" alt="Gem Downloads"></a> <a href="https://github.com/RaymondChou/cos-ruby-sdk"><img src="http://img.shields.io/badge/github-code-blue.svg" alt="Github Code"></a> <a href="http://rubydoc.info/github/RaymondChou/cos-ruby-sdk"><img src="http://img.shields.io/badge/yard-docs-blue.svg" alt="Yard Docs"></a></p>
+
+<hr>
+
+<p>Tencent<g-emoji alias="penguin" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f427.png">🐧</g-emoji> COS(Cloud Object Service) SDK for Ruby  <a href="http://wiki.qcloud.com/wiki/COS%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D">腾讯云对象存储服务</a></p>
+
+<ul>
+<li><p>100%实现COS官方Restful API</p></li>
+<li><p>符合Ruby使用习惯的链式操作</p></li>
+<li><p>支持HTTPS</p></li>
+<li><p>支持大文件自动多线程分片断点续传上传、下载</p></li>
+<li><p>支持Rails</p></li>
+<li>
+<p>提供便捷的<a href="#6-cli%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7">CLI工具:</a></p>
+
+<p><img src="http://mytest-10016219.file.myqcloud.com/out2.gif" alt="CLI示例"></p>
+</li>
+</ul>
+
+<p><strong>目录</strong></p>
+
+<ul>
+<li>
+<a href="#tencent-cos-ruby-sdk">Tencent COS Ruby SDK</a>
+
+<ul>
+<li><a href="#1-%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83">1 运行环境</a></li>
+<li><a href="#2-%E5%AE%89%E8%A3%85sdk">2 安装SDK</a></li>
+<li>
+<a href="#3-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8">3 快速入门</a>
+
+<ul>
+<li><a href="#31-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">3.1 准备工作</a></li>
+<li><a href="#32-%E5%88%9D%E5%A7%8B%E5%8C%96">3.2 初始化</a></li>
+<li><a href="#33-%E6%8C%87%E5%AE%9Abucket">3.3 指定Bucket</a></li>
+<li><a href="#34-%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9C%E7%A4%BA%E4%BE%8B">3.4 目录操作示例</a></li>
+<li><a href="#35-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%A4%BA%E4%BE%8B">3.5 文件操作示例</a></li>
+</ul>
+</li>
+<li>
+<a href="#4-sdk%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E">4 SDK详细说明</a>
+
+<ul>
+<li><a href="#41-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E9%85%8D%E7%BD%AE">4.1 初始化与配置</a></li>
+<li><a href="#42-%E6%8C%87%E5%AE%9Abucket">4.2 指定Bucket</a></li>
+<li>
+<a href="#43-bucket%E6%93%8D%E4%BD%9C%EF%BC%88cosbucket%EF%BC%89">4.3 Bucket操作（COS::Bucket）</a>
+
+<ul>
+<li><a href="#431-%E8%8E%B7%E5%8F%96bucket%E5%B1%9E%E6%80%A7">4.3.1 获取Bucket属性</a></li>
+<li><a href="#432-%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95%EF%BC%88create_folder%EF%BC%8Cmkdir%EF%BC%89">4.3.2 创建目录（create_folder，mkdir）</a></li>
+<li><a href="#433-%E5%88%97%E4%B8%BE%E7%9B%AE%E5%BD%95%EF%BC%88list%EF%BC%8Cls%EF%BC%89">4.3.3 列举目录（list，ls）</a></li>
+<li><a href="#434-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%EF%BC%88upload%EF%BC%89">4.3.4 上传文件（upload）</a></li>
+<li><a href="#434-%E8%B5%84%E6%BA%90%E5%B1%9E%E6%80%A7%EF%BC%88stat%EF%BC%89">4.3.4 资源属性（stat）</a></li>
+<li><a href="#435-%E6%9B%B4%E6%96%B0%E8%B5%84%E6%BA%90%E5%B1%9E%E6%80%A7%EF%BC%88upadte%EF%BC%89">4.3.5 更新资源属性（upadte）</a></li>
+<li><a href="#436-%E5%88%A0%E9%99%A4%E8%B5%84%E6%BA%90%EF%BC%88delete%EF%BC%89">4.3.6 删除资源（delete）</a></li>
+<li><a href="#437-%E5%88%A0%E9%99%A4%E8%B5%84%E6%BA%90%EF%BC%88%E6%97%A0%E5%BC%82%E5%B8%B8%EF%BC%89%EF%BC%88delete%EF%BC%89">4.3.7 删除资源（无异常）（delete!）</a></li>
+<li><a href="#438-%E5%88%A4%E6%96%AD%E7%9B%AE%E5%BD%95%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA%EF%BC%88empty%EF%BC%89">4.3.8 判断目录是否为空（empty?）</a></li>
+<li><a href="#439-%E5%88%A4%E6%96%AD%E8%B5%84%E6%BA%90%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%EF%BC%88exist%EF%BC%8Cexists%EF%BC%89">4.3.9 判断资源是否存在（exist?，exists?）</a></li>
+<li><a href="#439-%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E4%B8%8A%E4%BC%A0%E5%AE%8C%E6%88%90%EF%BC%88complete%EF%BC%89">4.3.9 判断文件是否上传完成（complete?）</a></li>
+<li><a href="#4310-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E7%9A%84%E8%AE%BF%E9%97%AEurl%EF%BC%88url%EF%BC%89">4.3.10 获取文件的访问URL（url）</a></li>
+<li><a href="#4311-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%EF%BC%88download%EF%BC%89">4.3.11 下载文件（download）</a></li>
+<li><a href="#4312-%E8%8E%B7%E5%8F%96object%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%EF%BC%88tree%EF%BC%89">4.3.12 获取Object树形结构（tree）</a></li>
+<li><a href="#4313-%E8%8E%B7%E5%8F%96hash%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%EF%BC%88hash_tree%EF%BC%89">4.3.13 获取Hash树形结构（hash_tree）</a></li>
+<li><a href="#4314-%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%EF%BC%88download_all%EF%BC%89">4.3.14 批量下载目录下的所有文件（download_all）</a></li>
+<li><a href="#4315-%E6%89%B9%E9%87%8F%E4%B8%8A%E4%BC%A0%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%EF%BC%88upload_all%EF%BC%89">4.3.15 批量上传目录中的所有文件（upload_all）</a></li>
+<li><a href="#4316-%E8%8E%B7%E5%8F%96%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0%E8%AF%A6%E6%83%85%EF%BC%88%E6%94%AF%E6%8C%81%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2%EF%BC%89%EF%BC%88list_count%EF%BC%89">4.3.16 获取资源个数详情（支持前缀搜索）（list_count）</a></li>
+<li><a href="#4317-%E8%8E%B7%E5%8F%96%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0%EF%BC%88count-size%EF%BC%89">4.3.17 获取资源个数（count, size）</a></li>
+<li><a href="#4318-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E4%B8%AA%E6%95%B0%EF%BC%88count_files%EF%BC%89">4.3.18 获取文件个数（count_files）</a></li>
+<li><a href="#4319-%E8%8E%B7%E5%8F%96%E7%9B%AE%E5%BD%95%E4%B8%AA%E6%95%B0%EF%BC%88count_dirs%EF%BC%89">4.3.19 获取目录个数（count_dirs）</a></li>
+</ul>
+</li>
+<li>
+<a href="#44-%E8%B5%84%E6%BA%90%E6%93%8D%E4%BD%9C">4.4 资源操作</a>
+
+<ul>
+<li>
+<a href="#441-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%EF%BC%88coscosfile%EF%BC%89">4.4.1 文件操作（COS::COSFile）</a>
+
+<ul>
+<li><a href="#4411-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7">4.4.1.1 获取文件属性</a></li>
+<li><a href="#4412-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%EF%BC%88%E5%88%B7%E6%96%B0%EF%BC%89%EF%BC%88stat%EF%BC%89">4.4.1.2 获取当前文件属性（刷新）（stat）</a></li>
+<li><a href="#4413-%E6%9B%B4%E6%96%B0%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%EF%BC%88upadte%EF%BC%89">4.4.1.3 更新当前文件属性（upadte）</a></li>
+<li><a href="#4414-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%EF%BC%88delete%EF%BC%89">4.4.1.4 删除当前文件（delete）</a></li>
+<li><a href="#4415-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%EF%BC%88%E6%97%A0%E5%BC%82%E5%B8%B8%EF%BC%89%EF%BC%88delete%EF%BC%89">4.4.1.5 删除当前文件（无异常）（delete!）</a></li>
+<li><a href="#4416-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%EF%BC%88exist%EF%BC%8Cexists%EF%BC%89">4.4.1.6 判断当前文件是否存在（exist?，exists?）</a></li>
+<li><a href="#4417-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E4%B8%8A%E4%BC%A0%E5%AE%8C%E6%88%90%EF%BC%88complete%EF%BC%89">4.4.1.7 判断当前文件是否上传完成（complete?）</a></li>
+<li><a href="#4418-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E7%9A%84%E8%AE%BF%E9%97%AEurl%EF%BC%88url%EF%BC%89">4.4.1.8 获取当前文件的访问URL（url）</a></li>
+<li><a href="#4419-%E4%B8%8B%E8%BD%BD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%EF%BC%88download%EF%BC%89">4.4.1.9 下载当前文件（download）</a></li>
+<li><a href="#44110-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E4%B8%8E%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E7%9B%B8%E5%90%8C">4.4.1.10 判断当前文件与本地文件是否相同</a></li>
+</ul>
+</li>
+<li>
+<a href="#442-%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9C%EF%BC%88coscosdir%EF%BC%89">4.4.2 目录操作（COS::COSDir）</a>
+
+<ul>
+<li><a href="#4421-%E8%8E%B7%E5%8F%96%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7">4.4.2.1 获取目录属性</a></li>
+<li><a href="#4422-%E5%88%97%E4%B8%BE%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%EF%BC%88%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2%EF%BC%89%EF%BC%88list%EF%BC%8Cls%EF%BC%89">4.4.2.2 列举当前目录（前缀搜索）（list，ls）</a></li>
+<li><a href="#4423-%E5%88%9B%E5%BB%BA%E5%AD%90%E7%9B%AE%E5%BD%95%EF%BC%88create_folder%EF%BC%8Cmkdir%EF%BC%89">4.4.2.3 创建子目录（create_folder，mkdir）</a></li>
+<li><a href="#4424-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E8%87%B3%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%EF%BC%88upload%EF%BC%89">4.4.2.4 上传文件至当前目录（upload）</a></li>
+<li><a href="#4425-%E6%89%B9%E9%87%8F%E4%B8%8A%E4%BC%A0%E6%9C%AC%E5%9C%B0%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E8%87%B3%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%EF%BC%88upload_all%EF%BC%89">4.4.2.5 批量上传本地目录中的所有文件至当前目录（upload_all）</a></li>
+<li><a href="#4426-%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%EF%BC%88download_all%EF%BC%89">4.4.2.6 批量下载当前目录下的所有文件（download_all）</a></li>
+<li><a href="#4427-%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7%EF%BC%88%E5%88%B7%E6%96%B0%EF%BC%89%EF%BC%88stat%EF%BC%89">4.4.2.7 当前目录属性（刷新）（stat）</a></li>
+<li><a href="#4428-%E6%9B%B4%E6%96%B0%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7%EF%BC%88upadte%EF%BC%89">4.4.2.8 更新当前目录属性（upadte）</a></li>
+<li><a href="#4429-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%EF%BC%88delete%EF%BC%89">4.4.2.9 删除当前目录（delete）</a></li>
+<li><a href="#44210-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%EF%BC%88%E6%97%A0%E5%BC%82%E5%B8%B8%EF%BC%89%EF%BC%88delete%EF%BC%89">4.4.2.10 删除当前目录（无异常）（delete!）</a></li>
+<li><a href="#44211-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA%EF%BC%88empty%EF%BC%89">4.4.2.11 判断当前目录是否为空（empty?）</a></li>
+<li><a href="#44212-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%EF%BC%88exist%EF%BC%8Cexists%EF%BC%89">4.4.2.12 判断当前目录是否存在（exist?，exists?）</a></li>
+<li><a href="#44213-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84object%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%EF%BC%88tree%EF%BC%89">4.4.2.13 获取当前目录下的Object树形结构（tree）</a></li>
+<li><a href="#44214-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84hash%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%EF%BC%88hash_tree%EF%BC%89">4.4.2.14 获取当前目录下的Hash树形结构（hash_tree）</a></li>
+<li><a href="#44215-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0%E8%AF%A6%E6%83%85%EF%BC%88%E6%94%AF%E6%8C%81%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2%EF%BC%89%EF%BC%88list_count%EF%BC%89">4.4.2.15 获取当前目录下的资源个数详情（支持前缀搜索）（list_count）</a></li>
+<li><a href="#44216-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0%EF%BC%88count-size%EF%BC%89">4.4.2.16 获取当前目录下的资源个数（count, size）</a></li>
+<li><a href="#44217-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%96%87%E4%BB%B6%E4%B8%AA%E6%95%B0%EF%BC%88count_files%EF%BC%89">4.4.2.17 获取当前目录下的文件个数（count_files）</a></li>
+<li><a href="#44218-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E5%AD%90%E7%9B%AE%E5%BD%95%E4%B8%AA%E6%95%B0%EF%BC%88count_dirs%EF%BC%89">4.4.2.18 获取当前目录下的子目录个数（count_dirs）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#45-%E7%AD%BE%E5%90%8D%E6%93%8D%E4%BD%9C%EF%BC%88cossignature%EF%BC%89">4.5 签名操作（COS::Signature）</a>
+
+<ul>
+<li><a href="#451-%E8%8E%B7%E5%8F%96%E5%8D%95%E6%AC%A1%E6%9C%89%E6%95%88%E7%AD%BE%E5%90%8D%EF%BC%88once%EF%BC%89">4.5.1 获取单次有效签名（once）</a></li>
+<li><a href="#452-%E8%8E%B7%E5%8F%96%E5%A4%9A%E6%AC%A1%E6%9C%89%E6%95%88%E7%AD%BE%E5%90%8D%EF%BC%88multiple%EF%BC%89">4.5.2 获取多次有效签名（multiple）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#5-%E5%BA%95%E5%B1%82api%EF%BC%88cosapi%EF%BC%89">5 底层API（COS::API）</a>
+
+<ul>
+<li><a href="#51-%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95create_folder">5.1 创建目录(create_folder)</a></li>
+<li><a href="#52-%E7%9B%AE%E5%BD%95%E5%88%97%E8%A1%A8%EF%BC%88%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2%EF%BC%89list">5.2 目录列表（前缀搜索）(list)</a></li>
+<li><a href="#53-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%EF%BC%88%E5%AE%8C%E6%95%B4%E4%B8%8A%E4%BC%A0%EF%BC%89upload">5.3 上传文件（完整上传）(upload)</a></li>
+<li><a href="#54-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%EF%BC%88%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0%EF%BC%89upload_slice">5.4 上传文件（分片上传）(upload_slice)</a></li>
+<li><a href="#55-%E6%9B%B4%E6%96%B0%E6%96%87%E4%BB%B6%E3%80%81%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7update">5.5 更新文件、目录属性(update)</a></li>
+<li><a href="#56-%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E3%80%81%E7%9B%AE%E5%BD%95delete">5.6 删除文件、目录(delete)</a></li>
+<li><a href="#57-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7stat">5.7 获取文件或目录属性(stat)</a></li>
+<li><a href="#58%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6">5.8下载文件</a></li>
+</ul>
+</li>
+<li><a href="#6-cli%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7">6 CLI命令行工具</a></li>
+<li><a href="#7-%E8%BF%90%E8%A1%8C%E6%B5%8B%E8%AF%95">7 运行测试</a></li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="1-运行环境" class="anchor" href="#1-%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 运行环境</h2>
+
+<ul>
+<li>Ruby版本：MRI &gt;= 1.9.3,  JRuby &gt;= 1.9</li>
+<li>操作系统：Windows/Linux/OS X</li>
+</ul>
+
+<h2>
+<a id="2-安装sdk" class="anchor" href="#2-%E5%AE%89%E8%A3%85sdk" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 安装SDK</h2>
+
+<p>添加至应用程序的Gemfile文件：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>cos<span class="pl-pds">'</span></span></pre></div>
+
+<p>然后执行：</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>或手动安装gem：</p>
+
+<pre><code>$ gem install cos
+</code></pre>
+
+<h2>
+<a id="3-快速入门" class="anchor" href="#3-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>3 快速入门</h2>
+
+<h3>
+<a id="31-准备工作" class="anchor" href="#31-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 准备工作</h3>
+
+<p>在<a href="http://console.qcloud.com/cos">腾讯云COS控制台</a>创建Bucket并获取您的<code>app_id</code> <code>secret_id</code> <code>secret_key</code> </p>
+
+<p><g-emoji alias="mag" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f50d.png">🔍</g-emoji>具体操作可参考<a href="http://www.qcloud.com/wiki/COS%E6%8E%A7%E5%88%B6%E5%8F%B0%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E">COS控制台使用说明</a></p>
+
+<h3>
+<a id="32-初始化" class="anchor" href="#32-%E5%88%9D%E5%A7%8B%E5%8C%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 初始化</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>cos<span class="pl-pds">'</span></span>
+
+client <span class="pl-k">=</span> <span class="pl-c1">COS</span>::<span class="pl-c1">Client</span>.<span class="pl-k">new</span>({
+  <span class="pl-c1">app_id:</span>     <span class="pl-s"><span class="pl-pds">'</span>your_app_id<span class="pl-pds">'</span></span>,
+  <span class="pl-c1">secret_id:</span>  <span class="pl-s"><span class="pl-pds">'</span>your_secret_id<span class="pl-pds">'</span></span>,
+  <span class="pl-c1">secret_key:</span> <span class="pl-s"><span class="pl-pds">'</span>your_secret_key<span class="pl-pds">'</span></span>,
+  <span class="pl-c1">protocol:</span>   <span class="pl-s"><span class="pl-pds">'</span>https<span class="pl-pds">'</span></span> <span class="pl-c"># 使用https</span>
+})</pre></div>
+
+<p>更多初始化参数及加载方式请见： <a href="#41-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E9%85%8D%E7%BD%AE">4.1 初始化与配置</a></p>
+
+<h3>
+<a id="33-指定bucket" class="anchor" href="#33-%E6%8C%87%E5%AE%9Abucket" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.3 指定Bucket</h3>
+
+<div class="highlight highlight-source-ruby"><pre>bucket <span class="pl-k">=</span> client.bucket(<span class="pl-s"><span class="pl-pds">'</span>your_bucket_name<span class="pl-pds">'</span></span>)</pre></div>
+
+<p><g-emoji alias="tada" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f389.png">🎉</g-emoji>【Tip】你也可以在初始化Client时通过<code>default_bucket</code>参数设置默认的Bucket：</p>
+
+<div class="highlight highlight-source-ruby"><pre>client <span class="pl-k">=</span> <span class="pl-c1">COS</span>::<span class="pl-c1">Client</span>.<span class="pl-k">new</span>({
+  <span class="pl-c1">app_id:</span>         <span class="pl-s"><span class="pl-pds">'</span>your_app_id<span class="pl-pds">'</span></span>,
+  <span class="pl-c1">secret_id:</span>      <span class="pl-s"><span class="pl-pds">'</span>your_secret_id<span class="pl-pds">'</span></span>,
+  <span class="pl-c1">secret_key:</span>     <span class="pl-s"><span class="pl-pds">'</span>your_secret_key<span class="pl-pds">'</span></span>,
+  <span class="pl-c1">defualt_bucket:</span> <span class="pl-s"><span class="pl-pds">'</span>your_default_bucket<span class="pl-pds">'</span></span>,
+})
+<span class="pl-c"># 取得默认Bucket</span>
+bucket <span class="pl-k">=</span> client.bucket</pre></div>
+
+<h3>
+<a id="34-目录操作示例" class="anchor" href="#34-%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9C%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.4 目录操作示例</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># 列举bucket根目录中的文件与目录</span>
+bucket.list <span class="pl-k">do </span>|<span class="pl-smi">res</span>|
+  <span class="pl-k">if</span> res.is_a?(<span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span>) <span class="pl-c"># 或 res.type == 'dir'</span>
+    puts <span class="pl-s"><span class="pl-pds">"</span>Dir：<span class="pl-pse">#{</span><span class="pl-s1">res.name</span><span class="pl-pse"><span class="pl-s1">}</span></span> <span class="pl-pse">#{</span><span class="pl-s1">res.biz_attr</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pds">"</span></span>
+    <span class="pl-c"># 设置目录属性</span>
+    res.update(<span class="pl-s"><span class="pl-pds">'</span>属性1<span class="pl-pds">'</span></span>)
+  <span class="pl-k">else</span>
+    <span class="pl-c"># 文件 COS::COSFile 或 res.type == 'file'</span>
+    puts <span class="pl-s"><span class="pl-pds">"</span>File：<span class="pl-pse">#{</span><span class="pl-s1">res.name</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pds">"</span></span>
+    <span class="pl-c"># 输出Hash参数</span>
+    puts res.to_hash
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span>
+
+<span class="pl-c"># 可以按路径列出资源</span>
+bucket.list(<span class="pl-s"><span class="pl-pds">'</span>/path/path2/<span class="pl-pds">'</span></span>) { |<span class="pl-smi">r</span>| puts r.name }
+
+<span class="pl-c"># 只列出文件</span>
+bucket.list(<span class="pl-s"><span class="pl-pds">'</span>/path/path2/<span class="pl-pds">'</span></span>, <span class="pl-c1">:pattern</span> =&gt; <span class="pl-c1">:only_file</span>) { |<span class="pl-smi">r</span>| puts r.name }
+
+<span class="pl-c"># 倒序只列出目录</span>
+bucket.list(<span class="pl-s"><span class="pl-pds">'</span>/path/path2/<span class="pl-pds">'</span></span>, <span class="pl-c1">:pattern</span> =&gt; <span class="pl-c1">:only_dir</span>, <span class="pl-c1">:order</span> =&gt; <span class="pl-c1">:desc</span>) { |<span class="pl-smi">r</span>| puts r.name }
+
+<span class="pl-c"># 获取bucket信息</span>
+b <span class="pl-k">=</span> bucket.stat
+puts b.refers
+
+<span class="pl-c"># 判断目录是否存在</span>
+puts bucket.exist?(<span class="pl-s"><span class="pl-pds">'</span>dir<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 获取目录信息</span>
+dir <span class="pl-k">=</span> bucket.stat(<span class="pl-s"><span class="pl-pds">'</span>dir<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 创建时间修改时间</span>
+puts dir.created_at
+puts dir.updated_at
+<span class="pl-c"># 判断目录是否是空的</span>
+puts dir.empty?
+<span class="pl-c"># 目录中的文件及目录总数</span>
+puts dir.count
+<span class="pl-c"># 目录中的文件总数</span>
+puts dir.count_files
+<span class="pl-c"># 目录中的文件夹总数</span>
+puts dir.count_dirs
+<span class="pl-c"># 获取目录的树形结构</span>
+puts dir.hash_tree.to_json
+<span class="pl-c"># 删除目录</span>
+puts dir.delete!
+<span class="pl-c"># 上传文件至目录, 自动大文件分片多线程断点续传</span>
+dir.upload(<span class="pl-s"><span class="pl-pds">'</span>file2<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/path2/file2<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 批量上传文件至目录，自动大文件分片多线程断点续传</span>
+dir.upload_all(<span class="pl-s"><span class="pl-pds">'</span>~/path1<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 下载目录中的所有文件，自动大文件分片多线程断点续传</span>
+puts bucket.stat(<span class="pl-s"><span class="pl-pds">'</span>path3<span class="pl-pds">'</span></span>).download_all(<span class="pl-s"><span class="pl-pds">'</span>~/path_store<span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="35-文件操作示例" class="anchor" href="#35-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.5 文件操作示例</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># 上传文件，自动大文件分片多线程断点续传</span>
+file <span class="pl-k">=</span> bucket.upload(<span class="pl-s"><span class="pl-pds">'</span>path<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>file1<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/local_path/file1<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">pr</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>上传进度 <span class="pl-pse">#{</span><span class="pl-s1">(pr<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span>
+<span class="pl-c"># 判断文件是否存在</span>
+puts bucket.exist?(<span class="pl-s"><span class="pl-pds">'</span>path/file1<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 获取文件信息</span>
+file <span class="pl-k">=</span> bucket.stat(<span class="pl-s"><span class="pl-pds">'</span>path/file1<span class="pl-pds">'</span></span>)
+puts file.name
+puts file.biz_attr
+<span class="pl-c"># 更新文件属性</span>
+file.update(<span class="pl-s"><span class="pl-pds">'</span>i am a biz attr<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 判断文件是否上传完成</span>
+puts file.complete?
+<span class="pl-c"># 获取文件大小</span>
+puts file.size <span class="pl-c"># file.file_size OR file.filesize</span>
+<span class="pl-c"># 获取文件格式化的文件大小</span>
+puts file.format_size <span class="pl-c"># 102KB, 3.1MB, 1.5GB</span>
+<span class="pl-c"># 下载文件，自动大文件分片多线程断点续传</span>
+file.download(<span class="pl-s"><span class="pl-pds">'</span>~/path/file1<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">pr</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>下载进度 <span class="pl-pse">#{</span><span class="pl-s1">(pr<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span>
+<span class="pl-c"># 获取文件访问URL，私有读取bucket自动添加签名</span>
+file.url(<span class="pl-c1">cname:</span> <span class="pl-s"><span class="pl-pds">'</span>s.domain.com<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 删除文件</span>
+file.delete</pre></div>
+
+<h2>
+<a id="4-sdk详细说明" class="anchor" href="#4-sdk%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E" aria-hidden="true"><span class="octicon octicon-link"></span></a>4 SDK详细说明</h2>
+
+<h3>
+<a id="41-初始化与配置" class="anchor" href="#41-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E9%85%8D%E7%BD%AE" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.1 初始化与配置</h3>
+
+<ul>
+<li>
+<p>4.1.1 详细参数</p>
+
+<div class="highlight highlight-source-ruby"><pre>{
+  <span class="pl-c"># COS分配的app_id</span>
+  <span class="pl-c1">:app_id</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>app_id<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># COS分配的secret_id</span>
+  <span class="pl-c1">:secret_id</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>secret_id<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># COS分配的secret_key</span>
+  <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>secret_key<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># COS Reatful API Host</span>
+  <span class="pl-c1">:host</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>web.file.myqcloud.com<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># 使用协议,默认为http,可选https</span>
+  <span class="pl-c1">:protocol</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>https<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># 接口通讯建立连接超时秒数</span>
+  <span class="pl-c1">:open_timeout</span> =&gt; <span class="pl-c1">15</span>,
+  <span class="pl-c"># 接口通讯读取数据超时秒数</span>
+  <span class="pl-c1">:read_timeout</span> =&gt; <span class="pl-c1">120</span>,
+  <span class="pl-c"># 加载配置文件路径</span>
+  <span class="pl-c1">:config</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>~/path/cos.yml<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># 日志输出位置，可以是文件路径也可为STDOUT、STDERR</span>
+  <span class="pl-c1">:log_src</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>/var/log/cos.log<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># 输出日志级别</span>
+  <span class="pl-c1">:log_level</span> =&gt; <span class="pl-c1">Logger</span>::<span class="pl-c1">INFO</span>,
+  <span class="pl-c"># 默认bucket</span>
+  <span class="pl-c1">:default_bucket</span> =&gt; <span class="pl-s"><span class="pl-pds">'</span>bucket_name<span class="pl-pds">'</span></span>,
+  <span class="pl-c"># 多次签名过期时间(单位秒)</span>
+  <span class="pl-c1">:multiple_sign_expire</span> =&gt; <span class="pl-c1">300</span>
+}</pre></div>
+</li>
+<li>
+<p>4.1.2 标准方式初始化配置</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>cos<span class="pl-pds">'</span></span>
+
+<span class="pl-smi">@client</span> <span class="pl-k">=</span> <span class="pl-c1">COS</span>::<span class="pl-c1">Client</span>.<span class="pl-k">new</span>(configs)</pre></div>
+</li>
+<li>
+<p>4.1.3 实例方式初始化配置</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>cos<span class="pl-pds">'</span></span>
+
+<span class="pl-c"># 程序启动时加载配置</span>
+<span class="pl-c1">COS</span>.client(configs)
+<span class="pl-c"># 使用client</span>
+<span class="pl-c1">COS</span>.client.bucket</pre></div>
+</li>
+<li>
+<p>4.1.4 从配置文件加载配置</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>cos<span class="pl-pds">'</span></span>
+
+<span class="pl-smi">@client</span> <span class="pl-k">=</span> <span class="pl-c1">COS</span>::<span class="pl-c1">Client</span>.<span class="pl-k">new</span>(<span class="pl-c1">config:</span> <span class="pl-s"><span class="pl-pds">'</span>./cos.yml<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 或</span>
+<span class="pl-c1">COS</span>.client(<span class="pl-c1">config:</span> <span class="pl-s"><span class="pl-pds">'</span>./cos.yml<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>Rails中会自动加载项目目录下的配置文件<code>log/cos.yml</code></p>
+
+<p><g-emoji alias="tada" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f389.png">🎉</g-emoji>【Tip】可以使用CLI指令<code>cos init</code>创建默认的yml配置文件，<code>cos init [配置文件路径]</code>自定义配置文件的路径。</p>
+</li>
+</ul>
+
+<h3>
+<a id="42-指定bucket" class="anchor" href="#42-%E6%8C%87%E5%AE%9Abucket" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.2 指定Bucket</h3>
+
+<p>所有的资源基本操作是基于一个bucket的，所有我们需要先指定一个bucket：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span> <span class="pl-k">=</span> <span class="pl-smi">@client</span>.bucket(<span class="pl-s"><span class="pl-pds">'</span>bucket_name<span class="pl-pds">'</span></span>)
+<span class="pl-c"># 或使用配置的默认bucket</span>
+<span class="pl-smi">@bucket</span> <span class="pl-k">=</span> <span class="pl-smi">@client</span>.bucket</pre></div>
+
+<p>注：指定bucket时，SDK会获取一次bucket信息，获取权限类型等信息，如bucket不存在将会抛出异常。</p>
+
+<h3>
+<a id="43-bucket操作cosbucket" class="anchor" href="#43-bucket%E6%93%8D%E4%BD%9Ccosbucket" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3 Bucket操作（COS::Bucket）</h3>
+
+<h4>
+<a id="431-获取bucket属性" class="anchor" href="#431-%E8%8E%B7%E5%8F%96bucket%E5%B1%9E%E6%80%A7" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.1 获取Bucket属性</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># bucket名称</span>
+puts <span class="pl-smi">@bucket</span>.bucket_name
+<span class="pl-c"># bucket权限</span>
+puts <span class="pl-smi">@bucket</span>.authority</pre></div>
+
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bucket_name</td>
+<td>String</td>
+<td>bucket名称</td>
+</tr>
+<tr>
+<td>authority</td>
+<td>String</td>
+<td>eWPrivateRPublic私有写公共读，eWPrivate私有写私有读</td>
+</tr>
+<tr>
+<td>bucket_type</td>
+<td>Integer</td>
+<td>bucket_type</td>
+</tr>
+<tr>
+<td>migrate_source_domain</td>
+<td>String</td>
+<td>回源地址</td>
+</tr>
+<tr>
+<td>need_preview</td>
+<td>String</td>
+<td>need_preview</td>
+</tr>
+<tr>
+<td>refers</td>
+<td>Array</td>
+<td>refers</td>
+</tr>
+<tr>
+<td>blackrefers</td>
+<td>Array</td>
+<td>blackrefers</td>
+</tr>
+<tr>
+<td>cnames</td>
+<td>Array</td>
+<td>cnames</td>
+</tr>
+<tr>
+<td>nugc_flag</td>
+<td>String</td>
+<td>nugc_flag</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="432-创建目录create_foldermkdir" class="anchor" href="#432-%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95create_foldermkdir" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.2 创建目录（create_folder，mkdir）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.create_folder(path, options <span class="pl-k">=</span> {}) <span class="pl-c"># 方法别名mkdir</span></pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>需要创建的目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>目录属性, 业务端维护</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span> <span class="pl-c"># 详见目录操作（COS::COSDir）</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.create_folder(<span class="pl-s"><span class="pl-pds">"</span>test_dir1<span class="pl-pds">"</span></span>, <span class="pl-c1">biz_attr:</span> <span class="pl-s"><span class="pl-pds">'</span>测试目录1<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>更多示例详见：example/create_folder.rb</p>
+
+<h4>
+<a id="433-列举目录listls" class="anchor" href="#433-%E5%88%97%E4%B8%BE%E7%9B%AE%E5%BD%95listls" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.3 列举目录（list，ls）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.list(path <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, options <span class="pl-k">=</span> {}) <span class="pl-c"># 方法别名ls</span></pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>需要列举的目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:prefix]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>搜索前缀，如果填写prefix, 则列出含此前缀的所有文件及目录</td>
+</tr>
+<tr>
+<td align="left">options[:num]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">20</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:pattern]</td>
+<td align="center">Symbol</td>
+<td align="center">否</td>
+<td align="center">:both</td>
+<td>获取模式，:dir_only 只获取目录, :file_only 只获取文件, 默认为 :both 全部获取</td>
+</tr>
+<tr>
+<td align="left">options[:order]</td>
+<td align="center">Symbol</td>
+<td align="center">否</td>
+<td align="center">:asc</td>
+<td>排序方式 :asc 正序, :desc 倒序 默认为 :asc</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre>[<span class="pl-c1">Enumerator</span><span class="pl-k">&lt;</span><span class="pl-c1">Object</span><span class="pl-k">&gt;</span>] 迭代器, 其中<span class="pl-c1">Object</span>可能是<span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span>或<span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.list(<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">res</span>|
+  <span class="pl-k">if</span> res.is_a?(<span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span>)
+    puts <span class="pl-s"><span class="pl-pds">"</span>Dir: <span class="pl-pse">#{</span><span class="pl-s1">res.name</span><span class="pl-pse"><span class="pl-s1">}</span></span> <span class="pl-pse">#{</span><span class="pl-s1">res.path</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pds">"</span></span>
+  <span class="pl-k">else</span>
+    puts <span class="pl-s"><span class="pl-pds">"</span>File: <span class="pl-pse">#{</span><span class="pl-s1">res.name</span><span class="pl-pse"><span class="pl-s1">}</span></span> <span class="pl-pse">#{</span><span class="pl-s1">res.format_size</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pds">"</span></span>
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span></pre></div>
+
+<p>更多示例详见：example/list.rb</p>
+
+<h4>
+<a id="434-上传文件upload" class="anchor" href="#434-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6upload" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.4 上传文件（upload）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.upload(path_or_dir, file_name, file_src, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path_or_dir</td>
+<td align="center">String/COS::COSDir</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'</td>
+</tr>
+<tr>
+<td align="left">file_name</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>存储文件名</td>
+</tr>
+<tr>
+<td align="left">file_src</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:auto_create_folder]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>自动创建远端目录</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10 * 1024 * 1024</td>
+<td>完整上传最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:upload_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>上传重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如禁用仍可通过服务端进行断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:threads]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>多线程上传线程数</td>
+</tr>
+<tr>
+<td align="left">options[:slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">3 * 1024 * 1024</td>
+<td>设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。</td>
+</tr>
+<tr>
+<td align="left">options[:cpt_file]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>断点续传的checkpoint文件</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>上传进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：SDK会自动使用分片断点续传上传大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span> <span class="pl-c"># 详见目录操作（COS::COSFile）</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>file <span class="pl-k">=</span> <span class="pl-smi">@bucket</span>.upload(<span class="pl-s"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>file1.txt<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/test.txt<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">pr</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>上传进度 <span class="pl-pse">#{</span><span class="pl-s1">(pr<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span>
+puts file.name
+puts file.format_size
+puts file.url</pre></div>
+
+<p>更多示例详见： example/upload.rb</p>
+
+<h4>
+<a id="434-资源属性stat" class="anchor" href="#434-%E8%B5%84%E6%BA%90%E5%B1%9E%E6%80%A7stat" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.4 资源属性（stat）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.stat(path)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>资源路径, 如: 目录'path1/', 文件'path1/file'。</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre>可能是<span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span>(文件)或<span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span>(目录)</pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.stat(<span class="pl-s"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>).name</pre></div>
+
+<p>更多示例详见： example/stat.rb</p>
+
+<h4>
+<a id="435-更新资源属性upadte" class="anchor" href="#435-%E6%9B%B4%E6%96%B0%E8%B5%84%E6%BA%90%E5%B1%9E%E6%80%A7upadte" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.5 更新资源属性（upadte）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.update(path, biz_attr)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>资源路径, 如: 目录'path1/', 文件'path1/file'。</td>
+</tr>
+<tr>
+<td align="left">biz_attr</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.update(<span class="pl-s"><span class="pl-pds">'</span>test/file1<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>new biz attr<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>更多示例详见： example/update.rb</p>
+
+<h4>
+<a id="436-删除资源delete" class="anchor" href="#436-%E5%88%A0%E9%99%A4%E8%B5%84%E6%BA%90delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.6 删除资源（delete）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.delete(path)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>资源路径, 如: 目录'path1/', 文件'path1/file'。</td>
+</tr>
+</tbody>
+</table>
+
+<p>注意：非空目录或根目录无法删除，会抛出异常</p>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.delete(<span class="pl-s"><span class="pl-pds">'</span>test/<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>更多示例详见：example/delete.rb</p>
+
+<h4>
+<a id="437-删除资源无异常delete" class="anchor" href="#437-%E5%88%A0%E9%99%A4%E8%B5%84%E6%BA%90%E6%97%A0%E5%BC%82%E5%B8%B8delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.7 删除资源（无异常）（delete!）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.delete!(path)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>资源路径, 如: 目录'path1/', 文件'path1/file'。</td>
+</tr>
+</tbody>
+</table>
+
+<p>注意：非空目录或根目录无法删除，返回是否成功的bool值。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.delete!(<span class="pl-s"><span class="pl-pds">'</span>test/<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>更多示例详见：example/delete.rb</p>
+
+<h4>
+<a id="438-判断目录是否为空empty" class="anchor" href="#438-%E5%88%A4%E6%96%AD%E7%9B%AE%E5%BD%95%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BAempty" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.8 判断目录是否为空（empty?）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.empty?(path)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径, 如: 目录'path1/'。如为空则会判断bucket是否为空。</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># 目录是否为空</span>
+puts <span class="pl-smi">@bucket</span>.empty?(<span class="pl-s"><span class="pl-pds">'</span>test/<span class="pl-pds">'</span></span>)
+<span class="pl-c"># bucket是否为空</span>
+puts <span class="pl-smi">@bucket</span>.empty?</pre></div>
+
+<h4>
+<a id="439-判断资源是否存在existexists" class="anchor" href="#439-%E5%88%A4%E6%96%AD%E8%B5%84%E6%BA%90%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8existexists" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.9 判断资源是否存在（exist?，exists?）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.exist?(path) <span class="pl-c"># 别名 exists?</span></pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>资源路径, 如: 目录'path1/', 文件'path1/file'</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.exist?(<span class="pl-s"><span class="pl-pds">'</span>test/<span class="pl-pds">'</span></span>)
+puts <span class="pl-smi">@bucket</span>.exist?(<span class="pl-s"><span class="pl-pds">'</span>test/file1<span class="pl-pds">'</span></span>)</pre></div>
+
+<h4>
+<a id="439-判断文件是否上传完成complete" class="anchor" href="#439-%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E4%B8%8A%E4%BC%A0%E5%AE%8C%E6%88%90complete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.9 判断文件是否上传完成（complete?）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.complete?(path)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>文件资源路径, 如: 'path1/file'</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.complete?(<span class="pl-s"><span class="pl-pds">'</span>path/file1<span class="pl-pds">'</span></span>)</pre></div>
+
+<h4>
+<a id="4310-获取文件的访问urlurl" class="anchor" href="#4310-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E7%9A%84%E8%AE%BF%E9%97%AEurlurl" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.10 获取文件的访问URL（url）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.url(path_or_file, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path_or_file</td>
+<td align="center">String/COS::COSFile</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>文件资源COSFile或路径, 如: 'path1/file'</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:cname]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>获取使用cname的url。在cos控制台设置的cname域名</td>
+</tr>
+<tr>
+<td align="left">options[:https]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否获取https的url</td>
+</tr>
+<tr>
+<td align="left">options[:expire_seconds]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">600</td>
+<td>签名有效时间(秒,私有读取bucket时需要)</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">String</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts bucket.url(<span class="pl-s"><span class="pl-pds">'</span>path1/file1<span class="pl-pds">'</span></span>, <span class="pl-c1">https:</span> <span class="pl-c1">true</span>, <span class="pl-c1">cname:</span> <span class="pl-s"><span class="pl-pds">'</span>static.domain.com<span class="pl-pds">'</span></span>)</pre></div>
+
+<h4>
+<a id="4311-下载文件download" class="anchor" href="#4311-%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6download" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.11 下载文件（download）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.download(path_or_file, file_store, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path_or_file</td>
+<td align="center">String/COS::COSFile</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>文件资源COSFile或路径, 如: 'path1/file'</td>
+</tr>
+<tr>
+<td align="left">file_store</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件存储路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:disable_mkdir]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">true</td>
+<td>禁止自动创建本地文件夹, 默认会创建</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5 * 10 * 1024</td>
+<td>完整下载最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:download_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>下载重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如果禁用则不使用断点续传</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>下载进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：支持私有访问资源下载，SDK会自动携带鉴权签名。SDK会自动使用分片断点续传下载大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">String</span> <span class="pl-c"># 本地文件存储路径</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>file <span class="pl-k">=</span> bucket.download(<span class="pl-s"><span class="pl-pds">'</span>path/file1<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/test/file1<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">p</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>下载进度: <span class="pl-pse">#{</span><span class="pl-s1">(p<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span>
+puts file</pre></div>
+
+<p>更多示例详见：example/download.rb</p>
+
+<h4>
+<a id="4312-获取object树形结构tree" class="anchor" href="#4312-%E8%8E%B7%E5%8F%96object%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84tree" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.12 获取Object树形结构（tree）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.tree(path_or_dir <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path_or_dir</td>
+<td align="center">String/COS::COSDir</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:depth]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5</td>
+<td>子目录深度,默认为5</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<pre><code>{
+    :resource =&gt; Object&lt;COS::COSDir&gt;,
+    :children =&gt; [
+        {:resource =&gt; Object&lt;COS::COSDir&gt;, :children =&gt; [...]},
+        {:resource =&gt; Object&lt;COS::COSFile&gt;, :children =&gt; [...]},
+        ...
+    ]
+}
+</code></pre>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>tree <span class="pl-k">=</span> <span class="pl-smi">@bucket</span>.tree
+puts tree[<span class="pl-c1">:resource</span>].name
+tree[<span class="pl-c1">:children</span>].each <span class="pl-k">do </span>|<span class="pl-smi">r</span>|
+  puts r[<span class="pl-c1">:resource</span>].name
+<span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="4313-获取hash树形结构hash_tree" class="anchor" href="#4313-%E8%8E%B7%E5%8F%96hash%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84hash_tree" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.13 获取Hash树形结构（hash_tree）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.hash_tree(path_or_dir <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path_or_dir</td>
+<td align="center">String/COS::COSDir</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:depth]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5</td>
+<td>子目录深度,默认为5</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<pre><code>{
+    :resource =&gt; {:name...},
+    :children =&gt; [
+        {:resource =&gt; {:name...}, :children =&gt; [...]},
+        {:resource =&gt; {:name...}, :children =&gt; [...]},
+        ...
+    ]
+}
+</code></pre>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>tree <span class="pl-k">=</span> <span class="pl-smi">@bucket</span>.hash_tree
+puts tree[<span class="pl-c1">:resource</span>][<span class="pl-c1">:name</span>]
+tree[<span class="pl-c1">:children</span>].each <span class="pl-k">do </span>|<span class="pl-smi">r</span>|
+  puts r[<span class="pl-c1">:resource</span>][<span class="pl-c1">:name</span>]
+<span class="pl-k">end</span>
+puts tree.to_json <span class="pl-c"># 可直接转为json</span></pre></div>
+
+<h4>
+<a id="4314-批量下载目录下的所有文件download_all" class="anchor" href="#4314-%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6download_all" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.14 批量下载目录下的所有文件（download_all）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.download_all(path_or_dir, file_store_path, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path_or_dir</td>
+<td align="center">String/COS::COSDir</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'</td>
+</tr>
+<tr>
+<td align="left">file_store_path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件存储目录</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:disable_mkdir]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">true</td>
+<td>禁止自动创建本地文件夹, 默认会创建</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5 * 10 * 1024</td>
+<td>完整下载最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:download_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>下载重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如果禁用则不使用断点续传</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>下载进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：不包含子目录。支持私有访问资源下载，SDK会自动携带鉴权签名。SDK会自动使用分片断点续传下载大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Array</span><span class="pl-k">&lt;</span><span class="pl-c1">String</span><span class="pl-k">&gt;</span> <span class="pl-c"># 本地文件存储路径数组</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>files <span class="pl-k">=</span> bucket.download_all(<span class="pl-s"><span class="pl-pds">'</span>path/<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/test/path/<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">p</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>下载进度: <span class="pl-pse">#{</span><span class="pl-s1">(p<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span>
+puts files</pre></div>
+
+<h4>
+<a id="4315-批量上传目录中的所有文件upload_all" class="anchor" href="#4315-%E6%89%B9%E9%87%8F%E4%B8%8A%E4%BC%A0%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6upload_all" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.15 批量上传目录中的所有文件（upload_all）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.upload(path_or_dir, file_src_path, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path_or_dir</td>
+<td align="center">String/COS::COSDir</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'</td>
+</tr>
+<tr>
+<td align="left">file_src_path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件夹路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:skip_error]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否跳过错误仍继续上传下一个文件</td>
+</tr>
+<tr>
+<td align="left">options[:auto_create_folder]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>自动创建远端目录</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10 * 1024 * 1024</td>
+<td>完整上传最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:upload_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>上传重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如禁用仍可通过服务端进行断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:threads]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>多线程上传线程数</td>
+</tr>
+<tr>
+<td align="left">options[:slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">3 * 1024 * 1024</td>
+<td>设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。</td>
+</tr>
+<tr>
+<td align="left">options[:cpt_file]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>断点续传的checkpoint文件</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>上传进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：不包含子目录。SDK会自动使用分片断点续传上传大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Array</span><span class="pl-k">&lt;</span><span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span><span class="pl-k">&gt;</span> <span class="pl-c"># 详见目录操作（COS::COSFile）</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>files <span class="pl-k">=</span> <span class="pl-smi">@bucket</span>.upload_all(<span class="pl-s"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/path<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">pr</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>上传进度 <span class="pl-pse">#{</span><span class="pl-s1">(pr<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span>
+puts files</pre></div>
+
+<h4>
+<a id="4316-获取资源个数详情支持前缀搜索list_count" class="anchor" href="#4316-%E8%8E%B7%E5%8F%96%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0%E8%AF%A6%E6%83%85%E6%94%AF%E6%8C%81%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2list_count" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.16 获取资源个数详情（支持前缀搜索）（list_count）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.list_count(path <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。默认获取bucket根目录</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:prefix]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>前缀搜索</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Hash</span>
+{
+  <span class="pl-c1">:total</span> =&gt; <span class="pl-c1">5</span>, <span class="pl-c"># 目录及文件总数</span>
+  <span class="pl-c1">:files</span> =&gt; <span class="pl-c1">2</span>, <span class="pl-c"># 文件总数</span>
+  <span class="pl-c1">:dirs</span> =&gt; <span class="pl-c1">3</span>, <span class="pl-c"># 目录总数</span>
+}</pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.list_count[<span class="pl-c1">:files</span>]</pre></div>
+
+<h4>
+<a id="4317-获取资源个数count-size" class="anchor" href="#4317-%E8%8E%B7%E5%8F%96%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0count-size" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.17 获取资源个数（count, size）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.count(path <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>) <span class="pl-c"># 别名 size</span></pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。默认获取bucket根目录</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Integer</span> <span class="pl-c"># 目录及文件总数</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.count</pre></div>
+
+<h4>
+<a id="4318-获取文件个数count_files" class="anchor" href="#4318-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E4%B8%AA%E6%95%B0count_files" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.18 获取文件个数（count_files）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.count_files(path <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。默认获取bucket根目录</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Integer</span> <span class="pl-c"># 文件总数</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.count_files</pre></div>
+
+<h4>
+<a id="4319-获取目录个数count_dirs" class="anchor" href="#4319-%E8%8E%B7%E5%8F%96%E7%9B%AE%E5%BD%95%E4%B8%AA%E6%95%B0count_dirs" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3.19 获取目录个数（count_dirs）</h4>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@bucket</span>.count_dirs(path <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。默认获取bucket根目录</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Integer</span> <span class="pl-c"># 目录总数</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@bucket</span>.count_dirs</pre></div>
+
+<h3>
+<a id="44-资源操作" class="anchor" href="#44-%E8%B5%84%E6%BA%90%E6%93%8D%E4%BD%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4 资源操作</h3>
+
+<h4>
+<a id="441-文件操作coscosfile" class="anchor" href="#441-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9Ccoscosfile" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1 文件操作（COS::COSFile）</h4>
+
+<h5>
+<a id="4411-获取文件属性" class="anchor" href="#4411-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.1 获取文件属性</h5>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># 文件名称 </span>
+puts file.name
+<span class="pl-c"># 文件格式化大小 1B 1KB 1.1MB 1.12GB...</span>
+puts file.format_size</pre></div>
+
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>名称</td>
+</tr>
+<tr>
+<td>path</td>
+<td>String</td>
+<td>存储路径</td>
+</tr>
+<tr>
+<td>ctime</td>
+<td>String</td>
+<td>创建时间unix时间戳</td>
+</tr>
+<tr>
+<td>mtime</td>
+<td>String</td>
+<td>修改时间unix时间戳</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>Time</td>
+<td>创建时间Time</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>Time</td>
+<td>修改时间Time</td>
+</tr>
+<tr>
+<td>biz_attr</td>
+<td>String</td>
+<td>业务属性</td>
+</tr>
+<tr>
+<td>filesize（file_size, size）</td>
+<td>Integer</td>
+<td>文件大小</td>
+</tr>
+<tr>
+<td>filelen</td>
+<td>Integer</td>
+<td>已上传的文件大小</td>
+</tr>
+<tr>
+<td>sha</td>
+<td>String</td>
+<td>文件sha1值</td>
+</tr>
+<tr>
+<td>access_url</td>
+<td>String</td>
+<td>文件访问url</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>类型，固定为file</td>
+</tr>
+<tr>
+<td>format_size</td>
+<td>String</td>
+<td>格式化文件大小 1B 1KB 1.1MB 1.12GB</td>
+</tr>
+</tbody>
+</table>
+
+<h5>
+<a id="4412-获取当前文件属性刷新stat" class="anchor" href="#4412-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E5%88%B7%E6%96%B0stat" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.2 获取当前文件属性（刷新）（stat）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.stat</pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts file.stat.to_hash</pre></div>
+
+<h5>
+<a id="4413-更新当前文件属性upadte" class="anchor" href="#4413-%E6%9B%B4%E6%96%B0%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7upadte" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.3 更新当前文件属性（upadte）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.update(biz_attr)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">biz_attr</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>file.update(<span class="pl-s"><span class="pl-pds">'</span>new biz attr<span class="pl-pds">'</span></span>)</pre></div>
+
+<h5>
+<a id="4414-删除当前文件delete" class="anchor" href="#4414-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.4 删除当前文件（delete）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.delete</pre></div>
+
+<p>注意：删除失败将抛出异常</p>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>file.delete</pre></div>
+
+<h5>
+<a id="4415-删除当前文件无异常delete" class="anchor" href="#4415-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E6%97%A0%E5%BC%82%E5%B8%B8delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.5 删除当前文件（无异常）（delete!）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.delete!</pre></div>
+
+<p>注意：删除失败不会抛出异常，返回是否成功的bool值。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts file.delete!</pre></div>
+
+<h5>
+<a id="4416-判断当前文件是否存在existexists" class="anchor" href="#4416-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8existexists" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.6 判断当前文件是否存在（exist?，exists?）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.exist? <span class="pl-c"># 别名 exists?</span></pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts file.exist?</pre></div>
+
+<h5>
+<a id="4417-判断当前文件是否上传完成complete" class="anchor" href="#4417-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E4%B8%8A%E4%BC%A0%E5%AE%8C%E6%88%90complete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.7 判断当前文件是否上传完成（complete?）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.complete?</pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts file.complete?</pre></div>
+
+<h5>
+<a id="4418-获取当前文件的访问urlurl" class="anchor" href="#4418-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E7%9A%84%E8%AE%BF%E9%97%AEurlurl" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.8 获取当前文件的访问URL（url）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.url(options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:cname]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>获取使用cname的url。在cos控制台设置的cname域名</td>
+</tr>
+<tr>
+<td align="left">options[:https]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否获取https的url</td>
+</tr>
+<tr>
+<td align="left">options[:expire_seconds]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">600</td>
+<td>签名有效时间(秒,私有读取bucket时需要)</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">String</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts file.url(<span class="pl-c1">https:</span> <span class="pl-c1">true</span>, <span class="pl-c1">cname:</span> <span class="pl-s"><span class="pl-pds">'</span>static.domain.com<span class="pl-pds">'</span></span>)</pre></div>
+
+<h5>
+<a id="4419-下载当前文件download" class="anchor" href="#4419-%E4%B8%8B%E8%BD%BD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6download" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.9 下载当前文件（download）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.download(file_store, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">file_store</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件存储路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:disable_mkdir]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">true</td>
+<td>禁止自动创建本地文件夹, 默认会创建</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5 * 10 * 1024</td>
+<td>完整下载最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:download_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>下载重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如果禁用则不使用断点续传</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>下载进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：支持私有访问资源下载，SDK会自动携带鉴权签名。SDK会自动使用分片断点续传下载大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">String</span> <span class="pl-c"># 本地文件存储路径</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>file <span class="pl-k">=</span> file.download(<span class="pl-s"><span class="pl-pds">'</span>~/test/file1<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">p</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>下载进度: <span class="pl-pse">#{</span><span class="pl-s1">(p<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span>
+puts file</pre></div>
+
+<h5>
+<a id="44110-判断当前文件与本地文件是否相同" class="anchor" href="#44110-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E6%96%87%E4%BB%B6%E4%B8%8E%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E7%9B%B8%E5%90%8C" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.1.10 判断当前文件与本地文件是否相同</h5>
+
+<div class="highlight highlight-source-ruby"><pre>file.sha1_match?(file)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">file</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件路径</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts file.sha1_match?(<span class="pl-s"><span class="pl-pds">'</span>~/file1<span class="pl-pds">'</span></span>)</pre></div>
+
+<h4>
+<a id="442-目录操作coscosdir" class="anchor" href="#442-%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9Ccoscosdir" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2 目录操作（COS::COSDir）</h4>
+
+<h5>
+<a id="4421-获取目录属性" class="anchor" href="#4421-%E8%8E%B7%E5%8F%96%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.1 获取目录属性</h5>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># 目录名称 </span>
+puts dir.name
+<span class="pl-c"># 目录存储路径</span>
+puts dir.path</pre></div>
+
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>名称</td>
+</tr>
+<tr>
+<td>path</td>
+<td>String</td>
+<td>存储路径</td>
+</tr>
+<tr>
+<td>ctime</td>
+<td>String</td>
+<td>创建时间unix时间戳</td>
+</tr>
+<tr>
+<td>mtime</td>
+<td>String</td>
+<td>修改时间unix时间戳</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>Time</td>
+<td>创建时间Time</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>Time</td>
+<td>修改时间Time</td>
+</tr>
+<tr>
+<td>biz_attr</td>
+<td>String</td>
+<td>业务属性</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>类型，固定为dir</td>
+</tr>
+</tbody>
+</table>
+
+<h5>
+<a id="4422-列举当前目录前缀搜索listls" class="anchor" href="#4422-%E5%88%97%E4%B8%BE%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2listls" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.2 列举当前目录（前缀搜索）（list，ls）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.list(options <span class="pl-k">=</span> {}) <span class="pl-c"># 方法别名ls</span></pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:prefix]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>搜索前缀，如果填写prefix, 则列出含此前缀的所有文件及目录</td>
+</tr>
+<tr>
+<td align="left">options[:num]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">20</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:pattern]</td>
+<td align="center">Symbol</td>
+<td align="center">否</td>
+<td align="center">:both</td>
+<td>获取模式，:dir_only 只获取目录, :file_only 只获取文件, 默认为 :both 全部获取</td>
+</tr>
+<tr>
+<td align="left">options[:order]</td>
+<td align="center">Symbol</td>
+<td align="center">否</td>
+<td align="center">:asc</td>
+<td>排序方式 :asc 正序, :desc 倒序 默认为 :asc</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre>[<span class="pl-c1">Enumerator</span><span class="pl-k">&lt;</span><span class="pl-c1">Object</span><span class="pl-k">&gt;</span>] 迭代器, 其中<span class="pl-c1">Object</span>可能是<span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span>或<span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>dir.list <span class="pl-k">do </span>|<span class="pl-smi">res</span>|
+  <span class="pl-k">if</span> res.is_a?(<span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span>)
+    puts <span class="pl-s"><span class="pl-pds">"</span>Dir: <span class="pl-pse">#{</span><span class="pl-s1">res.name</span><span class="pl-pse"><span class="pl-s1">}</span></span> <span class="pl-pse">#{</span><span class="pl-s1">res.path</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pds">"</span></span>
+  <span class="pl-k">else</span>
+    puts <span class="pl-s"><span class="pl-pds">"</span>File: <span class="pl-pse">#{</span><span class="pl-s1">res.name</span><span class="pl-pse"><span class="pl-s1">}</span></span> <span class="pl-pse">#{</span><span class="pl-s1">res.format_size</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pds">"</span></span>
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span></pre></div>
+
+<h5>
+<a id="4423-创建子目录create_foldermkdir" class="anchor" href="#4423-%E5%88%9B%E5%BB%BA%E5%AD%90%E7%9B%AE%E5%BD%95create_foldermkdir" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.3 创建子目录（create_folder，mkdir）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.create_folder(dir_name, options <span class="pl-k">=</span> {}) <span class="pl-c"># 方法别名mkdir</span></pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">dir_name</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>需要创建的子目录名称，不包含父系目录路径。</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>目录属性, 业务端维护</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>dir.create_folder(<span class="pl-s"><span class="pl-pds">"</span>test_dir2<span class="pl-pds">"</span></span>, <span class="pl-c1">biz_attr:</span> <span class="pl-s"><span class="pl-pds">'</span>测试目录1-2<span class="pl-pds">'</span></span>)</pre></div>
+
+<h5>
+<a id="4424-上传文件至当前目录upload" class="anchor" href="#4424-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E8%87%B3%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95upload" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.4 上传文件至当前目录（upload）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.upload(file_name, file_src, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">file_name</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>存储文件名</td>
+</tr>
+<tr>
+<td align="left">file_src</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:auto_create_folder]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>自动创建远端目录</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10 * 1024 * 1024</td>
+<td>完整上传最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:upload_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>上传重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如禁用仍可通过服务端进行断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:threads]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>多线程上传线程数</td>
+</tr>
+<tr>
+<td align="left">options[:slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">3 * 1024 * 1024</td>
+<td>设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。</td>
+</tr>
+<tr>
+<td align="left">options[:cpt_file]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>断点续传的checkpoint文件</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>上传进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：SDK会自动使用分片断点续传上传大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>file <span class="pl-k">=</span> dir.upload(<span class="pl-s"><span class="pl-pds">'</span>file1.txt<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/test.txt<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">pr</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>上传进度 <span class="pl-pse">#{</span><span class="pl-s1">(pr<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span>
+puts file.name
+puts file.format_size
+puts file.url</pre></div>
+
+<h5>
+<a id="4425-批量上传本地目录中的所有文件至当前目录upload_all" class="anchor" href="#4425-%E6%89%B9%E9%87%8F%E4%B8%8A%E4%BC%A0%E6%9C%AC%E5%9C%B0%E7%9B%AE%E5%BD%95%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E8%87%B3%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95upload_all" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.5 批量上传本地目录中的所有文件至当前目录（upload_all）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.upload(file_src_path, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">file_src_path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件夹路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:skip_error]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否跳过错误仍继续上传下一个文件</td>
+</tr>
+<tr>
+<td align="left">options[:auto_create_folder]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>自动创建远端目录</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10 * 1024 * 1024</td>
+<td>完整上传最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:upload_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>上传重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如禁用仍可通过服务端进行断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:threads]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>多线程上传线程数</td>
+</tr>
+<tr>
+<td align="left">options[:slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">3 * 1024 * 1024</td>
+<td>设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。</td>
+</tr>
+<tr>
+<td align="left">options[:cpt_file]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>断点续传的checkpoint文件</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>上传进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：不包含子目录。SDK会自动使用分片断点续传上传大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Array</span><span class="pl-k">&lt;</span><span class="pl-c1">COS</span>::<span class="pl-c1">COSFile</span><span class="pl-k">&gt;</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>files <span class="pl-k">=</span> dir.upload_all(<span class="pl-s"><span class="pl-pds">'</span>~/path<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">pr</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>上传进度 <span class="pl-pse">#{</span><span class="pl-s1">(pr<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span></pre></div>
+
+<h5>
+<a id="4426-批量下载当前目录下的所有文件download_all" class="anchor" href="#4426-%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6download_all" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.6 批量下载当前目录下的所有文件（download_all）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.download_all(file_store_path, options <span class="pl-k">=</span> {}, <span class="pl-k">&amp;</span>block)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">file_store_path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件存储目录</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:disable_mkdir]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">true</td>
+<td>禁止自动创建本地文件夹, 默认会创建</td>
+</tr>
+<tr>
+<td align="left">options[:min_slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5 * 10 * 1024</td>
+<td>完整下载最小文件大小,超过此大小将会使用分片多线程断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:download_retry]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>下载重试次数</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如果禁用则不使用断点续传</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>下载进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>注：不包含子目录。支持私有访问资源下载，SDK会自动携带鉴权签名。SDK会自动使用分片断点续传下载大文件。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Array</span><span class="pl-k">&lt;</span><span class="pl-c1">String</span><span class="pl-k">&gt;</span> <span class="pl-c"># 本地文件存储路径数组</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>files <span class="pl-k">=</span> dir.download_all(<span class="pl-s"><span class="pl-pds">'</span>~/test/path/<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">p</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>下载进度: <span class="pl-pse">#{</span><span class="pl-s1">(p<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span></pre></div>
+
+<h5>
+<a id="4427-当前目录属性刷新stat" class="anchor" href="#4427-%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7%E5%88%B7%E6%96%B0stat" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.7 当前目录属性（刷新）（stat）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.stat</pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">COS</span>::<span class="pl-c1">COSDir</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.stat.to_hash</pre></div>
+
+<h5>
+<a id="4428-更新当前目录属性upadte" class="anchor" href="#4428-%E6%9B%B4%E6%96%B0%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7upadte" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.8 更新当前目录属性（upadte）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.update(biz_attr)</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">biz_attr</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>dir.update(<span class="pl-s"><span class="pl-pds">'</span>new biz attr<span class="pl-pds">'</span></span>)</pre></div>
+
+<h5>
+<a id="4429-删除当前目录delete" class="anchor" href="#4429-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.9 删除当前目录（delete）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.delete</pre></div>
+
+<p>注意：非空目录或根目录无法删除，会抛出异常</p>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>dir.delete</pre></div>
+
+<h5>
+<a id="44210-删除当前目录无异常delete" class="anchor" href="#44210-%E5%88%A0%E9%99%A4%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E6%97%A0%E5%BC%82%E5%B8%B8delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.10 删除当前目录（无异常）（delete!）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.delete!</pre></div>
+
+<p>注意：非空目录或根目录无法删除，返回是否成功的bool值。</p>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.delete!</pre></div>
+
+<h5>
+<a id="44211-判断当前目录是否为空empty" class="anchor" href="#44211-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BAempty" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.11 判断当前目录是否为空（empty?）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.empty?</pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.empty?</pre></div>
+
+<h5>
+<a id="44212-判断当前目录是否存在existexists" class="anchor" href="#44212-%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8existexists" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.12 判断当前目录是否存在（exist?，exists?）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.exist? <span class="pl-c"># 别名 exists?</span></pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Boolean</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.exist?</pre></div>
+
+<h5>
+<a id="44213-获取当前目录下的object树形结构tree" class="anchor" href="#44213-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84object%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84tree" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.13 获取当前目录下的Object树形结构（tree）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.tree(options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:depth]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5</td>
+<td>子目录深度,默认为5</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<pre><code>{
+    :resource =&gt; Object&lt;COS::COSDir&gt;,
+    :children =&gt; [
+        {:resource =&gt; Object&lt;COS::COSDir&gt;, :children =&gt; [...]},
+        {:resource =&gt; Object&lt;COS::COSFile&gt;, :children =&gt; [...]},
+        ...
+    ]
+}
+</code></pre>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>tree <span class="pl-k">=</span> dir.tree
+puts tree[<span class="pl-c1">:resource</span>].name
+tree[<span class="pl-c1">:children</span>].each <span class="pl-k">do </span>|<span class="pl-smi">r</span>|
+  puts r[<span class="pl-c1">:resource</span>].name
+<span class="pl-k">end</span></pre></div>
+
+<h5>
+<a id="44214-获取当前目录下的hash树形结构hash_tree" class="anchor" href="#44214-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84hash%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84hash_tree" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.14 获取当前目录下的Hash树形结构（hash_tree）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.hash_tree(options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:depth]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">5</td>
+<td>子目录深度,默认为5</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<pre><code>{
+    :resource =&gt; {:name...},
+    :children =&gt; [
+        {:resource =&gt; {:name...}, :children =&gt; [...]},
+        {:resource =&gt; {:name...}, :children =&gt; [...]},
+        ...
+    ]
+}
+</code></pre>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>tree <span class="pl-k">=</span> dir.hash_tree
+puts tree[<span class="pl-c1">:resource</span>][<span class="pl-c1">:name</span>]
+tree[<span class="pl-c1">:children</span>].each <span class="pl-k">do </span>|<span class="pl-smi">r</span>|
+  puts r[<span class="pl-c1">:resource</span>][<span class="pl-c1">:name</span>]
+<span class="pl-k">end</span>
+puts tree.to_json <span class="pl-c"># 可直接转为json</span></pre></div>
+
+<h5>
+<a id="44215-获取当前目录下的资源个数详情支持前缀搜索list_count" class="anchor" href="#44215-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0%E8%AF%A6%E6%83%85%E6%94%AF%E6%8C%81%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2list_count" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.15 获取当前目录下的资源个数详情（支持前缀搜索）（list_count）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.list_count(options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:prefix]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>前缀搜索</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Hash</span>
+{
+  <span class="pl-c1">:total</span> =&gt; <span class="pl-c1">5</span>, <span class="pl-c"># 目录及文件总数</span>
+  <span class="pl-c1">:files</span> =&gt; <span class="pl-c1">2</span>, <span class="pl-c"># 文件总数</span>
+  <span class="pl-c1">:dirs</span> =&gt; <span class="pl-c1">3</span>, <span class="pl-c"># 目录总数</span>
+}</pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.list_count[<span class="pl-c1">:files</span>]</pre></div>
+
+<h5>
+<a id="44216-获取当前目录下的资源个数count-size" class="anchor" href="#44216-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E8%B5%84%E6%BA%90%E4%B8%AA%E6%95%B0count-size" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.16 获取当前目录下的资源个数（count, size）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.count <span class="pl-c"># 别名 size</span></pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Integer</span> <span class="pl-c"># 目录及文件总数</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.count</pre></div>
+
+<h5>
+<a id="44217-获取当前目录下的文件个数count_files" class="anchor" href="#44217-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%96%87%E4%BB%B6%E4%B8%AA%E6%95%B0count_files" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.17 获取当前目录下的文件个数（count_files）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.count_files</pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Integer</span> <span class="pl-c"># 文件总数</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.count_files</pre></div>
+
+<h5>
+<a id="44218-获取当前目录下的子目录个数count_dirs" class="anchor" href="#44218-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E5%AD%90%E7%9B%AE%E5%BD%95%E4%B8%AA%E6%95%B0count_dirs" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4.2.18 获取当前目录下的子目录个数（count_dirs）</h5>
+
+<div class="highlight highlight-source-ruby"><pre>dir.count_dirs</pre></div>
+
+<p>返回：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c1">Integer</span> <span class="pl-c"># 目录总数</span></pre></div>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts dir.count_dirs</pre></div>
+
+<h3>
+<a id="45-签名操作cossignature" class="anchor" href="#45-%E7%AD%BE%E5%90%8D%E6%93%8D%E4%BD%9Ccossignature" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.5 签名操作（COS::Signature）</h3>
+
+<p>腾讯移动服务通过签名来验证请求的合法性。开发者通过将签名授权给客户端，使其具备上传下载及管理指定资源的能力。签名分为<strong>多次有效签名</strong>和<strong>单次有效签名</strong></p>
+
+<p><g-emoji alias="mag" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f50d.png">🔍</g-emoji>具体适用场景参见<a href="http://www.qcloud.com/wiki/%E9%89%B4%E6%9D%83%E6%8A%80%E6%9C%AF%E6%9C%8D%E5%8A%A1%E6%96%B9%E6%A1%88#4_.E7.AD.BE.E5.90.8D.E9.80.82.E7.94.A8.E5.9C.BA.E6.99.AF">签名适用场景</a></p>
+
+<h4>
+<a id="451-获取单次有效签名once" class="anchor" href="#451-%E8%8E%B7%E5%8F%96%E5%8D%95%E6%AC%A1%E6%9C%89%E6%95%88%E7%AD%BE%E5%90%8Donce" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.5.1 获取单次有效签名（once）</h4>
+
+<p>签名中绑定文件fileid，此签名只可使用一次，且只能应用于被绑定的文件。</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@client</span>.signature.once(bucket_name, path)
+<span class="pl-c"># path 为操作资源的路径</span></pre></div>
+
+<h4>
+<a id="452-获取多次有效签名multiple" class="anchor" href="#452-%E8%8E%B7%E5%8F%96%E5%A4%9A%E6%AC%A1%E6%9C%89%E6%95%88%E7%AD%BE%E5%90%8Dmultiple" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.5.2 获取多次有效签名（multiple）</h4>
+
+<p>签名中不绑定文件fileid，有效期内此签名可多次使用，有效期最长可设置三个月。</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@client</span>.signature.multiple(bucket_name, expire_seconds)
+<span class="pl-c"># expire_seconds 为从获取时间起得有效时间单位秒，必须大于0。</span></pre></div>
+
+<h2>
+<a id="5-底层apicosapi" class="anchor" href="#5-%E5%BA%95%E5%B1%82apicosapi" aria-hidden="true"><span class="octicon octicon-link"></span></a>5 底层API（COS::API）</h2>
+
+<h3>
+<a id="51-创建目录create_folder" class="anchor" href="#51-%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95create_folder" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.1 创建目录(create_folder)</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.create_folder(path, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>需要创建的目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>目录属性, 业务端维护</td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<p><code>Hash</code></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">ctime</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">创建时间Unix时间戳</td>
+</tr>
+<tr>
+<td align="left">resource_path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">创建的资源路径</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@client</span>.api.create_folder(<span class="pl-s"><span class="pl-pds">"</span>test_dir5<span class="pl-pds">"</span></span>, <span class="pl-c1">biz_attr:</span> <span class="pl-s"><span class="pl-pds">'</span>测试目录5<span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="52-目录列表前缀搜索list" class="anchor" href="#52-%E7%9B%AE%E5%BD%95%E5%88%97%E8%A1%A8%E5%89%8D%E7%BC%80%E6%90%9C%E7%B4%A2list" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.2 目录列表（前缀搜索）(list)</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.list(path, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">否</td>
+<td>需要列举的目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:prefix]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>搜索前缀，如果填写prefix, 则列出含此前缀的所有文件及目录</td>
+</tr>
+<tr>
+<td align="left">options[:num]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">20</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:pattern]</td>
+<td align="center">Symbol</td>
+<td align="center">否</td>
+<td align="center">:both</td>
+<td>获取模式，:dir_only 只获取目录, :file_only 只获取文件, 默认为 :both 全部获取</td>
+</tr>
+<tr>
+<td align="left">options[:order]</td>
+<td align="center">Symbol</td>
+<td align="center">否</td>
+<td align="center">:asc</td>
+<td>排序方式 :asc 正序, :desc 倒序 默认为 :asc</td>
+</tr>
+<tr>
+<td align="left">options[:context]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">空</td>
+<td>若需要翻页，需要将前一页返回值中的context透传到参数中</td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<p><code>Hash</code></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">context</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">透传字段,用于翻页,需要往前/往后翻页则透传回来</td>
+</tr>
+<tr>
+<td align="left">has_more</td>
+<td align="center">Boolean</td>
+<td align="center">是</td>
+<td align="center">是否有内容可以继续往前/往后翻页</td>
+</tr>
+<tr>
+<td align="left">dircount</td>
+<td align="center">Integer</td>
+<td align="center">是</td>
+<td align="center">子目录数量(总)</td>
+</tr>
+<tr>
+<td align="left">filecount</td>
+<td align="center">Integer</td>
+<td align="center">是</td>
+<td align="center">子文件数量(总)</td>
+</tr>
+<tr>
+<td align="left">infos</td>
+<td align="center">Array</td>
+<td align="center">是</td>
+<td align="center">列表结果(可能为空)</td>
+</tr>
+<tr>
+<td align="left">子属性 :name</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">目录名/文件名</td>
+</tr>
+<tr>
+<td align="left">子属性 :biz_attr</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">目录/文件属性，业务端维护</td>
+</tr>
+<tr>
+<td align="left">子属性 :filesize</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">文件大小(当类型为文件时返回)</td>
+</tr>
+<tr>
+<td align="left">子属性 :filelen</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">文件已传输大小(通过与filesize对比可知文件传输进度,当类型为文件时返回)</td>
+</tr>
+<tr>
+<td align="left">子属性 :sha</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">文件sha1(当类型为文件时返回)</td>
+</tr>
+<tr>
+<td align="left">子属性 :ctime</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">创建时间(Unix时间戳)</td>
+</tr>
+<tr>
+<td align="left">子属性 :mtime</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">修改时间(Unix时间戳)</td>
+</tr>
+<tr>
+<td align="left">子属性 :access_url</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">生成的资源可访问的url(当类型为文件时返回)</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@client</span>.api.list(<span class="pl-s"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-c1">pattern:</span> <span class="pl-c1">:dir_only</span>, <span class="pl-c1">order:</span> <span class="pl-c1">:desc</span>, <span class="pl-c1">prefix:</span> <span class="pl-s"><span class="pl-pds">'</span>abc<span class="pl-pds">'</span></span>, <span class="pl-c1">context:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="53-上传文件完整上传upload" class="anchor" href="#53-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%AE%8C%E6%95%B4%E4%B8%8A%E4%BC%A0upload" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.3 上传文件（完整上传）(upload)</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.upload(path, file_name, file_src, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'</td>
+</tr>
+<tr>
+<td align="left">file_name</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>存储文件名</td>
+</tr>
+<tr>
+<td align="left">file_src</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>文件属性, 业务端维护</td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<p><code>Hash</code></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">access_url</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">生成的文件下载url</td>
+</tr>
+<tr>
+<td align="left">url</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">操作文件的url</td>
+</tr>
+<tr>
+<td align="left">resource_path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">资源路径</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@client</span>.api.upload(<span class="pl-s"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>file1.txt<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/test.txt<span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="54-上传文件分片上传upload_slice" class="anchor" href="#54-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0upload_slice" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.4 上传文件（分片上传）(upload_slice)</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.upload_slice(path, file_name, file_src, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>目录路径, 如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/'</td>
+</tr>
+<tr>
+<td align="left">file_name</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>存储文件名</td>
+</tr>
+<tr>
+<td align="left">file_src</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:biz_attr]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>业务属性</td>
+</tr>
+<tr>
+<td align="left">options[:disable_cpt]</td>
+<td align="center">Boolean</td>
+<td align="center">否</td>
+<td align="center">false</td>
+<td>是否禁用checkpoint，如禁用仍可通过服务端进行断点续传</td>
+</tr>
+<tr>
+<td align="left">options[:threads]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">10</td>
+<td>多线程上传线程数</td>
+</tr>
+<tr>
+<td align="left">options[:slice_size]</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">3 * 1024 * 1024</td>
+<td>设置分片上传时每个分片的大小。默认为3 MB, 目前服务端最大限制也为3MB。</td>
+</tr>
+<tr>
+<td align="left">options[:cpt_file]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>断点续传的checkpoint文件</td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+<tr>
+<td align="left">yield</td>
+<td align="center">Float</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>上传进度百分比回调, 进度值是一个0-1之间的小数</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<p><code>Hash</code></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">access_url</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">生成的文件下载url</td>
+</tr>
+<tr>
+<td align="left">url</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">操作文件的url</td>
+</tr>
+<tr>
+<td align="left">resource_path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">资源路径</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@client</span>.api.upload_slice(<span class="pl-s"><span class="pl-pds">'</span>/test<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>file1.txt<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/test.txt<span class="pl-pds">'</span></span>) <span class="pl-k">do </span>|<span class="pl-smi">pr</span>|
+  puts <span class="pl-s"><span class="pl-pds">"</span>上传进度 <span class="pl-pse">#{</span><span class="pl-s1">(pr<span class="pl-k">*</span><span class="pl-c1">100</span>).round(<span class="pl-c1">2</span>)</span><span class="pl-pse"><span class="pl-s1">}</span></span>%<span class="pl-pds">"</span></span>
+<span class="pl-k">end</span></pre></div>
+
+<h3>
+<a id="55-更新文件目录属性update" class="anchor" href="#55-%E6%9B%B4%E6%96%B0%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7update" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.5 更新文件、目录属性(update)</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.update(path, biz_attr, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>需要创建的目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。</td>
+</tr>
+<tr>
+<td align="left">biz_attr</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>目录属性, 业务端维护</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：无</p>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.update(<span class="pl-s"><span class="pl-pds">'</span>test/file1<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>new biz attr<span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="56-删除文件目录delete" class="anchor" href="#56-%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.6 删除文件、目录(delete)</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.delete(path, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>需要创建的目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：无</p>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.delete(<span class="pl-s"><span class="pl-pds">'</span>test/file1<span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="57-获取文件或目录属性stat" class="anchor" href="#57-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95%E5%B1%9E%E6%80%A7stat" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.7 获取文件或目录属性(stat)</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.update(path, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">path</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>需要创建的目录路径, 如: 'path1', 'path1/path2', sdk会补齐末尾的 '/'。</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+</tbody>
+</table>
+
+<p>返回：</p>
+
+<p><code>Hash</code></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">name</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">目录名/文件名</td>
+</tr>
+<tr>
+<td align="left">biz_attr</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">目录/文件属性，业务端维护</td>
+</tr>
+<tr>
+<td align="left">filesize</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">文件大小(当类型为文件时返回)</td>
+</tr>
+<tr>
+<td align="left">filelen</td>
+<td align="center">Integer</td>
+<td align="center">否</td>
+<td align="center">文件已传输大小(通过与filesize对比可知文件传输进度,当类型为文件时返回)</td>
+</tr>
+<tr>
+<td align="left">sha</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">文件sha1(当类型为文件时返回)</td>
+</tr>
+<tr>
+<td align="left">ctime</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">创建时间(Unix时间戳)</td>
+</tr>
+<tr>
+<td align="left">mtime</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">修改时间(Unix时间戳)</td>
+</tr>
+<tr>
+<td align="left">access_url</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">生成的资源可访问的url(当类型为文件时返回)</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre>puts <span class="pl-smi">@client</span>.api.stat(<span class="pl-s"><span class="pl-pds">'</span>/test/file<span class="pl-pds">'</span></span>)</pre></div>
+
+<h3>
+<a id="58下载文件" class="anchor" href="#58%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.8下载文件</h3>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.download(access_url, file_store, options <span class="pl-k">=</span> {})</pre></div>
+
+<p>参数：</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数名</th>
+<th align="center">类型</th>
+<th align="center">必须</th>
+<th align="center">默认值</th>
+<th>参数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">access_url</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>资源的下载URL地址可以从list,stat接口中获取</td>
+</tr>
+<tr>
+<td align="left">file_store</td>
+<td align="center">String</td>
+<td align="center">是</td>
+<td align="center">无</td>
+<td>本地文件存储路径</td>
+</tr>
+<tr>
+<td align="left">options</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">options[:bucket]</td>
+<td align="center">String</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>bucket名称，如未配置default_bucket则必须制定</td>
+</tr>
+<tr>
+<td align="left">options[:headers]</td>
+<td align="center">Hash</td>
+<td align="center">否</td>
+<td align="center">无</td>
+<td>设置下载请求头,如:rang</td>
+</tr>
+</tbody>
+</table>
+
+<p>示例：</p>
+
+<div class="highlight highlight-source-ruby"><pre><span class="pl-smi">@client</span>.api.download(<span class="pl-s"><span class="pl-pds">'</span>/test/file<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~/test.txt<span class="pl-pds">'</span></span>)</pre></div>
+
+<h2>
+<a id="6-cli命令行工具" class="anchor" href="#6-cli%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7" aria-hidden="true"><span class="octicon octicon-link"></span></a>6 CLI命令行工具</h2>
+
+<p>SDK提供了一套包含所有API调用的CLI工具，方便开发者更好的调试与更便捷的使用COS。</p>
+
+<p>获取CLI指令列表：</p>
+
+<div class="highlight highlight-source-shell"><pre>$ cos
+
+COS Ruby SDK CLI commands:
+  cos count [PATH]                           <span class="pl-c"># 获取文件及目录数</span>
+  cos count_dirs [PATH]                      <span class="pl-c"># 获取目录数</span>
+  cos count_files [PATH]                     <span class="pl-c"># 获取文件数</span>
+  cos create_folder [PATH]                   <span class="pl-c"># 创建目录</span>
+  cos delete [PATH]                          <span class="pl-c"># 删除目录或文件</span>
+  cos download [PATH] [FILE_STORE]           <span class="pl-c"># 下载文件(大文件自动分片下载,支持多线程断点续传)</span>
+  cos download_all [PATH] [FILE_STORE_PATH]  <span class="pl-c"># 下载目录下的所有文件(不含子目录)</span>
+  cos is_exist [PATH]                        <span class="pl-c"># 判断文件或目录是否存在</span>
+  cos <span class="pl-c1">help</span> [COMMAND]                         <span class="pl-c"># 获取指令的使用帮助</span>
+  cos init                                   <span class="pl-c"># 创建默认配置文件</span>
+  cos is_complete [PATH]                     <span class="pl-c"># 判断文件是否上传完整</span>
+  cos is_empty [PATH]                        <span class="pl-c"># 判断目录是否为空</span>
+  cos list [PATH]                            <span class="pl-c"># 获取目录列表</span>
+  cos sign_multi [EXPIRE]                    <span class="pl-c"># 生成多次可用签名</span>
+  cos sign_once [PATH]                       <span class="pl-c"># 生成单次可用签名</span>
+  cos stat [PATH]                            <span class="pl-c"># 获取目录或文件信息</span>
+  cos tree [PATH]                            <span class="pl-c"># 显示树形结构</span>
+  cos update [PATH] [BIZ_ATTR]               <span class="pl-c"># 更新业务属性</span>
+  cos upload [PATH] [FILE_NAME] [FILE_SRC]   <span class="pl-c"># 上传文件(大文件自动分片上传,支持多线程断点续传)</span>
+  cos upload_all [PATH] [FILE_SRC_PATH]      <span class="pl-c"># 上传目录下的所有文件(不含子目录)</span>
+  cos url [PATH]                             <span class="pl-c"># 获取文件的访问URL</span>
+
+Options:
+  -c, [--config<span class="pl-k">=</span>CONFIG]  <span class="pl-c"># 加载配置文件</span>
+                         <span class="pl-c"># Default: ~/.cos.yml</span>
+  -b, [--bucket<span class="pl-k">=</span>BUCKET]  <span class="pl-c"># 指定Bucket</span></pre></div>
+
+<p>获取指令的详细参数如：</p>
+
+<div class="highlight highlight-source-shell"><pre>$ cos <span class="pl-c1">help</span> upload
+
+Usage:
+  cos upload [PATH] [FILE_NAME] [FILE_SRC]
+
+Options:
+  -r, [--biz-attr<span class="pl-k">=</span>BIZ_ATTR]                              <span class="pl-c"># 业务属性</span>
+  -m, [--min-slice-size<span class="pl-k">=</span>bytes]                           <span class="pl-c"># 最小完整上传大小</span>
+  -f, [--auto-create-folder], [--no-auto-create-folder]  <span class="pl-c"># 自动创建目录</span>
+  -d, [--disable-cpt], [--no-disable-cpt]                <span class="pl-c"># 禁用断点续传(分片上传时有效)</span>
+  -t, [--threads<span class="pl-k">=</span>N]                                      <span class="pl-c"># 线程数(分片上传时有效)</span>
+  -n, [--upload-retry<span class="pl-k">=</span>N]                                 <span class="pl-c"># 重试次数(分片上传时有效)</span>
+  -s, [--slice-size<span class="pl-k">=</span>N]                                   <span class="pl-c"># 分片上传时每个分片的大小(分片上传时有效)</span>
+  -e, [--cpt-file<span class="pl-k">=</span>CPT_FILE]                              <span class="pl-c"># 指定断点续传记录(分片上传时有效)</span>
+  -c, [--config<span class="pl-k">=</span>CONFIG]                                  <span class="pl-c"># 加载配置文件</span>
+                                                         <span class="pl-c"># Default: ~/.cos.yml</span>
+  -b, [--bucket<span class="pl-k">=</span>BUCKET]                                  <span class="pl-c"># 指定Bucket</span>
+
+上传文件(大文件自动分片上传,支持多线程上传,断点续传)</pre></div>
+
+<p>初始化创建配置文件：(默认创建于<code>~/.cos.yml</code>)</p>
+
+<div class="highlight highlight-source-shell"><pre>$ cos init</pre></div>
+
+<p>使用CLI:</p>
+
+<div class="highlight highlight-source-shell"><pre>$ cos upload path/path2 file1 <span class="pl-k">~</span>/file1</pre></div>
+
+<h2>
+<a id="7-运行测试" class="anchor" href="#7-%E8%BF%90%E8%A1%8C%E6%B5%8B%E8%AF%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>7 运行测试</h2>
+
+<pre><code>rspec
+</code></pre>
+
+<p>或</p>
+
+<pre><code>bundle exec rake spec
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/RaymondChou/cos-ruby-sdk">Cos-ruby-sdk</a> is maintained by <a href="https://github.com/RaymondChou">RaymondChou</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
