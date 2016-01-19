@@ -1,7 +1,6 @@
 # Tencent COS Ruby SDK
 
 [![Gem Version](https://badge.fury.io/rb/cos.svg)](https://badge.fury.io/rb/cos) [![Dependency Status](https://gemnasium.com/RaymondChou/cos-ruby-sdk.svg)](https://gemnasium.com/RaymondChou/cos-ruby-sdk)
-
  [![Code Climate](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/badges/gpa.svg)](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk) [![Build Status](https://travis-ci.org/RaymondChou/cos-ruby-sdk.svg?branch=master)](https://travis-ci.org/RaymondChou/cos-ruby-sdk) [![Test Coverage](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/badges/coverage.svg)](https://codeclimate.com/github/RaymondChou/cos-ruby-sdk/coverage)
 
 [![Gitter](https://badges.gitter.im/RaymondChou/cos-ruby-sdk.svg)](https://gitter.im/RaymondChou/cos-ruby-sdk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Gem Downloads](http://ruby-gem-downloads-badge.herokuapp.com/cos?type=total)](https://rubygems.org/gems/cos) [![Github Code](http://img.shields.io/badge/github-code-blue.svg)](https://github.com/RaymondChou/cos-ruby-sdk) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/RaymondChou/cos-ruby-sdk)
