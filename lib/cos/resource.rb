@@ -79,6 +79,7 @@ module COS
 
     required_attrs :bucket, :path, :name, :ctime, :mtime
     optional_attrs :biz_attr, :filesize, :filelen, :sha, :access_url,
+                   :source_url,
                    # 根目录(bucket)参数
                    :authority, :bucket_type, :migrate_source_domain,
                    :need_preview, :refers, :blackrefers, :brower_exec,

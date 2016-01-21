@@ -20,7 +20,8 @@ module COS
     # @option attrs [String] :filesize 文件存储大小
     # @option attrs [String] :filelen 文件大小
     # @option attrs [String] :sha 文件sha1值
-    # @option attrs [String] :access_url 文件访问地址
+    # @option attrs [String] :access_url 文件CDN访问地址
+    # @option attrs [String] :source_url 文件外网访问地址
     #
     # @raise [AttrError] 缺少参数
     #
