@@ -115,12 +115,12 @@ class COS_CLI < Thor
   method_option :disable_cpt, aliases: '-d', desc: '禁用断点续传(分片下载时有效)', type: :boolean, default: false
   method_option :threads, aliases: '-t', desc: '线程数(分片下载时有效)', type: :numeric
   method_option :download_retry, aliases: '-n', desc: '重试次数(分片下载时有效)', type: :numeric
-  method_option :slice_size, aliases: '-s', desc: '分片下载时每个分片的大小(分片下载时有效)', type: :numeric
+  method_option :part_size, aliases: '-s', desc: '分片下载时每个分片的大小(分片下载时有效)', type: :numeric
   method_option :cpt_file, aliases: '-e', desc: '指定断点续传记录(分片下载时有效)'
   def download(path, file_store)
     rescue_errors do
       file = bucket.download(path, file_store,
-                             enabled_options([:min_slice_size, :disable_cpt, :threads, :download_retry, :slice_size, :cpt_file])) do |percent|
+                             enabled_options([:min_slice_size, :disable_cpt, :threads, :download_retry, :part_size, :cpt_file])) do |percent|
         puts("下载进度: #{(percent*100).round(2)}%", :green)
       end
       puts(file, :blue)
@@ -134,12 +134,12 @@ class COS_CLI < Thor
   method_option :disable_cpt, aliases: '-d', desc: '禁用断点续传(分片下载时有效)', type: :boolean, default: false
   method_option :threads, aliases: '-t', desc: '线程数(分片下载时有效)', type: :numeric
   method_option :download_retry, aliases: '-n', desc: '重试次数(分片下载时有效)', type: :numeric
-  method_option :slice_size, aliases: '-s', desc: '分片下载时每个分片的大小(分片下载时有效)', type: :numeric
+  method_option :part_size, aliases: '-s', desc: '分片下载时每个分片的大小(分片下载时有效)', type: :numeric
   method_option :cpt_file, aliases: '-e', desc: '指定断点续传记录(分片下载时有效)'
   def download_all(path, file_store_path)
     rescue_errors do
       files = bucket.download_all(path, file_store_path,
-                                  enabled_options([:min_slice_size, :disable_mkdir, :disable_cpt, :threads, :download_retry, :slice_size, :cpt_file])) do |percent|
+                                  enabled_options([:min_slice_size, :disable_mkdir, :disable_cpt, :threads, :download_retry, :part_size, :cpt_file])) do |percent|
         puts("下载进度: #{(percent*100).round(2)}%", :green)
       end
 

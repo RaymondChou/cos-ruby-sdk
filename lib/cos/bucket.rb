@@ -213,6 +213,10 @@ module COS
       min_size    = options[:min_slice_size] || MIN_UPLOAD_SLICE_SIZE
       retry_times = options[:upload_retry] || DEFAULT_UPLOAD_RETRY
 
+      if min_size > 20 * 1024 * 1024
+        raise EntireUploadTooLarge, 'entire upload file too large, file size must < 20MB'
+      end
+
       options.merge!({bucket: bucket_name})
       file_src  = File.expand_path(file_src)
       file_size = File.size(file_src)
@@ -272,7 +276,7 @@ module COS
     #     puts file.url
     #   end
     def upload_all(path_or_dir, file_src_path, options = {}, &block)
-      local_path = Util.get_local_path(file_src_path, false)
+      local_path = Util.get_local_path(file_src_path, true)
       uploaded   = []
 
       Dir.foreach(local_path) do |file|

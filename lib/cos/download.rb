@@ -22,7 +22,8 @@ module COS
     def initialize(opts = {})
       super(opts)
 
-      @cpt_file = options[:cpt_file] || "#{File.expand_path(file_store)}.cpt"
+      @file_store = File.expand_path(file_store)
+      @cpt_file = options[:cpt_file] || "#{@file_store}.cpt"
     end
 
     # 开始下载

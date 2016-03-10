@@ -283,7 +283,7 @@ file.delete
     # 使用协议,默认为http,可选https
     :protocol => 'https',
     # 接口通讯建立连接超时秒数
-    :open_timeout => 15,
+    :open_timeout => 30,
     # 接口通讯读取数据超时秒数
     :read_timeout => 120,
     # 加载配置文件路径
@@ -694,6 +694,7 @@ puts bucket.url('path1/file1', https: true, cname: 'static.domain.com')
 | options                  |        Hash         |  否   |       无       |                                 |
 | options[:disable_mkdir]  |       Boolean       |  否   |     true      | 禁止自动创建本地文件夹, 默认会创建              |
 | options[:min_slice_size] |       Integer       |  否   | 5 * 10 * 1024 | 完整下载最小文件大小,超过此大小将会使用分片多线程断点续传   |
+| options[:part_size] |       Integer       |  否   | 5 * 10 * 1024 | 分片下载大小,如多线程下载时使用该大小分片下载   |
 | options[:download_retry] |       Integer       |  否   |      10       | 下载重试次数                          |
 | options[:disable_cpt]    |       Boolean       |  否   |     false     | 是否禁用checkpoint，如果禁用则不使用断点续传     |
 | yield                    |        Float        |  否   |       无       | 下载进度百分比回调, 进度值是一个0-1之间的小数       |
@@ -730,6 +731,7 @@ puts file
 | path_or_dir     | String/COS::COSDir |  否   |  空   | 目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/' |
 | options         |        Hash        |      |      |                                          |
 | options[:depth] |      Integer       |  否   |  5   | 子目录深度,默认为5                               |
+| options[:files] |      Boolean       |  否   |  false   | 同时列出文件,默认不列出                               |
 
 返回：
 
@@ -767,6 +769,7 @@ end
 | path_or_dir     | String/COS::COSDir |  否   |  空   | 目录路径或目录对象COSDir目录路径如: '/', 'path1', 'path1/path2', sdk会补齐末尾的 '/' |
 | options         |        Hash        |      |      |                                          |
 | options[:depth] |      Integer       |  否   |  5   | 子目录深度,默认为5                               |
+| options[:files] |      Boolean       |  否   |  false   | 同时列出文件,默认不列出                               |
 
 返回：
 
@@ -2023,6 +2026,7 @@ $ cos upload path/path2 file1 ~/file1
 
 ## 7 运行测试
 
+### 7.1 单元测试
 ``` 
 rspec
 ```
@@ -2031,4 +2035,14 @@ rspec
 
 ``` 
 bundle exec rake spec
+```
+
+### 7.2 集成测试
+先安装memory_profiler
+```
+gem install memory_profiler
+```
+
+```
+bundle exec rake test
 ```

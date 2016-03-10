@@ -14,7 +14,7 @@ COS::Logging::set_logger(STDOUT, Logger::DEBUG)
 puts @bucket.stat.authority
 
 # 获取目录属性
-puts @bucket.stat('/test').name
+puts @bucket.stat('/test/').name
 
 # 获取文件属性
 puts @bucket.stat('/test/file').size

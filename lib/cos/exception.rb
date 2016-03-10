@@ -59,4 +59,7 @@ module COS
   # 本地目录不存在
   class LocalPathNotExist < Exception; end
 
+  # 完整上传文件过大
+  class EntireUploadTooLarge < Exception; end
+
 end

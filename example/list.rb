@@ -11,7 +11,7 @@ COS::Logging::set_logger(STDOUT, Logger::DEBUG)
 @bucket = @client.bucket
 
 # 列举根目录
-@bucket.list do |res|
+@bucket.list.each do |res|
   if res.is_a?(COS::COSDir)
     puts "Dir: #{res.name} #{res.path}"
   else
@@ -20,17 +20,17 @@ COS::Logging::set_logger(STDOUT, Logger::DEBUG)
 end
 
 # 只列举文件
-@bucket.list('test', pattern: :file_only) do |res|
+@bucket.list('test', pattern: :file_only).each do |res|
   puts "File: #{res.name} #{res.format_size}"
 end
 
 # 只列举目录
-@bucket.list('test', pattern: :dir_only, order: :desc) do |res|
+@bucket.list('test', pattern: :dir_only, order: :desc).each do |res|
   puts "Dir: #{res.name} #{res.path}"
 end
 
 # 前缀搜索
-@bucket.list('/', prefix: 'test_') do |res|
+@bucket.list('/', prefix: 'test_').each do |res|
   if res.is_a?(COS::COSFile)
     puts "File: #{res.name} #{res.size}"
   else

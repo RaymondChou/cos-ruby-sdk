@@ -11,7 +11,7 @@ module COS
     DEFAULT_CONTENT_TYPE = 'application/json'
 
     # 请求创建超时
-    OPEN_TIMEOUT = 15
+    OPEN_TIMEOUT = 30
 
     # 响应读取超时
     READ_TIMEOUT = 120

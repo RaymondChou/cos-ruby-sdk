@@ -38,27 +38,35 @@ module COS
       # 未完成的片段
       @todo_parts = @parts.reject { |p| p[:done] }
 
-      begin
-        # 多线程上传
-        (1..@num_threads).map do
-          Thread.new do
-            loop do
-              # 获取下一个未上传的片段
-              p = sync_get_todo_part
-              break unless p
+      # 多线程上传
+      Thread.abort_on_exception = true
 
-              # 上传片段
-              upload_part(p)
+      threads = []
+      @num_threads.times do
+        threads << Thread.new do
+          loop do
+            # 获取下一个未上传的片段
+            p = sync_get_todo_part
+            break unless p
+
+            # 上传片段
+            upload_part(p)
+          end
+        end
+      end
+
+      threads.each do |thread|
+        begin
+          thread.join
+        rescue => error
+          unless finish?
+            # 部分服务端异常需要重新初始化, 可能上传已经完成了
+            if error.is_a?(ServerError) and error.error_code == -288
+              File.delete(cpt_file) unless options[:disable_cpt]
             end
+            threads.each {|t| t.exit}
+            raise error
           end
-        end.map(&:join)
-      rescue => error
-        unless finish?
-          # 部分服务端异常需要重新初始化, 可能上传已经完成了
-          if error.is_a?(ServerError) and error.error_code == -288
-            File.delete(cpt_file) unless options[:disable_cpt]
-          end
-          raise error
         end
       end
 
